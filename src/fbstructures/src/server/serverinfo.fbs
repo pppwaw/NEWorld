@@ -1,0 +1,13 @@
+// The response of Protocol.Client.ServerInfo
+
+namespace Protocol.Server;
+
+table ServerInfo{ 
+    protocolVersion: uint;
+    softwareVersion: uint;
+    playerNum: uint;
+    playerMax: uint;
+    motd: string;
+}
+
+root_type ServerInfo;

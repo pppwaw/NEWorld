@@ -79,8 +79,9 @@
     #define NWAPIEXPORT __attribute__((visibility("default")))
 #endif
 
-constexpr unsigned int NEWorldVersion = 41u;
+constexpr unsigned int NEWorldVersion = 41;
 constexpr unsigned int ReleaseVersion = (NEWorldVersion << 16) + 2;
+constexpr unsigned int ProtocolVersion = 0;
 constexpr const char* CopyrightString = R"(
 NEWorld  Copyright (C) 2016  NEWorld Team
 This program comes with ABSOLUTELY NO WARRANTY.

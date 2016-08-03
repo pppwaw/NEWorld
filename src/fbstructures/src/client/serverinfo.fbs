@@ -1,0 +1,10 @@
+// Query the basic infomations of a server (usually sent when checking server list)
+
+namespace Protocol.Client;
+
+table ServerInfo{
+    protocolVersion: uint;
+    softwareVersion: uint;
+}
+
+root_type ServerInfo;

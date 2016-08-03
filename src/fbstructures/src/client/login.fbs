@@ -1,0 +1,9 @@
+namespace Protocol.Client;
+
+table Login{
+    protocolVersion: uint;
+    softwareVersion: uint;
+    userid: string;
+}
+
+root_type Login;
