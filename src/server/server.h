@@ -31,14 +31,11 @@ class Server
 {
 public:
     Server();
-    void run();
+    void run(uint16_t port, size_t threadNumber);
      void stop();
     ~Server();
 protected:
-    void initBuiltinCommands();
-
     RateMeter mRateCounterScheduler{1};
-    WorldManager mWorlds;
 };
 
 #endif

@@ -18,8 +18,14 @@
 */
 
 #include "cli.hpp"
+#include "engine/nwjson/nwjson.h"
+#include "server/server.h"
 
 int main(int argc, char* argv[]) {
     ServerCommandLine cli;
+    Server server;
+    // TODO: make thread number changeable
+    server.run(getJsonValue<unsigned short>(getSettings()["server"]["port"], 31111),
+        1);
     cli.start();
 }

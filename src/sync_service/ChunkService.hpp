@@ -40,10 +40,10 @@ public:
           mAuthority(isAuthority) {
 
     }
-
-    const WorldManager& getWorlds() const noexcept { return mWorlds; }
+    friend class TaskDispatcher;
 
 private:
+    WorldManager & getWorlds() noexcept { return mWorlds; }
     WorldManager mWorlds;
     bool mAuthority;
 };

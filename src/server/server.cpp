@@ -21,7 +21,6 @@
 #include "game/context/nwcontext.hpp"
 
 Server::Server()
-    : mWorlds(context.plugins, context.blocks), mNetwork(mWorlds)
 {
     using namespace std::chrono;
     auto startTime = steady_clock::now();
@@ -30,77 +29,27 @@ Server::Server()
     context.plugins.initializePlugins(nwPluginTypeServerOnly);
 
     // World
-    mWorlds.addWorld("main_world");
-
-    // Builtin Commands
-    initBuiltinCommands();
+    //mWorlds.addWorld("main_world");
 
     // Done
     auto doneTime = steady_clock::now();
     infostream << "Initialization done in " << duration_cast<milliseconds>(doneTime - startTime).count() << "ms!";
 }
 
-void Server::run()
+// This function won't block the thread
+void Server::run(uint16_t port, size_t threadNumber)
 {
     // Network
-    mNetwork.start(getJsonValue<std::string>(getSettings()["server"]["ip"], "127.0.0.1").c_str(),
-                   getJsonValue<unsigned short>(getSettings()["server"]["port"], 31111));
-    mNetwork.loop();
+    context.rpc.enableServer(port);
+    context.rpc.getServer().async_run(threadNumber);
 }
 
 void Server::stop()
 {
-    mNetwork.close();
-    mCommands.setRunningStatus(false);
+    context.rpc.getServer().stop();
 }
 
 Server::~Server()
 {
     // TODO: Terminate here
-}
-
-// Normally it does nothing, just collects garbage :)
-LocalTunnelServer::LocalTunnelServer()
-{
-}
-
-// TEMP CODE!
-// TODO : MultiPlayer
-void LocalTunnelServer::run()
-{
-    mRuning.store(true);
-    while (mRuning)
-    {
-        for (auto& w : mWorlds)
-            w->updateChunkLoadStatus();
-        std::this_thread::yield();
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-    }
-}
-
-void LocalTunnelServer::stop()
-{
-    mRuning.store(false);
-    mCommands.setRunningStatus(false);
-}
-
-World * LocalTunnelServer::getWorld(size_t id)
-{
-    return mWorlds.getWorld(id);
-}
-
-Chunk * LocalTunnelServer::getChunk(int x, int y, int z)
-{
-    World *world = mWorlds.getWorld(0); // TODO:Current world of player.
-    Chunk* chunk;
-    if (!world->isChunkLoaded({ x, y, z }))
-        chunk = world->addChunk({ x, y, z });
-    else
-        chunk = &world->getChunk({ x, y, z });
-    Assert(chunk);
-    return chunk;
-}
-
-void LocalTunnelServer::login(const char *, const char *)
-{
 }

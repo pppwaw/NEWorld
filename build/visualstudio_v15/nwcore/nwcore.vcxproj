@@ -42,6 +42,7 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\src\api\nwapicore.hpp" />
     <ClInclude Include="..\..\..\src\client\player.h" />
+    <ClInclude Include="..\..\..\src\dispatcher\taskdispatcher.hpp" />
     <ClInclude Include="..\..\..\src\engine\common.h" />
     <ClInclude Include="..\..\..\src\engine\concurrency\nwconcurrency.hpp" />
     <ClInclude Include="..\..\..\src\engine\maintenance\nwdebug.h" />
@@ -64,7 +65,7 @@
     <ClInclude Include="..\..\..\src\game\plugin\plugin.h" />
     <ClInclude Include="..\..\..\src\game\plugin\pluginmanager.h" />
     <ClInclude Include="..\..\..\src\server\server.h" />
-    <ClInclude Include="..\..\..\src\sync_service\ChunkService.hpp" />
+    <ClInclude Include="..\..\..\src\sync_service\chunkservice.hpp" />
     <ClInclude Include="..\..\..\src\sync_service\world\nwblock.h" />
     <ClInclude Include="..\..\..\src\sync_service\world\nwchunk.h" />
     <ClInclude Include="..\..\..\src\sync_service\world\nwplayer.hpp" />

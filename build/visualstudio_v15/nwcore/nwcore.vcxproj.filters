@@ -177,11 +177,14 @@
     <ClInclude Include="..\..\..\src\api\nwapicore.hpp">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\sync_service\ChunkService.hpp">
-      <Filter>Source\Sync Service</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\engine\nwrpc\nwrpc.hpp">
       <Filter>Source\Engine\nwrpc</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\dispatcher\taskdispatcher.hpp">
+      <Filter>Source\Task Dispatcher</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\sync_service\chunkservice.hpp">
+      <Filter>Source\Sync Service</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

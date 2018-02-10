@@ -32,7 +32,6 @@ public:
     FUNCTION_RENAME(mClient->call, call);
     FUNCTION_RENAME(mClient->async_call, async_call);
     FUNCTION_RENAME(mServer->bind, bind);
-
 private:
     std::unique_ptr<rpc::client> mClient;
     std::unique_ptr<rpc::server> mServer;
