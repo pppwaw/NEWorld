@@ -19,37 +19,62 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\launchers\client.cpp" />
+    <ClInclude Include="..\..\..\src\api\nwapigui.hpp" />
+    <ClInclude Include="..\..\..\src\gui\gamescene.h" />
+    <ClInclude Include="..\..\..\src\gui\neworld.h" />
+    <ClInclude Include="..\..\..\src\gui\renderer\blockrenderer.h" />
+    <ClInclude Include="..\..\..\src\gui\renderer\chunkrenderer.h" />
+    <ClInclude Include="..\..\..\src\gui\renderer\opengl.h" />
+    <ClInclude Include="..\..\..\src\gui\renderer\renderer.h" />
+    <ClInclude Include="..\..\..\src\gui\renderer\texture.h" />
+    <ClInclude Include="..\..\..\src\gui\renderer\vertexarray.h" />
+    <ClInclude Include="..\..\..\src\gui\widget.h" />
+    <ClInclude Include="..\..\..\src\gui\widgetmanager.h" />
+    <ClInclude Include="..\..\..\src\gui\window.h" />
+    <ClInclude Include="..\..\..\src\gui\worldclient.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\gui\gamescene.cpp" />
+    <ClCompile Include="..\..\..\src\gui\mainclient.cpp" />
+    <ClCompile Include="..\..\..\src\gui\neworld.cpp" />
+    <ClCompile Include="..\..\..\src\gui\nwapigui.cpp" />
+    <ClCompile Include="..\..\..\src\gui\renderer\blockrenderer.cpp" />
+    <ClCompile Include="..\..\..\src\gui\renderer\chunkrenderer.cpp" />
+    <ClCompile Include="..\..\..\src\gui\renderer\renderer.cpp" />
+    <ClCompile Include="..\..\..\src\gui\renderer\texture.cpp" />
+    <ClCompile Include="..\..\..\src\gui\renderer\vertexarray.cpp" />
+    <ClCompile Include="..\..\..\src\gui\window.cpp" />
+    <ClCompile Include="..\..\..\src\gui\worldclient.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{FDC96AA2-29E7-4923-8994-74884CB3F784}</ProjectGuid>
+    <ProjectGuid>{B413953F-7EF7-4A92-A634-5992F205BCEE}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>NEWorldClient</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>

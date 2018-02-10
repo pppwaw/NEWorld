@@ -17,12 +17,10 @@
 * along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#define NEWORLD_PLUGIN_CLIENT_SIDE
-
 #include <memory>
 #include <string>
 #include "renderer/blockrenderer.h"
-#include <api/nwapi.h>
+#include <api/nwapigui.hpp>
 
 extern "C"
 {

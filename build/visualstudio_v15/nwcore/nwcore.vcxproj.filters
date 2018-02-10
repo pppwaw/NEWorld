@@ -1,313 +1,178 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Sync Service">
-      <UniqueIdentifier>{0ebcc811-3887-4254-93c7-593ec6ce3f30}</UniqueIdentifier>
+    <Filter Include="Source">
+      <UniqueIdentifier>{3fb03162-a54d-4a74-935b-93ac69399d2a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Server">
+    <Filter Include="Source\Server">
       <UniqueIdentifier>{826c33bf-7d04-4d61-a1a3-3c778d91b1ae}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Client">
-      <UniqueIdentifier>{0b4c2b5f-a491-4fe7-8d4e-a5626f165bcd}</UniqueIdentifier>
+    <Filter Include="Source\Sync Service">
+      <UniqueIdentifier>{0ebcc811-3887-4254-93c7-593ec6ce3f30}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Client\Main">
-      <UniqueIdentifier>{e52f68a4-1e59-444b-9f68-b56ce4037d4b}</UniqueIdentifier>
+    <Filter Include="Source\Sync Service\world">
+      <UniqueIdentifier>{d21da3cc-f9cb-4689-a240-acc0a1f5414e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Client\Player">
-      <UniqueIdentifier>{920b09a3-2f8a-4953-b4c1-ad7bd155a7b6}</UniqueIdentifier>
+    <Filter Include="Source\Task Dispatcher">
+      <UniqueIdentifier>{274610c9-8725-4ab5-828f-0ec7f3d2f78c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Client\Multimedia">
-      <UniqueIdentifier>{309f299f-2bc8-41de-a971-8cf143578a1a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Client\GUI">
-      <UniqueIdentifier>{2ce2a166-2f8d-45fd-b41e-2b6584ea9d82}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Client\GUI\imgui">
-      <UniqueIdentifier>{9111ec47-e2b0-4c99-a394-636006930dcf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Client\Plugin">
-      <UniqueIdentifier>{651bd7ce-1617-43b4-b63e-7281d75619db}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Client\SDLGL">
-      <UniqueIdentifier>{721c8f8f-9940-46ef-9680-4fb5894884fa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine">
-      <UniqueIdentifier>{349061fe-9dc1-4643-9984-8734621a544f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\maintenance">
-      <UniqueIdentifier>{2b2bd3f2-d30a-4d9e-8770-2cb4298ccefc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\nwjson">
-      <UniqueIdentifier>{12a09c82-1c86-44f6-845c-fe4b84b20a14}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\nwmath">
-      <UniqueIdentifier>{d2af2014-d74f-4399-b95e-6e25b61bcfe3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\nwphysics">
-      <UniqueIdentifier>{79c88b64-1d9c-4b80-8330-37a008eb368a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\nwstdlib">
-      <UniqueIdentifier>{71d5a55c-eb8f-4006-84a5-3e8dfb007730}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\concurrency">
-      <UniqueIdentifier>{4ed57a2f-da7d-4561-84bd-53c8c59c6dae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game">
+    <Filter Include="Source\Game">
       <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
       <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
-    <Filter Include="Game\api">
-      <UniqueIdentifier>{42e9c03f-7df2-4e4b-88c3-80664bb72cc9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\plugin">
-      <UniqueIdentifier>{865196c1-df40-4f7a-a4fc-7c8c6abcf8a1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\context">
+    <Filter Include="Source\Game\context">
       <UniqueIdentifier>{29e5ad4d-0c50-4372-9fed-acd6cae57842}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\renderer">
-      <UniqueIdentifier>{f78e12de-58d0-445d-a960-d3ef40a8c591}</UniqueIdentifier>
+    <Filter Include="Source\Client">
+      <UniqueIdentifier>{0b4c2b5f-a491-4fe7-8d4e-a5626f165bcd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Sync Service\world">
-      <UniqueIdentifier>{d21da3cc-f9cb-4689-a240-acc0a1f5414e}</UniqueIdentifier>
+    <Filter Include="Source\Engine">
+      <UniqueIdentifier>{349061fe-9dc1-4643-9984-8734621a544f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\maintenance">
+      <UniqueIdentifier>{2b2bd3f2-d30a-4d9e-8770-2cb4298ccefc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\nwjson">
+      <UniqueIdentifier>{12a09c82-1c86-44f6-845c-fe4b84b20a14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\nwmath">
+      <UniqueIdentifier>{d2af2014-d74f-4399-b95e-6e25b61bcfe3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\nwphysics">
+      <UniqueIdentifier>{79c88b64-1d9c-4b80-8330-37a008eb368a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\nwstdlib">
+      <UniqueIdentifier>{71d5a55c-eb8f-4006-84a5-3e8dfb007730}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Engine\concurrency">
+      <UniqueIdentifier>{4ed57a2f-da7d-4561-84bd-53c8c59c6dae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Game\plugin">
+      <UniqueIdentifier>{865196c1-df40-4f7a-a4fc-7c8c6abcf8a1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\client\mainclient.cpp">
-      <Filter>Client</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\client\neworld.cpp">
-      <Filter>Client\Main</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\client\player.cpp">
-      <Filter>Client\Player</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\client\window.cpp">
-      <Filter>Client\Multimedia</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\client\imguihelper.cpp">
-      <Filter>Client\GUI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\client\imgui\imgui.cpp">
-      <Filter>Client\GUI\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\client\imgui\imgui_demo.cpp">
-      <Filter>Client\GUI\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\client\imgui\imgui_draw.cpp">
-      <Filter>Client\GUI\imgui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\client\clientapi.cpp">
-      <Filter>Client\Plugin</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\client\gamescene.cpp">
-      <Filter>Client\Main</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\backends\sdlgl\sdlgl.cpp">
-      <Filter>Client\SDLGL</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\engine\concurrency\nwconcurrency.cpp">
-      <Filter>Engine\concurrency</Filter>
+      <Filter>Source\Engine\concurrency</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\engine\maintenance\nwlogger.cpp">
-      <Filter>Engine\maintenance</Filter>
+      <Filter>Source\Engine\maintenance</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\game\context\nwcontext.cpp">
-      <Filter>Game\context</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\game\api\nwpluginapi.cpp">
-      <Filter>Game\api</Filter>
+      <Filter>Source\Game\context</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\game\plugin\pluginmanager.cpp">
-      <Filter>Game\plugin</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\game\plugin\plugin.cpp">
-      <Filter>Game\plugin</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\game\renderer\chunkrenderer.cpp">
-      <Filter>Game\renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\game\renderer\renderer.cpp">
-      <Filter>Game\renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\game\renderer\texture.cpp">
-      <Filter>Game\renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\game\renderer\vertexarray.cpp">
-      <Filter>Game\renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\game\renderer\blockrenderer.cpp">
-      <Filter>Game\renderer</Filter>
+      <Filter>Source\Game\plugin</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\server\server.cpp">
-      <Filter>Server</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\sync_service\worldclient.cpp">
-      <Filter>Sync Service</Filter>
+      <Filter>Source\Server</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\sync_service\world\world.cpp">
-      <Filter>Sync Service\world</Filter>
+      <Filter>Source\Sync Service\world</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\sync_service\world\nwblock.cpp">
-      <Filter>Sync Service\world</Filter>
+      <Filter>Source\Sync Service\world</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\sync_service\world\nwchunk.cpp">
-      <Filter>Sync Service\world</Filter>
+      <Filter>Source\Sync Service\world</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\game\plugin\plugin.cpp">
+      <Filter>Source\Game\plugin</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\client\player.cpp">
+      <Filter>Source\Client</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\server\nwserverapi.cpp">
+      <Filter>Source\Server</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\src\client\neworld.h">
-      <Filter>Client\Main</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\client\player.h">
-      <Filter>Client\Player</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\client\window.h">
-      <Filter>Client\Multimedia</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\client\hogui\hogui.h">
-      <Filter>Client\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\client\imguihelper.h">
-      <Filter>Client\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\client\widget.h">
-      <Filter>Client\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\client\widgetmanager.h">
-      <Filter>Client\GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\client\imgui\imconfig.h">
-      <Filter>Client\GUI\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\client\imgui\imgui.h">
-      <Filter>Client\GUI\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\client\imgui\imgui_internal.h">
-      <Filter>Client\GUI\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\client\imgui\stb_rect_pack.h">
-      <Filter>Client\GUI\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\client\imgui\stb_textedit.h">
-      <Filter>Client\GUI\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\client\imgui\stb_truetype.h">
-      <Filter>Client\GUI\imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\client\gamescene.h">
-      <Filter>Client\Main</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\backends\sdlgl\sdlgl.hpp">
-      <Filter>Client\SDLGL</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\engine\concurrency\nwconcurrency.hpp">
-      <Filter>Engine\concurrency</Filter>
+      <Filter>Source\Engine\concurrency</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\engine\maintenance\nwexception.hpp">
-      <Filter>Engine\maintenance</Filter>
+      <Filter>Source\Engine\maintenance</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\engine\maintenance\nwlogger.hpp">
-      <Filter>Engine\maintenance</Filter>
+      <Filter>Source\Engine\maintenance</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\engine\maintenance\nwdebug.h">
-      <Filter>Engine\maintenance</Filter>
+      <Filter>Source\Engine\maintenance</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\engine\nwjson\json.hpp">
-      <Filter>Engine\nwjson</Filter>
+      <Filter>Source\Engine\nwjson</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\engine\nwjson\nwjson.h">
-      <Filter>Engine\nwjson</Filter>
+      <Filter>Source\Engine\nwjson</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\engine\nwmath\nwmatrix.h">
-      <Filter>Engine\nwmath</Filter>
+      <Filter>Source\Engine\nwmath</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\engine\nwmath\nwvector.h">
-      <Filter>Engine\nwmath</Filter>
+      <Filter>Source\Engine\nwmath</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\engine\nwphysics\nwaabb.h">
-      <Filter>Engine\nwphysics</Filter>
+      <Filter>Source\Engine\nwphysics</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\engine\nwstdlib\nwconsole.hpp">
-      <Filter>Engine\nwstdlib</Filter>
+      <Filter>Source\Engine\nwstdlib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\engine\nwstdlib\nwfilesys.h">
-      <Filter>Engine\nwstdlib</Filter>
+      <Filter>Source\Engine\nwstdlib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\engine\nwstdlib\nwlibrary.h">
-      <Filter>Engine\nwstdlib</Filter>
+      <Filter>Source\Engine\nwstdlib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\engine\nwstdlib\nwratemeter.h">
-      <Filter>Engine\nwstdlib</Filter>
+      <Filter>Source\Engine\nwstdlib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\engine\nwstdlib\nwstddef.h">
-      <Filter>Engine\nwstdlib</Filter>
+      <Filter>Source\Engine\nwstdlib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\engine\nwstdlib\nwstrings.h">
-      <Filter>Engine\nwstdlib</Filter>
+      <Filter>Source\Engine\nwstdlib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\engine\nwstdlib\nwconcepts.hpp">
-      <Filter>Engine\nwstdlib</Filter>
+      <Filter>Source\Engine\nwstdlib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\engine\common.h">
-      <Filter>Engine</Filter>
+      <Filter>Source\Engine</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\game\context\nwcontext.hpp">
-      <Filter>Game\context</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\game\api\nwapi.h">
-      <Filter>Game\api</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\game\api\nwpluginapi.h">
-      <Filter>Game\api</Filter>
+      <Filter>Source\Game\context</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\game\plugin\pluginmanager.h">
-      <Filter>Game\plugin</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\game\plugin\plugin.h">
-      <Filter>Game\plugin</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\game\renderer\chunkrenderer.h">
-      <Filter>Game\renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\game\renderer\vertexarray.h">
-      <Filter>Game\renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\game\renderer\opengl.h">
-      <Filter>Game\renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\game\renderer\renderer.h">
-      <Filter>Game\renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\game\renderer\texture.h">
-      <Filter>Game\renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\game\renderer\blockrenderer.h">
-      <Filter>Game\renderer</Filter>
+      <Filter>Source\Game\plugin</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\server\server.h">
-      <Filter>Server</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\sync_service\worldclient.h">
-      <Filter>Sync Service</Filter>
+      <Filter>Source\Server</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\sync_service\world\playerobject.h">
-      <Filter>Sync Service\world</Filter>
+      <Filter>Source\Sync Service\world</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\sync_service\world\world.h">
-      <Filter>Sync Service\world</Filter>
+      <Filter>Source\Sync Service\world</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\sync_service\world\nwblock.h">
-      <Filter>Sync Service\world</Filter>
+      <Filter>Source\Sync Service\world</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\sync_service\world\nwchunk.h">
-      <Filter>Sync Service\world</Filter>
+      <Filter>Source\Sync Service\world</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\sync_service\world\nwplayer.hpp">
-      <Filter>Sync Service\world</Filter>
+      <Filter>Source\Sync Service\world</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\sync_service\world\object.h">
-      <Filter>Sync Service\world</Filter>
+      <Filter>Source\Sync Service\world</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\game\plugin\plugin.h">
+      <Filter>Source\Game\plugin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\client\player.h">
+      <Filter>Source\Client</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\api\nwapicore.hpp">
+      <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

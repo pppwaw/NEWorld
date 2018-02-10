@@ -16,39 +16,13 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef NWAPI_H_
-#define NWAPI_H_
+#ifndef NWAPICORE_H_
+#define NWAPICORE_H_
 
-#include <stdint.h>
-#include <stddef.h>
+#include "nwapi_internal.hpp"
 
-#ifdef __cplusplus
 extern "C"
 {
-#else
-#include <stdbool.h>
-#endif
-
-#if defined _WIN32 || defined __CYGWIN__
-    #ifdef _MSC_VER
-        #define NWAPIENTRY __declspec(dllimport)
-        #define NWAPIEXPORT __declspec(dllexport)
-    #else
-        #define NWAPIENTRY __attribute__((dllimport))
-        #define NWAPIEXPORT __attribute__((dllexport))
-    #endif
-#else
-    #define NWAPIENTRY __attribute__((visibility("default")))
-    #define NWAPIEXPORT __attribute__((visibility("default")))
-#endif
-
-#ifndef NWAPICALL
-    #ifdef _MSC_VER
-        #define NWAPICALL __cdecl
-    #else
-        #define NWAPICALL __attribute__((__cdecl__))
-    #endif
-#endif
 
 // NEWorld constants
 
@@ -105,28 +79,10 @@ NWAPIENTRY void NWAPICALL nwDeleteChunk(NWchunk);
 
 NWAPIENTRY size_t NWAPICALL nwRegisterBlock(const NWblocktype*);
 NWAPIENTRY void NWAPICALL nwLog(char* str);
-#ifdef NEWORLD_PLUGIN_CLIENT_SIDE
-    // Client-only APIs
-
-    typedef size_t NWtextureid;
-    typedef void(*NWblockrenderfunc)(void* cthis, NWblockdata data, int x, int y, int z);
-
-    struct NWblocktexture
-    {
-        NWtextureid right, left, top, bottom, front, back;
-    };
-
-    NWAPIENTRY NWtextureid NWAPICALL nwRegisterTexture(const char* filename);
-    NWAPIENTRY void NWAPICALL nwSetBlockRenderFunc(size_t id, NWblockrenderfunc func);
-    NWAPIENTRY void NWAPICALL nwUseDefaultBlockRenderFunc(size_t id, void* data);
-
-#endif
 
 typedef void NWAPICALL NWchunkgenerator(const NWvec3i*, NWblockdata*, int32_t);
 NWAPIENTRY size_t NWAPICALL nwRegisterChunkGenerator(NWchunkgenerator* const generator);
 
-#ifdef __cplusplus
 }
-#endif
 
-#endif // !NWAPI_H_
+#endif // !NWAPICORE_H_

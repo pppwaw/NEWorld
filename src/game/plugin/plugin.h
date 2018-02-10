@@ -23,7 +23,7 @@
 #include <string>
 #include <utility>
 #include <engine/common.h>
-#include "api/nwapi.h"
+#include <api/nwapicore.hpp>
 
 // Single plugin
 class Plugin : public NonCopyable
