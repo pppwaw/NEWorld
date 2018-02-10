@@ -14,13 +14,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MainPlugin", "MainPlugin\Ma
 		{F282B14E-B2E5-4C63-840C-CC653C6F5FA3} = {F282B14E-B2E5-4C63-840C-CC653C6F5FA3}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NEWorldClient", "NEWorldClient\NEWorldClient.vcxproj", "{FDC96AA2-29E7-4923-8994-74884CB3F784}"
-	ProjectSection(ProjectDependencies) = postProject
-		{8FD25F27-64E4-4F88-8B64-8449DD471651} = {8FD25F27-64E4-4F88-8B64-8449DD471651}
-		{F282B14E-B2E5-4C63-840C-CC653C6F5FA3} = {F282B14E-B2E5-4C63-840C-CC653C6F5FA3}
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "launcher", "launcher", "{BF06EA7A-AAAE-4CA3-AF44-48A86B53302F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NEWorld", "NEWorld\NEWorld.vcxproj", "{FDC96AA2-29E7-4923-8994-74884CB3F784}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -42,12 +42,6 @@
     <ClCompile Include="..\..\..\src\engine\maintenance\nwlogger.cpp" />
     <ClCompile Include="..\..\..\src\game\api\nwpluginapi.cpp" />
     <ClCompile Include="..\..\..\src\game\context\nwcontext.cpp" />
-    <ClCompile Include="..\..\..\src\game\network\clientgameconnection.cpp" />
-    <ClCompile Include="..\..\..\src\game\network\connection.cpp" />
-    <ClCompile Include="..\..\..\src\game\network\gameconnection.cpp" />
-    <ClCompile Include="..\..\..\src\game\network\mainserver.cpp" />
-    <ClCompile Include="..\..\..\src\game\network\network.cpp" />
-    <ClCompile Include="..\..\..\src\game\network\networkmanager.cpp" />
     <ClCompile Include="..\..\..\src\game\plugin\plugin.cpp" />
     <ClCompile Include="..\..\..\src\game\plugin\pluginmanager.cpp" />
     <ClCompile Include="..\..\..\src\game\renderer\blockrenderer.cpp" />
@@ -55,11 +49,11 @@
     <ClCompile Include="..\..\..\src\game\renderer\renderer.cpp" />
     <ClCompile Include="..\..\..\src\game\renderer\texture.cpp" />
     <ClCompile Include="..\..\..\src\game\renderer\vertexarray.cpp" />
-    <ClCompile Include="..\..\..\src\game\server.cpp" />
-    <ClCompile Include="..\..\..\src\game\world\nwblock.cpp" />
-    <ClCompile Include="..\..\..\src\game\world\nwchunk.cpp" />
-    <ClCompile Include="..\..\..\src\game\world\world.cpp" />
-    <ClCompile Include="..\..\..\src\game\world\worldclient.cpp" />
+    <ClCompile Include="..\..\..\src\server\server.cpp" />
+    <ClCompile Include="..\..\..\src\sync_service\worldclient.cpp" />
+    <ClCompile Include="..\..\..\src\sync_service\world\nwblock.cpp" />
+    <ClCompile Include="..\..\..\src\sync_service\world\nwchunk.cpp" />
+    <ClCompile Include="..\..\..\src\sync_service\world\world.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\backends\sdlgl\sdlgl.hpp" />
@@ -97,12 +91,6 @@
     <ClInclude Include="..\..\..\src\game\api\nwapi.h" />
     <ClInclude Include="..\..\..\src\game\api\nwpluginapi.h" />
     <ClInclude Include="..\..\..\src\game\context\nwcontext.hpp" />
-    <ClInclude Include="..\..\..\src\game\flatfactory.h" />
-    <ClInclude Include="..\..\..\src\game\network\clientgameconnection.h" />
-    <ClInclude Include="..\..\..\src\game\network\connection.h" />
-    <ClInclude Include="..\..\..\src\game\network\gameconnection.h" />
-    <ClInclude Include="..\..\..\src\game\network\network.h" />
-    <ClInclude Include="..\..\..\src\game\network\networkmanager.h" />
     <ClInclude Include="..\..\..\src\game\plugin\plugin.h" />
     <ClInclude Include="..\..\..\src\game\plugin\pluginmanager.h" />
     <ClInclude Include="..\..\..\src\game\renderer\blockrenderer.h" />
@@ -111,14 +99,14 @@
     <ClInclude Include="..\..\..\src\game\renderer\renderer.h" />
     <ClInclude Include="..\..\..\src\game\renderer\texture.h" />
     <ClInclude Include="..\..\..\src\game\renderer\vertexarray.h" />
-    <ClInclude Include="..\..\..\src\game\server.h" />
-    <ClInclude Include="..\..\..\src\game\world\nwblock.h" />
-    <ClInclude Include="..\..\..\src\game\world\nwchunk.h" />
-    <ClInclude Include="..\..\..\src\game\world\nwplayer.hpp" />
-    <ClInclude Include="..\..\..\src\game\world\object.h" />
-    <ClInclude Include="..\..\..\src\game\world\playerobject.h" />
-    <ClInclude Include="..\..\..\src\game\world\world.h" />
-    <ClInclude Include="..\..\..\src\game\world\worldclient.h" />
+    <ClInclude Include="..\..\..\src\server\server.h" />
+    <ClInclude Include="..\..\..\src\sync_service\worldclient.h" />
+    <ClInclude Include="..\..\..\src\sync_service\world\nwblock.h" />
+    <ClInclude Include="..\..\..\src\sync_service\world\nwchunk.h" />
+    <ClInclude Include="..\..\..\src\sync_service\world\nwplayer.hpp" />
+    <ClInclude Include="..\..\..\src\sync_service\world\object.h" />
+    <ClInclude Include="..\..\..\src\sync_service\world\playerobject.h" />
+    <ClInclude Include="..\..\..\src\sync_service\world\world.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F282B14E-B2E5-4C63-840C-CC653C6F5FA3}</ProjectGuid>
