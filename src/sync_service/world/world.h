@@ -22,10 +22,11 @@
 
 #include <string>
 #include <memory>
+#include <utility>
 #include <vector>
 #include <cstdlib>
 #include <algorithm>
-#include <world/nwchunk.h>
+#include "nwchunk.h"
 #include <engine/common.h>
 
 class PluginManager;
@@ -33,8 +34,8 @@ class PluginManager;
 class World : public NonCopyable
 {
 public:
-    World(const std::string& name, const PluginManager& plugins, const BlockManager& blocks)
-        : mName(name), mID(0), mPlugins(plugins), mBlocks(blocks), mDaylightBrightness(15), mChunks(1024)
+    World(std::string name, const PluginManager& plugins, const BlockManager& blocks)
+        : mName(std::move(name)), mID(0), mPlugins(plugins), mBlocks(blocks), mDaylightBrightness(15), mChunks(1024)
     {
     }
 

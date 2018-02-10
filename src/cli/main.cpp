@@ -17,28 +17,9 @@
 * along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef SERVER_H_
-#define SERVER_H_
+#include "cli.hpp"
 
-#include <memory>
-#include <thread>
-#include <engine/common.h>
-#include "sync_service/world/world.h"
-
-constexpr int UpdateInterval = 1000 / 60, GlobalUpdateInterval = 1000 / 60; // unit: ms
-
-class Server
-{
-public:
-    Server();
-    void run();
-     void stop();
-    ~Server();
-protected:
-    void initBuiltinCommands();
-
-    RateMeter mRateCounterScheduler{1};
-    WorldManager mWorlds;
-};
-
-#endif
+int main(int argc, char* argv[]) {
+    ServerCommandLine cli;
+    cli.start();
+}

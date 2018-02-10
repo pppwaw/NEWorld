@@ -52,6 +52,7 @@
     <ClInclude Include="..\..\..\src\engine\nwmath\nwmatrix.h" />
     <ClInclude Include="..\..\..\src\engine\nwmath\nwvector.h" />
     <ClInclude Include="..\..\..\src\engine\nwphysics\nwaabb.h" />
+    <ClInclude Include="..\..\..\src\engine\nwrpc\nwrpc.hpp" />
     <ClInclude Include="..\..\..\src\engine\nwstdlib\nwconcepts.hpp" />
     <ClInclude Include="..\..\..\src\engine\nwstdlib\nwconsole.hpp" />
     <ClInclude Include="..\..\..\src\engine\nwstdlib\nwfilesys.h" />
@@ -63,6 +64,7 @@
     <ClInclude Include="..\..\..\src\game\plugin\plugin.h" />
     <ClInclude Include="..\..\..\src\game\plugin\pluginmanager.h" />
     <ClInclude Include="..\..\..\src\server\server.h" />
+    <ClInclude Include="..\..\..\src\sync_service\ChunkService.hpp" />
     <ClInclude Include="..\..\..\src\sync_service\world\nwblock.h" />
     <ClInclude Include="..\..\..\src\sync_service\world\nwchunk.h" />
     <ClInclude Include="..\..\..\src\sync_service\world\nwplayer.hpp" />

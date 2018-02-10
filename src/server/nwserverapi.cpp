@@ -17,11 +17,11 @@
 * along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <world/nwchunk.h>
 #include <engine/common.h>
-#include <world/nwblock.h>
-#include <world/world.h>
-#include "./../context/nwcontext.hpp"
+#include "game/context/nwcontext.hpp"
+#include "sync_service/world/nwblock.h"
+#include "api/nwapicore.hpp"
+#include "sync_service/world/nwchunk.h"
 
 namespace PluginAPI
 {

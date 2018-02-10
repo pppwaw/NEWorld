@@ -40,7 +40,7 @@ inline void AssertFunc(bool expr, const char* file, const char* fname, int line)
     #define Assert(expr) nullptr
 #endif
 
-// A notice that would cause conpilation error 2333
+// A notice that would cause compilation error 2333
 #undef assert
 #define assert(expr) static_assert(false, "Do not #include <cassert> or #include <assert.h>! Use Assert(expression) instead."); (void)(expr);
 

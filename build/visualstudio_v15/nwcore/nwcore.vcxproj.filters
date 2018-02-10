@@ -50,6 +50,9 @@
     <Filter Include="Source\Game\plugin">
       <UniqueIdentifier>{865196c1-df40-4f7a-a4fc-7c8c6abcf8a1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Engine\nwrpc">
+      <UniqueIdentifier>{1b5939b9-e484-4bf1-b44d-d454133ecd7c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\engine\concurrency\nwconcurrency.cpp">
@@ -173,6 +176,12 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\api\nwapicore.hpp">
       <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\sync_service\ChunkService.hpp">
+      <Filter>Source\Sync Service</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\nwrpc\nwrpc.hpp">
+      <Filter>Source\Engine\nwrpc</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
