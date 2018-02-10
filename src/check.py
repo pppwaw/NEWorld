@@ -6,7 +6,7 @@ import sys
 AUTO_ADD = False;
 
 if len(sys.argv) >= 2 and sys.argv[1] == "--auto-add":
-    AUTO_ADD = True;
+    AUTO_ADD = True
 
 # check newline at the end of file
 for parent,dirnames,filenames in os.walk("./"):
