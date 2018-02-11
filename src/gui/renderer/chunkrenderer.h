@@ -25,17 +25,67 @@
 #include "blockrenderer.h"
 #include "renderer.h"
 #include "sync_service/world/nwblock.h"
+#include "game/context/nwcontext.hpp"
+#include "sync_service/world/world.h"
 
 class WorldClient;
 
+/**
+ * \brief It stores all the render data (VA) used to render a chunk.
+ *        But it does not involve OpenGL operations so it can be
+ *        safely called from all threads.
+ */
+class ChunkRenderData {
+public:
+    /**
+     * \brief Generate the render data, namely VA, from a chunk.
+     *        Does not involve OpenGL functions.
+     * \param chunk the chunk to be rendered.
+     */
+    void generate(const Chunk* chunk) {
+        // TODO: merge face rendering
+
+        Vec3i tmp;
+        for (tmp.x = 0; tmp.x < Chunk::Size(); ++tmp.x)
+            for (tmp.y = 0; tmp.y < Chunk::Size(); ++tmp.y)
+                for (tmp.z = 0; tmp.z < Chunk::Size(); ++tmp.z)
+                {
+                    BlockData b = chunk->getBlock(tmp);
+                    auto target = context.blocks[b.getID()].isTranslucent() ? &mVATranslucent : &mVAOpacity;
+                    BlockRendererManager::render(*target, b.getID(), chunk, tmp);
+                }
+    }
+
+    const VertexArray& getVAOpacity() const noexcept { return mVAOpacity; }
+    const VertexArray& getVATranslucent() const noexcept { return mVATranslucent; }
+private:
+    VertexArray mVAOpacity{ 262144, VertexFormat(2, 3, 0, 3) };
+    VertexArray mVATranslucent{ 262144, VertexFormat(2, 3, 0, 3) };
+};
+
+/**
+ * \brief The renderer that can be used to render directly. It includes
+ *        VBO that we need to render. It can be generated from a
+ *        ChunkRenderData
+ */
 class ChunkRenderer : public NonCopyable
 {
 public:
-    ChunkRenderer() = default;
-    ChunkRenderer(Chunk* chunk);
-    ChunkRenderer(ChunkRenderer&& rhs):
+    /**
+     * \brief Generate VBO from VA. Note that this function will call
+     *        OpenGL functions and thus can be only called from the
+     *        main thread.
+     * \param data The render data that will be used to generate VBO
+     */
+    ChunkRenderer(const ChunkRenderData& data) {
+        mBuffer.update(data.getVAOpacity());
+        mBufferTrans.update(data.getVATranslucent());
+    }
+
+    ChunkRenderer(ChunkRenderer&& rhs) noexcept:
             mBuffer(std::move(rhs.mBuffer)), mBufferTrans(std::move(rhs.mBufferTrans)) {}
-    ChunkRenderer& operator=(ChunkRenderer&& rhs)
+    
+    ChunkRenderer& operator=(ChunkRenderer&& rhs) noexcept
     {
         mBuffer = std::move(rhs.mBuffer);
         mBufferTrans = std::move(rhs.mBufferTrans);
@@ -63,16 +113,15 @@ public:
         }
     }
 
-    // Render default block
-    static void renderBlock(Chunk* chunk, BlockTexCoord coord[], const Vec3i& pos);
 private:
     // Vertex buffer object
     VertexBuffer mBuffer, mBufferTrans;
-    static bool mergeFace;
-    static VertexArray va0, va1;
-    static bool adjacentTest(BlockData a, BlockData b, World* world) noexcept
-    {
-        return a.getID() != 0 && !world->getType(b.getID()).isOpaque() && !(a.getID() == b.getID());
-    }
 };
+
+
+// Read-only and does not involve OpenGL operation.
+inline void chunkRenderTask(WorldManager worldManager, const Vec3i& chunkPos) {
+    worldManager.getWorld(0)->getChunk(chunkPos);
+}
+
 #endif // !CHUNKCLIENT_H_

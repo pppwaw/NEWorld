@@ -26,12 +26,38 @@ class ChunkService;
 
 // TODO: we can add a `finished` flag in DEBUG mode
 //       to verify that all tasks are indeed processed.
+/**
+ * \brief This type of tasks will be executed concurrently.
+ *        Note that "ReadOnly" here is with respect to chunks
+ *        data specifically. However please be aware of
+ *        thread safety when you write something other than
+ *        chunks.
+ */
 struct ReadOnlyTask {
     std::function<void(const WorldManager&)> task;
 };
+/**
+ * \brief This type of tasks will be executed in one thread.
+ *        Thus, it is safe to do write opeartions inside
+ *        without the need to worry thread safety.
+ */
 struct ReadWriteTask {
     std::function<void(WorldManager&)> task;
 };
+/**
+ * \brief This type of tasks will be executed in main thread.
+ *        Thus, it is safe to call OpenGL function inside.
+ */
+struct RenderTask {
+    std::function<void(WorldManager&)> task;
+};
+
+template <class TaskType>
+struct RegularTask {
+    std::function<TaskType()> taskGenerator;
+};
+using RegularReadOnlyTask = RegularTask<ReadOnlyTask>;
+using RegularReadWriteTask = RegularTask<ReadWriteTask>;
 
 class TaskDispatcher {
 public:
@@ -52,18 +78,38 @@ public:
         for (auto& thread : mThreads) thread.join();
     }
 
+    // TODO: NEED FIX! NOT THREAD SAFE!
     void addReadOnlyTask(const ReadOnlyTask& task) noexcept {
         mNextReadOnlyTasks.emplace_back(task);
     }
     void addReadWriteTask(const ReadWriteTask& task) noexcept {
         mNextReadWriteTasks.emplace_back(task);
     }
+    void addRenderTask(const RenderTask& task) noexcept {
+        mNextRenderTasks.emplace_back(task);
+    }
+    void addRegularReadOnlyTask(const RegularReadOnlyTask& task) noexcept {
+        mRegularReadOnlyTasks.emplace_back(task);
+    }
+    void addRegularReadWriteTask(const RegularReadWriteTask& task) noexcept {
+        mRegularReadWriteTasks.emplace_back(task);
+    }
 
+    const std::vector<RenderTask>& getRenderTasks() const noexcept {
+        return mRenderTasks;
+    }
+    void finishedRenderTasks() noexcept {
+        mRenderTasks.clear();
+        std::swap(mRenderTasks, mNextRenderTasks);
+    }
 private:
     void worker(size_t threadID);
 
     std::vector<ReadOnlyTask> mReadOnlyTasks, mNextReadOnlyTasks;
     std::vector<ReadWriteTask> mReadWriteTasks, mNextReadWriteTasks;
+    std::vector<RenderTask> mRenderTasks, mNextRenderTasks;
+    std::vector<RegularReadOnlyTask> mRegularReadOnlyTasks;
+    std::vector<RegularReadWriteTask> mRegularReadWriteTasks;
     std::vector<std::thread> mThreads;
     size_t mThreadNumber;
     std::atomic<size_t> mNumberOfUnfinishedThreads;

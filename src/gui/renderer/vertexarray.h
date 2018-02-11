@@ -58,7 +58,7 @@ try :
                      mVertexAttributes(new float[format.vertexAttributeCount])
     {
     }
-    catch (std::bad_alloc)
+    catch (std::bad_alloc&)
     {
         warningstream << "Failed to create Vertex Array: Out of memory";
     }

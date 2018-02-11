@@ -25,8 +25,8 @@
 class PlayerObject : public Object
 {
 public:
-    explicit PlayerObject(const World* world)
-        : Object(world, Vec3d(), Vec3d(), Vec3d(1.0, 1.0, 1.0), AABB()),
+    explicit PlayerObject(size_t worldID)
+        : Object(worldID, Vec3d(), Vec3d(), Vec3d(1.0, 1.0, 1.0), AABB()),
           mHeight(1.6), mWidth(0.6), mSpeed(0.2)
     {
         refreshHitbox();

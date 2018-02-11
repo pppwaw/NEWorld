@@ -43,24 +43,24 @@ public:
     virtual ~Chunk() {}
 
     // Get chunk position
-    const Vec3i& getPosition()
+    const Vec3i& getPosition() const noexcept
     {
         return mPosition;
     }
 
     // Get chunk updated flag
-    bool isUpdated() const
+    bool isUpdated() const noexcept
     {
         return mUpdated;
     }
 
-    bool isModified() const
+    bool isModified() const noexcept
     {
         return mModified;
     }
 
     // Set chunk updated flag
-    void setUpdated(bool updated)
+    void setUpdated(bool updated) noexcept
     {
         mUpdated = updated;
     }
@@ -73,12 +73,12 @@ public:
     }
 
     // Get block pointer
-    BlockData* getBlocks()
+    BlockData* getBlocks() noexcept
     {
         return mBlocks;
     }
 
-    const BlockData* getBlocks() const
+    const BlockData* getBlocks() const noexcept
     {
         return mBlocks;
     }
@@ -106,6 +106,7 @@ public:
     }
 
     World* getWorld() noexcept { return mWorld; }
+    const World* getWorld() const noexcept { return mWorld; }
 protected:
     class World* mWorld;
 private:

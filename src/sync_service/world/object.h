@@ -21,32 +21,23 @@
 #define OBJECT_H_
 
 #include <engine/common.h>
-#include "world/world.h"
+
+class World;
 
 class Object
 {
 public:
-    Object() : mWorld(nullptr), mScale(1.0, 1.0, 1.0)
+    Object(size_t worldID) : mWorldID(worldID), mScale(1.0, 1.0, 1.0)
     {
     }
 
-    Object(const World* world, const Vec3d& position, const Vec3d& rotation, const Vec3d& scale, const AABB& hitbox)
-        : mWorld(world), mPosition(position), mRotation(rotation), mScale(scale), mHitbox(hitbox)
+    Object(size_t worldID, const Vec3d& position, const Vec3d& rotation, const Vec3d& scale, const AABB& hitbox)
+        : mWorldID(worldID), mPosition(position), mRotation(rotation), mScale(scale), mHitbox(hitbox)
     {
     }
 
     virtual ~Object()
     {
-    }
-
-    void setWorldPtr(const World* world)
-    {
-        mWorld = world;
-    }
-
-    const World* getWorldPtr() const
-    {
-        return mWorld;
     }
 
     const Vec3d& getPosition() const
@@ -96,13 +87,12 @@ public:
     }
 
     virtual void render() = 0;
-    virtual void update() = 0;
+    virtual void update(const World& world) = 0;
 
 protected:
-    const World* mWorld;
     Vec3d mPosition, mRotation, mScale;
     AABB mHitbox;
-
+    size_t mWorldID;
 };
 
 #endif // OBJECT_H_

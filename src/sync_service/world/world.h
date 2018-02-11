@@ -149,25 +149,43 @@ public:
     {
         return mWorlds.end();
     }
+    std::vector<std::unique_ptr<World>>::const_iterator begin() const
+    {
+        return mWorlds.cbegin();
+    }
+
+    std::vector<std::unique_ptr<World>>::const_iterator end() const
+    {
+        return mWorlds.cend();
+    }
 
     World* getWorld(const std::string& name)
     {
         for (auto&& world : *this)
-        {
             if (world->getWorldName() == name) return world.get();
-        }
         return nullptr;
     }
 
     World* getWorld(size_t id)
     {
         for (auto&& world : *this)
-        {
             if (world->getWorldID() == id) return world.get();
-        }
         return nullptr;
     }
 
+    const World* getWorld(const std::string& name) const
+    {
+        for (auto&& world : *this)
+            if (world->getWorldName() == name) return world.get();
+        return nullptr;
+    }
+
+    const World* getWorld(size_t id) const
+    {
+        for (auto&& world : *this)
+            if (world->getWorldID() == id) return world.get();
+        return nullptr;
+    }
 private:
     std::vector<std::unique_ptr<World>> mWorlds;
     PluginManager& mPlugins;

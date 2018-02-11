@@ -88,6 +88,9 @@
     <ClCompile Include="..\..\..\src\sync_service\taskdispatcher.cpp">
       <Filter>Source\Game</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\sync_service\chunkservice.cpp">
+      <Filter>Source\Sync Service</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\engine\concurrency\nwconcurrency.hpp">
@@ -185,6 +188,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\sync_service\taskdispatcher.hpp">
       <Filter>Source\Sync Service</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\nwstdlib\nworderedlist.hpp">
+      <Filter>Source\Engine\nwstdlib</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

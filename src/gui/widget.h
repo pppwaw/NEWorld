@@ -27,7 +27,7 @@
 class Widget
 {
 public:
-    Widget(std::string name, ImVec2 size) : mName(name), mSize(size) {}
+    Widget(std::string name, Vec2i size) : mName(name), mSize(size) {}
     virtual ~Widget() {}
     void _render()
     {

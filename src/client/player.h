@@ -20,15 +20,21 @@
 #ifndef PLAYER_H_
 #define PLAYER_H_
 
-#include <world/world.h>
-#include <world/playerobject.h>
-#include <renderer/renderer.h>
+#include "sync_service/world/playerobject.h"
+#include "sync_service/chunkservice.hpp"
 
 class Player : public PlayerObject
 {
 public:
-    Player(const World* world) : PlayerObject(world)
+    Player(size_t worldID) : PlayerObject(worldID)
     {
+        // Register update event
+        RegularReadOnlyTask task{ {[this]() {return ReadOnlyTask{
+            [this](const WorldManager& worlds) {
+                update(*worlds.getWorld(mWorldID));
+            }
+        }; } } };
+        chunkService.getTaskDispatcher().addRegularReadOnlyTask(task);
     }
 
     void accelerate(const Vec3d& acceleration)
@@ -58,17 +64,15 @@ public:
 
     void render() override;
 
-    void update() override
-    {
-        move();
-        rotationMove();
-    }
-
 private:
     Vec3d mSpeed, mRotationSpeed;
     Vec3d mPositionDelta, mRotationDelta;
-
-    void move();
+    void update(const World& world) override
+    {
+        move(world);
+        rotationMove();
+    }
+    void move(const World& world);
     void rotationMove();
 };
 

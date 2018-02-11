@@ -50,8 +50,10 @@ public:
     }
 
 private:
-    WorldManager & getWorlds() noexcept { return mWorlds; }
+    WorldManager& getWorlds() noexcept { return mWorlds; }
     WorldManager mWorlds;
     TaskDispatcher mTaskDispatcher;
     bool mAuthority;
 };
+
+extern ChunkService chunkService;

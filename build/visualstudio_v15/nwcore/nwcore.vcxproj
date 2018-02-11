@@ -35,6 +35,7 @@
     <ClCompile Include="..\..\..\src\game\plugin\pluginmanager.cpp" />
     <ClCompile Include="..\..\..\src\server\nwserverapi.cpp" />
     <ClCompile Include="..\..\..\src\server\server.cpp" />
+    <ClCompile Include="..\..\..\src\sync_service\chunkservice.cpp" />
     <ClCompile Include="..\..\..\src\sync_service\taskdispatcher.cpp" />
     <ClCompile Include="..\..\..\src\sync_service\world\nwblock.cpp" />
     <ClCompile Include="..\..\..\src\sync_service\world\nwchunk.cpp" />
@@ -58,6 +59,7 @@
     <ClInclude Include="..\..\..\src\engine\nwstdlib\nwconsole.hpp" />
     <ClInclude Include="..\..\..\src\engine\nwstdlib\nwfilesys.h" />
     <ClInclude Include="..\..\..\src\engine\nwstdlib\nwlibrary.h" />
+    <ClInclude Include="..\..\..\src\engine\nwstdlib\nworderedlist.hpp" />
     <ClInclude Include="..\..\..\src\engine\nwstdlib\nwratemeter.h" />
     <ClInclude Include="..\..\..\src\engine\nwstdlib\nwstddef.h" />
     <ClInclude Include="..\..\..\src\engine\nwstdlib\nwstrings.h" />
