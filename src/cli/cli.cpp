@@ -1,3 +1,22 @@
+/*
+* NEWorld: A free game with similar rules to Minecraft.
+* Copyright (C) 2016 NEWorld Team
+*
+* This file is part of NEWorld.
+* NEWorld is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Lesser General Public License as published by
+* the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+*
+* NEWorld is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Lesser General Public License for more details.
+*
+* You should have received a copy of the GNU Lesser General Public License
+* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 #include "cli.hpp"
 #include "game/context/nwcontext.hpp"
 
@@ -18,7 +37,10 @@ void ServerCommandLine::initBuiltinCommands() noexcept
     mCommands.registerCommand("server.stop", { "internal","Stop the server." },
         [this](Command cmd)->CommandExecuteStat
     {
+        debugstream << "The server is stopping...";
         context.rpc.getServer().stop();
+        infostream << "Server RPC stopped.";
+        mCommands.setRunningStatus(false);
         return{ true, "" };
     });
 
@@ -73,6 +95,8 @@ void ServerCommandLine::initBuiltinCommands() noexcept
         return{ true,"[Server UPS counter not finished yet!]" };
     });
 
+    // TODO: Fix this
+    /*
     mCommands.registerCommand("chunks.count",
         { "internal","Show how many chunks are loaded" },
         [this](Command cmd)->CommandExecuteStat
@@ -84,4 +108,5 @@ void ServerCommandLine::initBuiltinCommands() noexcept
         }
         return{ true,"Chunks loaded: " + std::to_string(sum) };
     });
+    */
 }

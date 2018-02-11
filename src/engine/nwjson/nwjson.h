@@ -20,6 +20,7 @@
 #pragma once
 
 #include "json.hpp"
+#include <fstream>
 
 using Json = nlohmann::json;
 
@@ -30,7 +31,7 @@ inline Json readJsonFromFile(std::string filename)
     std::ifstream file(filename);
     if (file)
     {
-        std::string content = std::string((std::istreambuf_iterator<char>(file)),
+        std::string content = std::string(std::istreambuf_iterator<char>(file),
                                           std::istreambuf_iterator<char>());
         if (!content.empty())
         {
@@ -65,10 +66,12 @@ T getJsonValue(Json& json, T defaultValue=T())
     }
     return json;
 }
+
 class JsonSaveHelper
 {
 public:
-    JsonSaveHelper(Json& json,std::string filename) :mJson(json), mFilename(filename) {}
+    JsonSaveHelper(Json& json, std::string filename) :
+        mJson(json), mFilename(std::move(filename)) {}
     JsonSaveHelper(const JsonSaveHelper&) = delete;
     JsonSaveHelper& operator=(const JsonSaveHelper&) = delete;
     ~JsonSaveHelper()

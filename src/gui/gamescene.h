@@ -22,7 +22,7 @@
 
 #include <thread>
 #include <mutex>
-#include "player.h"
+#include "client/player.h"
 #include "widgetmanager.h"
 #include <world/world.h>
 #include <world/nwblock.h>

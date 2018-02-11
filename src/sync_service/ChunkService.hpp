@@ -20,6 +20,7 @@
 #pragma once
 #include "world/world.h"
 #include "game/context/nwcontext.hpp"
+#include "taskdispatcher.hpp"
 
 /**
  * \brief This class manages worlds and chunks in NEWorld, and it's responsible
@@ -28,6 +29,7 @@
 class ChunkService {
 public:
     /**
+     * \brief constructor
      * \param isAuthority if a chunk service is authoritative, its chunk data
      *                    will be used when there are differences between
      *                    chunk data in different chunk services.
@@ -37,14 +39,20 @@ public:
      */
     ChunkService(bool isAuthority) noexcept
         : mWorlds(context.plugins, context.blocks),
-          mAuthority(isAuthority) {
-
+          mAuthority(isAuthority), mTaskDispatcher(1, *this) {
+        // TODO: make thread number adjustable in runtime
     }
+
     friend class TaskDispatcher;
+
+    TaskDispatcher& getTaskDispatcher() noexcept {
+        return mTaskDispatcher;
+    }
 
 private:
     WorldManager & getWorlds() noexcept { return mWorlds; }
     WorldManager mWorlds;
+    TaskDispatcher mTaskDispatcher;
     bool mAuthority;
 };
 

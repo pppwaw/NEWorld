@@ -26,7 +26,7 @@ Server::Server()
     auto startTime = steady_clock::now();
 
     infostream << "Initializing plugins...";
-    context.plugins.initializePlugins(nwPluginTypeServerOnly);
+    context.plugins.initializePlugins(nwPluginTypeCLI);
 
     // World
     //mWorlds.addWorld("main_world");
@@ -42,6 +42,7 @@ void Server::run(uint16_t port, size_t threadNumber)
     // Network
     context.rpc.enableServer(port);
     context.rpc.getServer().async_run(threadNumber);
+    infostream << "Server RPC started. Thread number: " << threadNumber;
 }
 
 void Server::stop()

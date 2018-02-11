@@ -27,18 +27,18 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\main\entry.cpp" />
-    <ClCompile Include="..\..\..\src\main\worldgen.cpp" />
+    <ClInclude Include="..\..\..\src\main\core\worldgen.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\src\main\worldgen.h" />
+    <ClCompile Include="..\..\..\src\main\core\entry.cpp" />
+    <ClCompile Include="..\..\..\src\main\core\worldgen.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{8FD25F27-64E4-4F88-8B64-8449DD471651}</ProjectGuid>
+    <ProjectGuid>{0BA526CA-9EFF-4D0F-AA1B-6B51719D0A95}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>MainServer</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
-    <ProjectName>MainPlugin</ProjectName>
+    <ProjectName>MainCore</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

@@ -7,6 +7,9 @@
     <ClInclude Include="..\..\..\src\cli\command.hpp">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\cli\main.hpp">
+      <Filter>Source</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Source">

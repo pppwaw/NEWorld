@@ -18,7 +18,6 @@
 */
 
 #include "worldclient.h"
-#include <network/clientgameconnection.h>
 
 void WorldClient::renderUpdate(const Vec3i& position)
 {

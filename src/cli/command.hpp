@@ -18,6 +18,11 @@
 */
 #pragma once
 #include <string>
+#include <atomic>
+#include <iostream>
+#include "engine/maintenance/nwlogger.hpp"
+#include "engine/nwstdlib/nwstrings.h"
+#include <unordered_map>
 
 class CommandExecuteStat
 {
