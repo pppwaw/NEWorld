@@ -20,7 +20,7 @@
 #ifndef WIDGET_H
 #define WIDGET_H
 #include <functional>
-#include "imguihelper.h"
+#include "nuklear_helper.h"
 #include <string>
 
 // widget base class

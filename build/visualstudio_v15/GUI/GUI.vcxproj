@@ -22,6 +22,7 @@
     <ClInclude Include="..\..\..\src\api\nwapigui.hpp" />
     <ClInclude Include="..\..\..\src\gui\gamescene.h" />
     <ClInclude Include="..\..\..\src\gui\neworld.h" />
+    <ClInclude Include="..\..\..\src\gui\nuklear_helper.h" />
     <ClInclude Include="..\..\..\src\gui\renderer\blockrenderer.h" />
     <ClInclude Include="..\..\..\src\gui\renderer\chunkrenderer.h" />
     <ClInclude Include="..\..\..\src\gui\renderer\opengl.h" />
@@ -37,6 +38,7 @@
     <ClCompile Include="..\..\..\src\gui\gamescene.cpp" />
     <ClCompile Include="..\..\..\src\gui\mainclient.cpp" />
     <ClCompile Include="..\..\..\src\gui\neworld.cpp" />
+    <ClCompile Include="..\..\..\src\gui\nuklear_helper.cpp" />
     <ClCompile Include="..\..\..\src\gui\nwapigui.cpp" />
     <ClCompile Include="..\..\..\src\gui\renderer\blockrenderer.cpp" />
     <ClCompile Include="..\..\..\src\gui\renderer\chunkrenderer.cpp" />
@@ -134,7 +136,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NOMINMAX;NWCompartmentLoggerPrefix="launcher";WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;NWCompartmentLoggerPrefix="launcher";WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -152,7 +154,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NOMINMAX;NWCompartmentLoggerPrefix="launcher";WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;NWCompartmentLoggerPrefix="launcher";WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -168,7 +170,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NOMINMAX;NWCompartmentLoggerPrefix="launcher";_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;NWCompartmentLoggerPrefix="launcher";_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -186,7 +188,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NOMINMAX;NWCompartmentLoggerPrefix="launcher";NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;NWCompartmentLoggerPrefix="launcher";NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>

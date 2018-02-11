@@ -31,7 +31,8 @@ public:
         for (auto& widget : mWidgets)
             widget.second->_render();
 
-        ImGui::Render();
+        // TODO: add an option to adjust the arguments
+        nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
     }
     void update()
     {

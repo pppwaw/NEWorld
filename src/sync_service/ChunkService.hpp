@@ -55,4 +55,3 @@ private:
     TaskDispatcher mTaskDispatcher;
     bool mAuthority;
 };
-

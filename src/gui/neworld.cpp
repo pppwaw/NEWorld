@@ -19,10 +19,12 @@
 
 #include "neworld.h"
 #include <engine/common.h>
-#include <renderer/texture.h>
-#include <context/nwcontext.hpp>
 #include "window.h"
 #include "gamescene.h"
+#include "renderer/renderer.h"
+#include "renderer/texture.h"
+#include "game/context/nwcontext.hpp"
+
 NEWorld::NEWorld()
 {
     // Initialize
@@ -31,23 +33,22 @@ NEWorld::NEWorld()
     Window& window = Window::getInstance("NEWorld", 852, 480);
     Renderer::init();
     Texture::init();
-    context.plugins.initializePlugins(nwPluginTypeShared);
+    context.plugins.initializePlugins(nwPluginTypeGUI);
 
-    auto conn = std::make_shared<LocalConnection>();
-        //getJsonValue<std::string>(getSettings()["server"]["ip"], "127.0.0.1"),
-        //getJsonValue<unsigned short>(getSettings()["server"]["port"], 31111)),
+    context.rpc.enableClient(
+        getJsonValue<std::string>(getSettings()["server"]["ip"], "127.0.0.1"),
+        getJsonValue<unsigned short>(getSettings()["server"]["port"], 31111));
     
     // Run
     constexpr const static int fps = 60;// TODO: read from settings
     constexpr const static double delayPerFrame = (1000/fps)-0.5;
-    GameScene game("TestWorld", conn, window);
+    GameScene game("TestWorld", window);
     while(!window.shouldQuit())
     {
         // Update
         window.pollEvents();
         game.multiUpdate();
         // Render
-        window.newIMGUIFrame();
         game.render();
         Renderer::checkError();
         window.swapBuffers();

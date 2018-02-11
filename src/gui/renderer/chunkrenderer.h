@@ -22,17 +22,11 @@
 
 #include <atomic>
 #include <memory>
-#include <world/nwchunk.h>
-#include <world/world.h>
-#include <renderer/renderer.h>
 #include "blockrenderer.h"
+#include "renderer.h"
+#include "sync_service/world/nwblock.h"
 
 class WorldClient;
-
-namespace s2c
-{
-    struct Chunk;
-}
 
 class ChunkRenderer : public NonCopyable
 {

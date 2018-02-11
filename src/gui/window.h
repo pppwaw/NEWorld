@@ -22,7 +22,7 @@
 
 #include <string>
 #include <SDL2/SDL.h>
-#include "imguihelper.h"
+#include "nuklear_helper.h"
 
 class Window
 {
@@ -60,7 +60,7 @@ public:
         SDL_Event e;
         while (SDL_PollEvent(&e))
         {
-            imguiHelper::processEvent(&e);
+            nk_sdl_handle_event(&e);
             switch (e.type)
             {
             case SDL_QUIT:
@@ -91,11 +91,6 @@ public:
         return mShouldQuit;
     }
 
-    void newIMGUIFrame() const
-    {
-        imguiHelper::newFrame(mWindow);
-    }
-
 private:
     SDL_Window* mWindow = nullptr;
     std::string mTitle;
@@ -106,6 +101,7 @@ private:
     ~Window();
 
     SDL_GLContext mContext;
+    nk_context* mNuklearContext;
 };
 
 #endif

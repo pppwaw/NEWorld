@@ -34,6 +34,8 @@
 #include <network/network.h>
 #include <network/clientgameconnection.h>
 #include "window.h"
+#include "renderer/texture.h"
+#include "worldclient.h"
 
 class GameScene
 {
@@ -41,8 +43,7 @@ public:
     // GameScene update frequency
     static constexpr int UpdateFrequency = 30;
 
-    GameScene(const std::string& name, std::shared_ptr<ClientGameConnection> connection,
-         const Window& window);
+    GameScene(const std::string& name, const Window& window);
     ~GameScene();
 
     void update();
@@ -63,8 +64,6 @@ private:
     // Rate counters
     int mFpsCounter, mUpsCounter, mFpsLatest, mUpsLatest;
     RateMeter mRateCounterScheduler{1};
-    // GameScene connection
-    std::shared_ptr<ClientGameConnection> mConnection;
 
     std::mutex mMutex;
 };
