@@ -34,10 +34,6 @@ NEWorld::NEWorld()
     Renderer::init();
     Texture::init();
     context.plugins.initializePlugins(nwPluginTypeGUI);
-
-    context.rpc.enableClient(
-        getJsonValue<std::string>(getSettings()["server"]["ip"], "127.0.0.1"),
-        getJsonValue<unsigned short>(getSettings()["server"]["port"], 31111));
     
     // Run
     constexpr const static int fps = 60;// TODO: read from settings

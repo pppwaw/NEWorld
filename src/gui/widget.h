@@ -22,20 +22,20 @@
 #include <functional>
 #include "nuklear_helper.h"
 #include <string>
+#include "engine/nwmath/nwvector.h"
 
 // widget base class
 class Widget
 {
 public:
-    Widget(std::string name, Vec2i size) : mName(name), mSize(size) {}
+    Widget(nk_context* nkContext, std::string name, struct nk_rect size, int flags)
+        : mName(std::move(name)), mSize(size), mNkContext(nkContext), mFlags(flags) {}
     virtual ~Widget() {}
     void _render()
     {
-        if (!mOpen) return;
-        ImGui::SetNextWindowSize(mSize, ImGuiSetCond_FirstUseEver);
-        ImGui::Begin(mName.c_str(), &mOpen);
-        render();
-        ImGui::End();
+        if (nk_begin(mNkContext, mName.c_str(), mSize, mFlags))
+            render();
+        nk_menubar_end(mNkContext);
     }
     virtual void update() = 0;
 
@@ -47,7 +47,9 @@ protected:
 private:
     std::string mName;
     bool mOpen = true;
-    ImVec2 mSize;
+    struct nk_rect mSize;
+    nk_context* mNkContext;
+    int mFlags;
 };
 
 // callback style widget
@@ -55,8 +57,9 @@ class WidgetCallback : public Widget
 {
 public:
     using Callback = std::function<void(void)>;
-    WidgetCallback(std::string name, ImVec2 size, Callback renderFunc, Callback updateFunc = nullptr) :
-        Widget(name, size), mRenderFunc(renderFunc), mUpdateFunc(updateFunc) {}
+    WidgetCallback(nk_context* ctx, std::string name, struct nk_rect size, int flags,
+        Callback renderFunc, Callback updateFunc = nullptr) :
+        Widget(ctx, name, size, flags), mRenderFunc(renderFunc), mUpdateFunc(updateFunc) {}
 
     void render() override { mRenderFunc(); }
     void update() override { if(mUpdateFunc) mUpdateFunc(); }

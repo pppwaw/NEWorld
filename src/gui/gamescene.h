@@ -24,15 +24,7 @@
 #include <mutex>
 #include "client/player.h"
 #include "widgetmanager.h"
-#include <world/world.h>
-#include <world/nwblock.h>
-#include <world/worldclient.h>
 #include <engine/common.h>
-#include <renderer/texture.h>
-#include <renderer/renderer.h>
-#include <plugin/pluginmanager.h>
-#include <network/network.h>
-#include <network/clientgameconnection.h>
 #include "window.h"
 #include "renderer/texture.h"
 #include "worldclient.h"

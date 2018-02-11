@@ -23,6 +23,174 @@
 #include <cmath>
 #include <type_traits>
 #include <utility>
+template <typename T>
+class Vec2
+{
+public:
+    using param_type = T;
+
+    T x, y;
+
+    constexpr Vec2() : x(), y()
+    {
+    }
+
+    constexpr Vec2(param_type x_, param_type y_) : x(x_), y(y_)
+    {
+    }
+
+    constexpr Vec2(param_type value) : x(value), y(value)
+    {
+    }
+
+    template <typename U, std::enable_if_t<std::is_convertible<T, U>::value, int> = 0>
+    constexpr Vec2(const Vec2<U>& rhs) : x(T(rhs.x)), y(T(rhs.y))
+    {
+    }
+
+    // Get the square of vector lengths
+    T lengthSqr() const noexcept
+    {
+        return x * x + y * y;
+    }
+
+    // Get vector length
+    double length() const noexcept
+    {
+        return sqrt(double(lengthSqr()));
+    }
+
+    // Get the Euclidean Distance between vectors
+    double euclideanDistance(const Vec2& rhs) const noexcept
+    {
+        return (*this - rhs).length();
+    }
+
+    // Get the Chebyshev Distance between vectors
+    T chebyshevDistance(const Vec2& rhs) const noexcept
+    {
+        return max(max(abs(x - rhs.x), abs(y - rhs.y)));
+    }
+
+    // Get the Manhattan Distance between vectors
+    T manhattanDistance(const Vec2& rhs) const noexcept
+    {
+        return abs(x - rhs.x) + abs(y - rhs.y);
+    }
+
+    // Normalize vector
+    void normalize() noexcept
+    {
+        double l = length();
+        x /= l;
+        y /= l;
+    }
+
+    bool operator< (const Vec2& rhs) const noexcept
+    {
+        if (x != rhs.x)
+            return x < rhs.x;
+        if (y != rhs.y)
+            return y < rhs.y;
+        return false;
+    }
+
+    bool operator== (const Vec2& rhs) const noexcept
+    {
+        return x == rhs.x && y == rhs.y;
+    }
+
+    Vec2& operator+= (const Vec2& rhs) noexcept
+    {
+        x += rhs.x;
+        y += rhs.y;
+        return *this;
+    }
+
+    Vec2& operator-= (const Vec2& rhs) noexcept
+    {
+        x -= rhs.x;
+        y -= rhs.y;
+        return *this;
+    }
+
+    Vec2<T>& operator*= (T value) noexcept
+    {
+        x *= value;
+        y *= value;
+        return *this;
+    }
+
+    Vec2<T>& operator/= (T value) noexcept
+    {
+        x /= value;
+        y /= value;
+        return *this;
+    }
+
+    Vec2<T> operator* (T value) const noexcept
+    {
+        return Vec2<T>(x * value, y * value);
+    }
+
+    Vec2<T> operator/ (T value) const noexcept
+    {
+        return Vec2<T>(x / value, y / value);
+    }
+
+    bool operator!= (const Vec2& rhs) const noexcept
+    {
+        return !(rhs == *this);
+    }
+
+    const Vec2<T> operator+ (const Vec2<T>& rhs) const noexcept
+    {
+        Vec2<T> tmp(*this);
+        tmp += rhs;
+        return tmp;
+    };
+
+    const Vec2<T> operator- (const Vec2<T>& rhs) const noexcept
+    {
+        Vec2<T> tmp(*this);
+        tmp -= rhs;
+        return tmp;
+    };
+
+    const Vec2<T> operator* (const Vec2<T>& rhs) const noexcept
+    {
+        Vec2<T> tmp(*this);
+        tmp *= rhs;
+        return tmp;
+    };
+
+    const Vec2<T> operator/ (const Vec2<T>& rhs) const noexcept
+    {
+        Vec2<T> tmp(*this);
+        tmp /= rhs;
+        return tmp;
+    };
+
+    void swap(Vec2& rhs) noexcept
+    {
+        std::swap(x, rhs.x);
+        std::swap(y, rhs.y);
+    }
+
+    friend Vec2<T> operator- (const Vec2<T>& vec) noexcept
+    {
+        return Vec2<T>(-vec.x, -vec.y);
+    }
+
+    template<class Vec2Type>
+    Vec2Type conv() const noexcept
+    {
+        return Vec2Type(x, y);
+    }
+
+};
+
+
 
 template <typename T>
 class Vec3
@@ -273,6 +441,9 @@ private:
     }
 };
 
+using Vec2i = Vec2<int>;
+using Vec2f = Vec2<float>;
+using Vec2d = Vec2<double>;
 using Vec3i = Vec3<int>;
 using Vec3f = Vec3<float>;
 using Vec3d = Vec3<double>;

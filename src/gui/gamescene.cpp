@@ -25,15 +25,15 @@
 #include "window.h"
 #include <engine/common.h>
 #include "renderer/blockrenderer.h"
-#include <context/nwcontext.hpp>
 
-GameScene::GameScene(const std::string& name, std::shared_ptr<ClientGameConnection> connection,
-           const Window& window):
-    mWindow(window), mWorld(name, context.plugins, context.blocks), mPlayer(&mWorld), mConnection(connection)
+GameScene::GameScene(const std::string& name, const Window& window):
+    mWindow(window), mWorld(name, context.plugins, context.blocks), mPlayer(mWorld.getWorldID())
 {
     mWorld.setRenderDistance(2);
     mPlayer.setPosition(Vec3d(-16.0, 48.0, 32.0));
     mPlayer.setRotation(Vec3d(-45.0, -22.5, 0.0));
+
+    // Initialize update events
 
     // Initialize rendering
     mTexture = BlockTextureBuilder::buildAndFlush();
@@ -42,8 +42,12 @@ GameScene::GameScene(const std::string& name, std::shared_ptr<ClientGameConnecti
     glDepthFunc(GL_LEQUAL);
 
     // Initialize Widgets
-    mGUIWidgets.addWidget(std::make_shared<WidgetCallback>("Debug", ImVec2(100, 200), [this]
-    {
+    /*
+    mGUIWidgets.addWidget(std::make_shared<WidgetCallback>("Debug", nk_rect(100, 200), [this]
+    {   
+        //NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
+        //NK_WINDOW_CLOSABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE
+
         mRateCounterScheduler.refresh();
         if (mRateCounterScheduler.shouldRun())
         {
@@ -59,13 +63,14 @@ GameScene::GameScene(const std::string& name, std::shared_ptr<ClientGameConnecti
         ImGui::Text("Position: x %.1f y %.1f z %.1f", mPlayer.getPosition().x, mPlayer.getPosition().y, mPlayer.getPosition().z);
         ImGui::Text("GUI Widgets: %zu", mGUIWidgets.getSize());
         ImGui::Text("Chunks Loaded: %zu", mWorld.getChunkCount());
+
     }));
+    */
 
     // Initialize connection
-    mConnection->setWorld(&mWorld);
-    mConnection->connect();
-    mConnection->waitForConnected();
-    mConnection->login("test", "123456");
+    context.rpc.enableClient(
+        getJsonValue<std::string>(getSettings()["server"]["ip"], "127.0.0.1"),
+        getJsonValue<unsigned short>(getSettings()["server"]["port"], 31111));
 }
 
 GameScene::~GameScene()
@@ -107,7 +112,6 @@ void GameScene::update()
 #endif
         mPlayer.accelerate(Vec3d(0.0, -2 * speed, 0.0));
 
-    mPlayer.update();
     mWorld.sortChunkLoadUnloadList(Vec3i(mPlayer.getPosition()));
     mWorld.tryLoadChunks(*mConnection);
     mWorld.update();

@@ -57,6 +57,7 @@ public:
 
     void pollEvents()
     {
+        nk_input_begin(mNuklearContext);
         SDL_Event e;
         while (SDL_PollEvent(&e))
         {
@@ -78,6 +79,7 @@ public:
                 break;
             }
         }
+        nk_input_end(mNuklearContext);
     }
 
     static Window& getInstance(const std::string& title="", int width=0, int height=0)

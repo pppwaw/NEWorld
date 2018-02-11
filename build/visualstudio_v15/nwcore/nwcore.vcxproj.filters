@@ -85,10 +85,10 @@
     <ClCompile Include="..\..\..\src\server\nwserverapi.cpp">
       <Filter>Source\Server</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\sync_service\taskdispatcher.cpp">
-      <Filter>Source\Game</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\sync_service\chunkservice.cpp">
+      <Filter>Source\Sync Service</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\sync_service\taskdispatcher.cpp">
       <Filter>Source\Sync Service</Filter>
     </ClCompile>
   </ItemGroup>

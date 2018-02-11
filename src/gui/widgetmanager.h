@@ -61,6 +61,7 @@ public:
     WidgetType::iterator end() { return mWidgets.end(); }
     WidgetType::const_iterator begin() const { return mWidgets.begin(); }
     WidgetType::const_iterator end() const { return mWidgets.end(); }
+    
 private:
     WidgetType mWidgets;
 };

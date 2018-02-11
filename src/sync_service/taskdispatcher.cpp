@@ -22,8 +22,8 @@ void TaskDispatcher::worker(size_t threadID) {
             // ...and finish up!
             mReadOnlyTasks.clear();
             mReadWriteTasks.clear();
-            for (auto& task : mRegularReadOnlyTasks) mReadOnlyTasks.emplace_back(task);
-            for (auto& task : mReadWriteTasks) mReadWriteTasks.emplace_back(task);
+            for (auto& task : mRegularReadOnlyTasks) mReadOnlyTasks.emplace_back(task.taskGenerator());
+            for (auto& task : mRegularReadWriteTasks) mReadWriteTasks.emplace_back(task.taskGenerator());
             std::swap(mReadOnlyTasks, mNextReadOnlyTasks);
             std::swap(mReadWriteTasks, mNextReadWriteTasks);
             // TODO: UPS limits should apply here
