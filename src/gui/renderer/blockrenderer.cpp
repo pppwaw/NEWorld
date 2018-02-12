@@ -114,7 +114,8 @@ static void defaultBlockRendererImplementation(VertexArray& target, const Chunk*
 
 void BlockRendererManager::render(VertexArray& target, size_t id, const Chunk* chunk, const Vec3i& pos)
 {
-    if (mBlockRenderers[id]) mBlockRenderers[id]->render(target, chunk, pos);
+    if (!mBlockRenderers.empty() && mBlockRenderers[id])
+        mBlockRenderers[id]->render(target, chunk, pos);
 }
 
 void BlockRendererManager::setBlockRenderer(size_t pos, std::shared_ptr<BlockRenderer>&& blockRenderer)

@@ -22,19 +22,23 @@
 
 PluginManager::PluginManager()
 {
+    infostream << "Start to load plugins...";
     using namespace FileSystem;
+    size_t counter = 0;
     std::string path = "./plugins/";
     if (exists(path))
     {
-        forInDirectory(path, [this](std::string filename)
+        forInDirectory(path, [&, this](std::string filename)
         {
             std::string suffix = filename.substr(filename.size() - std::string(LibSuffix).size());
             strtolower(suffix);
             if (suffix != LibSuffix) return; //TODO: FIXME: may ignore linux plugins
             debugstream << "Loading:" << filename;
-            loadPlugin(filename);
+            if(loadPlugin(filename))
+                counter++;
         });
     }
+    infostream << counter << " plugin(s) loaded";
 }
 
 PluginManager::~PluginManager()
@@ -48,7 +52,7 @@ void PluginManager::initializePlugins(NWplugintype flag)
         plugin.init(flag);
 }
 
-void PluginManager::loadPlugin(const std::string& filename)
+bool PluginManager::loadPlugin(const std::string& filename)
 {
     mPlugins.push_back(std::move(Plugin(filename)));
     Plugin& plugin = mPlugins[mPlugins.size() - 1];
@@ -57,11 +61,13 @@ void PluginManager::loadPlugin(const std::string& filename)
     {
         mPlugins.pop_back();
         warningstream << "Failed to load plugin from \"" << filename << "\", skipping";
+        return false;
     }
     else
     {
         infostream << "Loaded plugin \"" << plugin.getData().pluginName << "\"["
             << plugin.getData().internalName
             << "], authored by \"" << plugin.getData().authorName << "\"";
+        return true;
     }
 }

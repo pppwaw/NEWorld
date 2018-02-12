@@ -28,8 +28,8 @@ inline void AssertFunc(bool expr, const char* file, const char* fname, int line)
 {
     if (!expr)
     {
-        fatalstream << "Assertion failed!";
-        fatalstream << "At line " << line << " in \"" << file << "\", function " << fname;
+        fatalstream << "Assertion failed!\nAt line " << line
+                    << " in \"" << file << "\", function " << fname;
         throw std::runtime_error("Assertion failed!");
     }
 }

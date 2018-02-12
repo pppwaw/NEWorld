@@ -75,12 +75,14 @@ public:
     ~TaskDispatcher() {
         mShouldExit = true;
         for (auto& thread : mThreads) thread.join();
+        infostream << "Update threads exited.";
     }
 
     void start() {
         mNumberOfUnfinishedThreads = mThreadNumber;
         for (size_t i = 0; i < mThreadNumber; ++i)
             mThreads.emplace_back([this, i]() {worker(i); });
+        infostream << "Update threads started.";
     }
 
     // TODO: NEED FIX! NOT THREAD SAFE!

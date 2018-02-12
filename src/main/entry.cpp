@@ -51,15 +51,12 @@ extern "C"
     // Main function
     NWAPIEXPORT void NWAPICALL init(NWplugintype type)
     {
-        if (type & nwPluginTypeCLI)
-        {
-            nwRegisterChunkGenerator(generator);
-            GrassID = registerBlock("Grass", true, false, true, 0, 2);
-            RockID = registerBlock("Rock", true, false, true, 0, 2);
-            DirtID = registerBlock("Dirt", true, false, true, 0, 2);
-            SandID = registerBlock("Sand", true, false, true, 0, 2);
-            WaterID = registerBlock("Water", false, true, false, 0, 2);
-        }
+        nwRegisterChunkGenerator(generator);
+        GrassID = registerBlock("Grass", true, false, true, 0, 2);
+        RockID = registerBlock("Rock", true, false, true, 0, 2);
+        DirtID = registerBlock("Dirt", true, false, true, 0, 2);
+        SandID = registerBlock("Sand", true, false, true, 0, 2);
+        WaterID = registerBlock("Water", false, true, false, 0, 2);
         if (type & nwPluginTypeGUI)
         {
             NWtextureid id[] =

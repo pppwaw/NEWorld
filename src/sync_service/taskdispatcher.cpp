@@ -2,12 +2,13 @@
 #include "chunkservice.hpp"
 
 void TaskDispatcher::worker(size_t threadID) {
+    debugstream << "Worker thread " << threadID << " initialized.";
     while (!mShouldExit) {
         // A tick starts
 
         // Process read-only work.
         for (auto i = threadID; i < mReadOnlyTasks.size(); i += mThreadNumber) {
-            mReadOnlyTasks[threadID].task(mChunkService);
+            mReadOnlyTasks[i].task(mChunkService);
         }
 
         // Finish the tick
@@ -38,4 +39,5 @@ void TaskDispatcher::worker(size_t threadID) {
                 std::this_thread::yield();
         }
     }
+    debugstream << "Worker thread " << threadID << " exited.";
 }

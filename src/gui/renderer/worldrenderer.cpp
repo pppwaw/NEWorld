@@ -53,15 +53,15 @@ void WorldRenderer::registerTask(ChunkService & chunkService, Player & player) n
     };
 
     chunkService.getTaskDispatcher().addRegularReadOnlyTask(
-        { [&]() {return renderDetectorTask; } }
+        { [=]() {return renderDetectorTask; } }
     );
 }
 
 void WorldRenderer::VAGenerate(const Chunk * chunk) {
     RenderTask task;
-    task.data = std::make_any<std::shared_ptr<ChunkRenderData>>();
+    task.data = std::make_any<std::shared_ptr<ChunkRenderData>>(new ChunkRenderData());
     task.task = {
-        [&](const ChunkService&)
+        [=](const ChunkService&)
     {
         auto&& crd = *std::any_cast<std::shared_ptr<ChunkRenderData>>(task.data);
         VBOGenerateTask(chunk->getPosition(), std::move(crd));

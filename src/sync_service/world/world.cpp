@@ -65,7 +65,7 @@ void World::registerChunkTasks(ChunkService& chunkService, Player& player) {
     };
 
     chunkService.getTaskDispatcher().addRegularReadOnlyTask(
-        { [&]() {return loadUnloadDetectorTask;} }
+        { [=]() {return loadUnloadDetectorTask;} }
     );
 }
 

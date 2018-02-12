@@ -44,7 +44,7 @@ GameScene::GameScene(const std::string& name, const Window& window):
     };
 
     chunkService.getTaskDispatcher().addRegularReadOnlyTask(
-        { [&]() {return keyboardUpdateTask; } }
+        { [=]() {return keyboardUpdateTask; } }
     );
 
     // Initialize rendering
@@ -85,6 +85,7 @@ GameScene::GameScene(const std::string& name, const Window& window):
         getJsonValue<unsigned short>(getSettings()["server"]["port"], 31111));
 
     chunkService.getTaskDispatcher().start();
+    infostream << "Game initialized!";
 }
 
 GameScene::~GameScene()

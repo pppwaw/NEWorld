@@ -34,7 +34,7 @@ public:
     void initializePlugins(NWplugintype flag);
 
     // Load single plugin
-    void loadPlugin(const std::string& filename);
+    bool loadPlugin(const std::string& filename);
 
 private:
     std::vector<Plugin> mPlugins;
