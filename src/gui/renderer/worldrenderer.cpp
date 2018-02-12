@@ -18,6 +18,7 @@
 */
 
 #include "worldrenderer.h"
+#include "client/player.h"
 
 size_t WorldRenderer::render(const Vec3i& position) const
 {
@@ -27,25 +28,84 @@ size_t WorldRenderer::render(const Vec3i& position) const
     size_t renderedChunks = 0;
     for (auto&& c : mChunkRenderers)
     {
-        if (chunkpos.chebyshevDistance(c.first->getPosition()) <= mRenderDist) {
+        if (chunkpos.chebyshevDistance(c.first) <= mRenderDist) {
             renderedChunks++;
-            c.second.render(c.first->getPosition());
+            c.second.render(c.first);
         }
     }
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     for (auto&& c : mChunkRenderers)
     {
-        if (chunkpos.chebyshevDistance(c.first->getPosition()) <= mRenderDist){
-            c.second.renderTrans(c.first->getPosition());
+        if (chunkpos.chebyshevDistance(c.first) <= mRenderDist){
+            c.second.renderTrans(c.first);
         }
     }
     glDisable(GL_BLEND);
     return renderedChunks;
 }
 
+void WorldRenderer::registerTask(ChunkService & chunkService, Player & player) noexcept {
+    ReadOnlyTask renderDetectorTask{
+        [&](const ChunkService& cs) {
+            renderDetector(cs, mWorld.getWorldID(), player.getPosition());
+        }
+    };
 
-bool WorldRenderer::neighbourChunkLoadCheck(const Vec3i& pos)
+    chunkService.getTaskDispatcher().addRegularReadOnlyTask(
+        { [&]() {return renderDetectorTask; } }
+    );
+}
+
+void WorldRenderer::VAGenerate(const Chunk * chunk) {
+    RenderTask task;
+    task.data = std::make_any<std::shared_ptr<ChunkRenderData>>();
+    task.task = {
+        [&](const ChunkService&)
+    {
+        auto&& crd = *std::any_cast<std::shared_ptr<ChunkRenderData>>(task.data);
+        VBOGenerateTask(chunk->getPosition(), std::move(crd));
+    }
+    };
+    std::any_cast<std::shared_ptr<ChunkRenderData>>(task.data)->generate(chunk);
+    chunkService.getTaskDispatcher().addRenderTask(task);
+}
+
+void WorldRenderer::VBOGenerateTask(const Vec3i & position, ChunkRenderData && crd) {
+    mWorld.getChunks()[position].setUpdated(false);
+    mChunkRenderers.insert(std::make_pair(position, ChunkRenderer(crd)));
+}
+
+void WorldRenderer::renderDetector(const ChunkService & cs, size_t currentWorldID, Vec3d playerPosition) {
+    // TODO: improve performance by adding multiple instances of this and set a step when itering the chunks.
+    // Render build list
+    //PODOrderedList<int, Chunk*, MaxChunkRenderCount> chunkRenderList;
+    Vec3i chunkpos = World::getChunkPos(playerPosition);
+    for (const auto& chunk : chunkService.getWorlds().getWorld(currentWorldID)->getChunks()) {
+        auto chunkPosition = chunk.second->getPosition();
+        // In render range, pending to render
+        if (chunk.second->isUpdated() &&
+            chunkpos.chebyshevDistance(chunkPosition) <= mRenderDist)
+        {
+            if (neighbourChunkLoadCheck(chunkPosition)) {
+                VAGenerate(chunk.second.get());
+            }
+        }
+        else
+        {
+            // TODO: Unload unneeded VBO.
+            //       We can't do it here since it's not thread safe
+            /*
+            auto iter = mChunkRenderers.find(chunkPosition);
+            if (iter != mChunkRenderers.end())
+            mChunkRenderers.erase(iter);
+            */
+        }
+    }
+}
+
+
+bool WorldRenderer::neighbourChunkLoadCheck(const Vec3i& pos) const
 {
     constexpr std::array<Vec3i, 6> delta
     {

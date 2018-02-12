@@ -42,45 +42,20 @@ public:
     // Render all chunks
     size_t render(const Vec3i& position) const;
 
-
-    void renderDetector(const ChunkService& chunkService, size_t currentWorldID, Vec3d playerPosition) {
-
-        // Render build list
-        PODOrderedList<int, Chunk*, MaxChunkRenderCount> chunkRenderList;
-        Vec3i chunkpos = World::getChunkPos(playerPosition);
-        for (const auto& chunk : chunkService.getWorlds().getWorld(currentWorldID)->getChunks()) {
-
-            // In render range, pending to render
-            if (chunkpos.chebyshevDistance(chunk.second->getPosition()) <= mRenderDist)
-            {
-                if (mChunkRenderers.find(chunk.second.get()) == mChunkRenderers.end() &&
-                    neighbourChunkLoadCheck(chunk.second->getPosition()))
-                    chunkRenderList.insert((chunk.second->getPosition() * Chunk::Size() + middleOffset() - position).lengthSqr(), chunk.second.get());
-            }
-            else
-            {
-                auto iter = mChunkRenderers.find(chunk.second.get());
-                if (iter != mChunkRenderers.end())
-                    mChunkRenderers.erase(iter);
-            }
-        }
-
-        for (auto&& op : mChunkRenderList)
-        {
-            op.second->setUpdated(false);
-            mChunkRenderers.insert(std::pair<Chunk*, ChunkRenderer>(op.second, std::move(ChunkRenderer(op.second))));
-        }
-        mChunkRenderList.clear();
-    }
+    void registerTask(ChunkService& chunkService, Player& player) noexcept;
 
 private:
+    void VAGenerate(const Chunk* chunk);
+    void VBOGenerateTask(const Vec3i& position, ChunkRenderData&& crd);
+    void renderDetector(const ChunkService& cs, size_t currentWorldID, Vec3d playerPosition);
+
     const World& mWorld;
     // Ranges
     int mRenderDist = 0;
     // Chunk Renderers
-    std::unordered_map<Chunk*, ChunkRenderer> mChunkRenderers;
-
-    bool neighbourChunkLoadCheck(const Vec3i& pos);
+    std::unordered_map<Vec3i, ChunkRenderer> mChunkRenderers;
+    
+    bool neighbourChunkLoadCheck(const Vec3i& pos) const;
 };
 
 

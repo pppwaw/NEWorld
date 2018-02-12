@@ -43,7 +43,6 @@ NEWorld::NEWorld()
     {
         // Update
         window.pollEvents();
-        game.multiUpdate();
         // Render
         game.render();
         Renderer::checkError();

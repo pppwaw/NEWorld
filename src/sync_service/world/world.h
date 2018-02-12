@@ -33,7 +33,7 @@ class Player;
 class ChunkService;
 class PluginManager;
 
-class World final : public NonCopyable
+class NWCOREAPI World final : public NonCopyable
 {
 public:
     World(std::string name, const PluginManager& plugins, const BlockManager& blocks)
@@ -95,12 +95,12 @@ public:
     const BlockManager& getBlockTypes() const { return mBlocks; }
     const BlockType& getType(int id) const { return mBlocks[id]; }
 
-    NWCOREAPI std::vector<AABB> getHitboxes(const AABB& range) const;
+    std::vector<AABB> getHitboxes(const AABB& range) const;
 
-    NWCOREAPI void updateChunkLoadStatus();
+    void updateChunkLoadStatus();
 
     // Tasks
-    void initChunkTasks(ChunkService& chunkService, Player& player);
+    void registerChunkTasks(ChunkService& chunkService, Player& player);
 private:
     /**
      * \brief Find chunks that needs to be loaded or unloaded
@@ -108,6 +108,7 @@ private:
      *                       as the center position.
      * \note Read-only and does not involve OpenGL operation.
      *       *this will be used as the target world.
+     * TODO: change to adapt multiplayer mode
      */
     void loadUnloadDetector(const Vec3i& playerPosition) const;
 

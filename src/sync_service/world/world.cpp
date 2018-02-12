@@ -56,7 +56,7 @@ void World::updateChunkLoadStatus()
     }
 }
 
-void World::initChunkTasks(ChunkService& chunkService, Player& player) {
+void World::registerChunkTasks(ChunkService& chunkService, Player& player) {
     // LoadUnloadDetectorTask
     ReadOnlyTask loadUnloadDetectorTask{
         [&](const ChunkService& worlds) {
@@ -114,10 +114,10 @@ static void generateLoadUnloadList(
  * \param chunk the target chunk
  * \note This function is supposed to be used as a read-write task.
  */
-static void addToWorldTask(ChunkService& cs, size_t worldID, std::unique_ptr<Chunk> chunk) {
+static void addToWorldTask(ChunkService& cs, size_t worldID, std::unique_ptr<Chunk, ChunkOnReleaseBehavior> chunk) {
     auto world = chunkService.getWorlds().getWorld(worldID);
     auto chunkPos = chunk->getPosition();
-    world->insertChunk(chunk->getPosition(), std::move(chunk));
+    world->insertChunk(chunkPos, std::move(chunk));
     constexpr std::array<Vec3i, 6> delta
     {
         Vec3i(1, 0, 0), Vec3i(-1, 0, 0),
@@ -138,19 +138,22 @@ static void addToWorldTask(ChunkService& cs, size_t worldID, std::unique_ptr<Chu
  * \note This function is supposed to be used as a read-only task.
  */
 static void buildOrLoadChunkTask(const World& world, Vec3i chunkPosition) {
-    std::unique_ptr<Chunk> chunk;
+    // TODO: avoid using raw pointer directly somehow... if possible
+    Chunk* chunk;
     if (false) { // TODO: should try to load from local first
 
     }
     else { // Not found: build it!
-        chunk = std::make_unique<Chunk>(chunkPosition, world);
+        chunk = new Chunk(chunkPosition, world);
     }
-    size_t id = world.getWorldID();
     // add addToWorldTask
     chunkService.getTaskDispatcher().addReadWriteTask(
         {
-            [id, c(std::move(chunk))](ChunkService& cs)
-            {addToWorldTask(cs, id, std::move(c)); }
+           [chunk, id = world.getWorldID()](ChunkService& cs) mutable
+           {
+               addToWorldTask(cs, id, ChunkManager::data_t(chunk,
+                   ChunkOnReleaseBehavior(ChunkOnReleaseBehavior::Behavior::Release)));
+           }
         }
     );
 }

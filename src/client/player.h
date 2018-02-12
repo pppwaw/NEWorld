@@ -23,7 +23,7 @@
 #include "sync_service/world/playerobject.h"
 #include "sync_service/chunkservice.hpp"
 
-class Player : public PlayerObject
+class NWCOREAPI Player : public PlayerObject
 {
 public:
     Player(size_t worldID) : PlayerObject(worldID)

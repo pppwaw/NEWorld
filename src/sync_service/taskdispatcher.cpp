@@ -7,7 +7,7 @@ void TaskDispatcher::worker(size_t threadID) {
 
         // Process read-only work.
         for (auto i = threadID; i < mReadOnlyTasks.size(); i += mThreadNumber) {
-            mReadOnlyTasks[threadID].task(mChunkService.getWorlds());
+            mReadOnlyTasks[threadID].task(mChunkService);
         }
 
         // Finish the tick

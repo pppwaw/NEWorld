@@ -74,9 +74,6 @@
     <ClCompile Include="..\..\..\src\gui\renderer\blockrenderer.cpp">
       <Filter>Source\renderer</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\gui\renderer\chunkrenderer.cpp">
-      <Filter>Source\renderer</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\gui\gamescene.cpp">
       <Filter>Source\scenes</Filter>
     </ClCompile>

@@ -20,4 +20,4 @@
 #include "chunkservice.hpp"
 
 // TODO: set this according to the mode.
-ChunkService chunkService(true);
+NWCOREAPI ChunkService chunkService(true);

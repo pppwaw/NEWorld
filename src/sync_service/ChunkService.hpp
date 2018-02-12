@@ -26,7 +26,7 @@
  * \brief This class manages worlds and chunks in NEWorld, and it's responsible
  *        for synchronizing these with the server in multiplayer situation.
  */
-class ChunkService {
+class NWCOREAPI ChunkService {
 public:
     /**
      * \brief constructor
@@ -61,4 +61,4 @@ private:
 };
 
 // TODO: Hide this and only expose Task Dispatcher.
-extern ChunkService chunkService;
+extern NWCOREAPI ChunkService chunkService;

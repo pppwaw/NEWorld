@@ -34,7 +34,7 @@ class ChunkService;
  *        thread safety when you write something other than
  *        chunks.
  */
-struct ReadOnlyTask {
+struct NWCOREAPI ReadOnlyTask {
     std::function<void(const ChunkService&)> task;
 };
 /**
@@ -42,26 +42,26 @@ struct ReadOnlyTask {
  *        Thus, it is safe to do write opeartions inside
  *        without the need to worry thread safety.
  */
-struct ReadWriteTask {
+struct NWCOREAPI ReadWriteTask {
     std::function<void(ChunkService&)> task;
-    std::any data;
 };
 /**
  * \brief This type of tasks will be executed in main thread.
  *        Thus, it is safe to call OpenGL function inside.
  */
-struct RenderTask {
+struct NWCOREAPI RenderTask {
     std::function<void(const ChunkService&)> task;
+    std::any data;
 };
 
 template <class TaskType>
-struct RegularTask {
+struct NWCOREAPI RegularTask {
     std::function<TaskType()> taskGenerator;
 };
 using RegularReadOnlyTask = RegularTask<ReadOnlyTask>;
 using RegularReadWriteTask = RegularTask<ReadWriteTask>;
 
-class TaskDispatcher {
+class NWCOREAPI TaskDispatcher {
 public:
     /**
      * \brief Initialize the dispatcher and start threads.
@@ -70,14 +70,17 @@ public:
      */
     TaskDispatcher(size_t threadNumber, ChunkService& chunkService)
         : mThreadNumber(threadNumber), mChunkService(chunkService) {
-        mNumberOfUnfinishedThreads = threadNumber;
-        for (size_t i = 0; i < threadNumber; ++i)
-            mThreads.emplace_back([this, i]() {worker(i); });
     }
     
     ~TaskDispatcher() {
         mShouldExit = true;
         for (auto& thread : mThreads) thread.join();
+    }
+
+    void start() {
+        mNumberOfUnfinishedThreads = mThreadNumber;
+        for (size_t i = 0; i < mThreadNumber; ++i)
+            mThreads.emplace_back([this, i]() {worker(i); });
     }
 
     // TODO: NEED FIX! NOT THREAD SAFE!

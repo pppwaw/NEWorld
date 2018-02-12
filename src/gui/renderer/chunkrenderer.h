@@ -28,8 +28,6 @@
 #include "game/context/nwcontext.hpp"
 #include "sync_service/world/world.h"
 
-class WorldClient;
-
 /**
  * \brief It stores all the render data (VA) used to render a chunk.
  *        But it does not involve OpenGL operations so it can be

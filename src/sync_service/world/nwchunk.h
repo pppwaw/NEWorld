@@ -60,7 +60,7 @@ public:
     }
 
     // Set chunk updated flag
-    void setUpdated(bool updated) noexcept
+    void setUpdated(bool updated) const noexcept
     {
         mUpdated = updated;
     }
@@ -110,7 +110,9 @@ private:
     std::mutex mMutex;
     Vec3i mPosition;
     BlockData mBlocks[0b1000000000000000];
-    bool mUpdated = false, mModified = false;
+    // TODO: somehow avoid it! not safe.
+    mutable bool mUpdated = false;
+    bool mModified = false;
     const class World* mWorld;
     // For Garbage Collection
     int mReferenceCount{0};
@@ -156,7 +158,7 @@ public:
     using const_reference = const Chunk&;
     ChunkManager() = default;
     ChunkManager(size_t size) { mChunks.reserve(size); }
-    ChunkManager(ChunkManager&& rhs) : mChunks(std::move(rhs.mChunks)) {}
+    ChunkManager(ChunkManager&& rhs) noexcept : mChunks(std::move(rhs.mChunks)) {}
     ~ChunkManager() = default;
     // Access and modifiers
     size_t size() const noexcept { return mChunks.size(); }

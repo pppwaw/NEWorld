@@ -27,7 +27,7 @@
 #include <engine/common.h>
 #include "window.h"
 #include "renderer/texture.h"
-#include "worldclient.h"
+#include "renderer/worldrenderer.h"
 
 class GameScene
 {
@@ -38,10 +38,10 @@ public:
     GameScene(const std::string& name, const Window& window);
     ~GameScene();
 
-    void update();
-    void multiUpdate();
     void render();
 private:
+    void keyboardUpdateTask();
+
     const Window& mWindow;
     // Texture test
     Texture mTexture;
@@ -55,6 +55,8 @@ private:
     int mFpsCounter, mUpsCounter, mFpsLatest, mUpsLatest;
     // Current world
     World* mCurrentWorld;
+    // World renderer
+    WorldRenderer mWorldRenderer;
 
     RateMeter mRateCounterScheduler{1};
 

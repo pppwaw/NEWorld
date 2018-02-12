@@ -27,7 +27,7 @@ int main(int argc, char** argv)
 {
     getSettings();
     Logger::addFileSink("./log/", "launcher");
-    std::string file = argc == 1 ? "nwcore.dll" : argv[1];
+    std::string file = argc == 1 ? "GUI.dll" : argv[1];
     debugstream << "Load:" << file;
     Library(file).get<MainFunction>("cmain")(argc, argv);
 }

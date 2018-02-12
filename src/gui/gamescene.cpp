@@ -17,24 +17,35 @@
 * along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <string.h>
-#include <array>
 #include <atomic>
 #include <chrono>
 #include "gamescene.h"
 #include "window.h"
 #include <engine/common.h>
 #include "renderer/blockrenderer.h"
-#include "worldclient.h"
 
+// TODO: make render range adjustable.
 GameScene::GameScene(const std::string& name, const Window& window):
-    mWindow(window), mPlayer(0)
+    mWindow(window),
+    mPlayer(0),
+    mCurrentWorld(chunkService.getWorlds().addWorld("test world")),
+    mWorldRenderer(*mCurrentWorld, 2)
 {
-    chunkService.getWorlds().addWorld("test world");
     mPlayer.setPosition(Vec3d(-16.0, 48.0, 32.0));
     mPlayer.setRotation(Vec3d(-45.0, -22.5, 0.0));
 
     // Initialize update events
+    mCurrentWorld->registerChunkTasks(chunkService, mPlayer);
+    mWorldRenderer.registerTask(chunkService, mPlayer);
+    ReadOnlyTask keyboardUpdateTask{
+        [&](const ChunkService&) {
+        this->keyboardUpdateTask();
+    }
+    };
+
+    chunkService.getTaskDispatcher().addRegularReadOnlyTask(
+        { [&]() {return keyboardUpdateTask; } }
+    );
 
     // Initialize rendering
     mTexture = BlockTextureBuilder::buildAndFlush();
@@ -72,18 +83,16 @@ GameScene::GameScene(const std::string& name, const Window& window):
     context.rpc.enableClient(
         getJsonValue<std::string>(getSettings()["server"]["ip"], "127.0.0.1"),
         getJsonValue<unsigned short>(getSettings()["server"]["port"], 31111));
+
+    chunkService.getTaskDispatcher().start();
 }
 
 GameScene::~GameScene()
 {
 }
 
-void GameScene::update()
+void GameScene::keyboardUpdateTask()
 {
-    std::lock_guard<std::mutex> lock(mMutex);
-
-    mUpsCounter++;
-
     constexpr double speed = 0.05;
 
     // TODO: Read keys from the configuration file
@@ -113,30 +122,13 @@ void GameScene::update()
 #endif
         mPlayer.accelerate(Vec3d(0.0, -2 * speed, 0.0));
 
-    mWorld.update();
-    mWorld.renderUpdate(Vec3i(mPlayer.getPosition()));
     mGUIWidgets.update();
-}
-
-void GameScene::multiUpdate()
-{
-    const long long updateTimeout = 4000;
-    mUpdateScheduler.refresh();
-    if (mUpdateScheduler.getDeltaTimeMs() >= updateTimeout)
-    {
-        warningstream << "Can't keep up! " << mUpdateScheduler.getDeltaTimeMs() << "ms skipped.";
-        mUpdateScheduler.sync();
-    }
-    while (mUpdateScheduler.shouldRun())
-    {
-        update();
-        mUpdateScheduler.increaseTimer();
-    }
 }
 
 void GameScene::render()
 {
     std::lock_guard<std::mutex> lock(mMutex);
+    chunkService.getTaskDispatcher().processRenderTasks();
 
     mFpsCounter++;
 
@@ -164,7 +156,7 @@ void GameScene::render()
 
     // Render
 
-    mWorld.render(Vec3i(mPlayer.getPosition()));
+    mWorldRenderer.render(Vec3i(mPlayer.getPosition()));
 
     // mPlayer.render();
 

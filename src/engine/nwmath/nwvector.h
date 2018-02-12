@@ -448,4 +448,36 @@ using Vec3i = Vec3<int>;
 using Vec3f = Vec3<float>;
 using Vec3d = Vec3<double>;
 
+namespace std
+{
+    template<> struct hash<Vec3i>
+    {
+        using argument_type = Vec3i;
+        using result_type = std::size_t;
+        result_type operator()(argument_type const& s) const noexcept
+        {
+            size_t x = s.x;
+            x = (x) & 0xFFFF00000000FFFF;
+            x = (x | (x << 16)) & 0x00FF0000FF0000FF;
+            x = (x | (x << 8)) & 0xF00F00F00F00F00F;
+            x = (x | (x << 4)) & 0x30C30C30C30C30C3;
+            x = (x | (x << 2)) & 0x9249249249249249;
+
+            size_t y = s.y;
+            y = (y) & 0xFFFF00000000FFFF;
+            y = (y | (y << 16)) & 0x00FF0000FF0000FF;
+            y = (y | (y << 8)) & 0xF00F00F00F00F00F;
+            y = (y | (y << 4)) & 0x30C30C30C30C30C3;
+            y = (y | (y << 2)) & 0x9249249249249249;
+
+            size_t z = s.z;
+            z = (z) & 0xFFFF00000000FFFF;
+            z = (z | (z << 16)) & 0x00FF0000FF0000FF;
+            z = (z | (z << 8)) & 0xF00F00F00F00F00F;
+            z = (z | (z << 4)) & 0x30C30C30C30C30C3;
+            z = (z | (z << 2)) & 0x9249249249249249;
+            return x | (y << 1) | (z << 2);
+        }
+    };
+}
 #endif // !VEC3_H_

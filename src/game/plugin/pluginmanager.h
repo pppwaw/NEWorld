@@ -25,7 +25,7 @@
 #include "plugin.h"
 
 // Plugin system
-class PluginManager : public NonCopyable
+class NWCOREAPI PluginManager : public NonCopyable
 {
 public:
     PluginManager();
