@@ -23,8 +23,11 @@ int Renderer::matrixMode = 0;
 
 void Renderer::init()
 {
-    if (glewInit() != GLEW_OK)
-        fatalstream << "Failed to initialize GLEW!";
+    debugstream << "Start to initialize GLEW...";
+    if (const auto err = glewInit(); err != GLEW_OK)
+        fatalstream << "Failed to initialize GLEW! Error code: " << err;
+    else
+        debugstream << "GLEW initialized!";
     glShadeModel(GL_SMOOTH);
     glDisable(GL_DITHER);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);

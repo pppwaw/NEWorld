@@ -31,7 +31,6 @@ NEWorld::NEWorld()
     getSettings();
     infostream << "Initializing...";
     Window& window = Window::getInstance("NEWorld", 852, 480);
-    Renderer::init();
     Texture::init();
     context.plugins.initializePlugins(nwPluginTypeGUI);
     

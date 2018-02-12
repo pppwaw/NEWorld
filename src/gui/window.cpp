@@ -19,6 +19,7 @@
 
 #include "window.h"
 #include "engine/maintenance/nwdebug.h"
+#include "renderer/renderer.h"
 
 Window::Window(const std::string& title, int width, int height)
     : mTitle(title), mWidth(width), mHeight(height)
@@ -34,9 +35,10 @@ Window::Window(const std::string& title, int width, int height)
     Assert(mWindow != nullptr);
 
     mContext = SDL_GL_CreateContext(mWindow);
-    mNuklearContext = nk_sdl_init(mWindow);
     SDL_GL_SetSwapInterval(0); // VSync
     makeCurrentDraw();
+    Renderer::init();
+    mNuklearContext = nk_sdl_init(mWindow);
 }
 
 Window::~Window()
