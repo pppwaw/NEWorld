@@ -30,7 +30,7 @@
 
 using ChunkGenerator = void NWAPICALL(const Vec3i*, BlockData*, int);
 
-class NWCOREAPI Chunk : public NonCopyable
+class NWCOREAPI Chunk final : public NonCopyable
 {
 public:
     // Chunk size
@@ -39,8 +39,8 @@ public:
     static constexpr int SizeLog2() { return 5; }
     static constexpr int Size(){ return 0b100000; };
 
-    explicit Chunk(const Vec3i& position, class World& world);
-    virtual ~Chunk() {}
+    explicit Chunk(const Vec3i& position, const class World& world);
+    ~Chunk() {}
 
     // Get chunk position
     const Vec3i& getPosition() const noexcept
@@ -105,15 +105,13 @@ public:
         return (((steady_clock::now() - mLastRequestTime) > 10s) && mReferenceCount <= 0);
     }
 
-    World* getWorld() noexcept { return mWorld; }
     const World* getWorld() const noexcept { return mWorld; }
-protected:
-    class World* mWorld;
 private:
-    Vec3i mPosition;
     std::mutex mMutex;
+    Vec3i mPosition;
     BlockData mBlocks[0b1000000000000000];
     bool mUpdated = false, mModified = false;
+    const class World* mWorld;
     // For Garbage Collection
     int mReferenceCount{0};
     std::chrono::steady_clock::time_point mLastRequestTime;
@@ -163,11 +161,9 @@ public:
     // Access and modifiers
     size_t size() const noexcept { return mChunks.size(); }
     iterator begin() noexcept { return mChunks.begin(); }
-    const_iterator begin() const noexcept { return mChunks.begin(); }
     iterator end() noexcept { return mChunks.end(); }
-    
-    const_iterator cbegin() const noexcept { return mChunks.cbegin(); }
-    const_iterator cend() const noexcept { return mChunks.cend(); }
+    const_iterator begin() const noexcept { return mChunks.cbegin(); }
+    const_iterator end() const noexcept { return mChunks.cend(); }
     
     reference at(const Vec3i& chunkPos) { return *(mChunks.at(chunkPos)); }
     const_reference at(const Vec3i& chunkPos) const { return *(mChunks.at(chunkPos)); }

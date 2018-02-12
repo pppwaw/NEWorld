@@ -54,11 +54,11 @@
     <ClInclude Include="..\..\..\src\api\nwapigui.hpp">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\gui\worldclient.h">
-      <Filter>Source</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\gui\nuklear_helper.h">
       <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\gui\renderer\worldrenderer.h">
+      <Filter>Source\renderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -92,11 +92,11 @@
     <ClCompile Include="..\..\..\src\gui\nwapigui.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\gui\worldclient.cpp">
-      <Filter>Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\gui\nuklear_helper.cpp">
       <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\gui\renderer\worldrenderer.cpp">
+      <Filter>Source\renderer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

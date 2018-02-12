@@ -17,8 +17,11 @@
 * along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <world/world.h>
 #include <algorithm>
+#include "engine/nwmath/nwvector.h"
+#include "nwblock.h"
+#include "nwchunk.h"
+#include "world.h"
 
 void NWAPICALL DefaultChunkGen(const Vec3i*, BlockData* blocks, int32_t daylightBrightness)
 {
@@ -30,21 +33,10 @@ void NWAPICALL DefaultChunkGen(const Vec3i*, BlockData* blocks, int32_t daylight
 bool Chunk::ChunkGeneratorLoaded = false;
 ChunkGenerator *Chunk::ChunkGen = &DefaultChunkGen;
 
-Chunk::Chunk(const Vec3i& position, class World& world) : mPosition(position), mWorld(&world)
+Chunk::Chunk(const Vec3i& position, const class World& world)
+    : mPosition(position), mWorld(&world)
 {
-    std::unique_lock<std::mutex> lock(mMutex);
     build(mWorld->getDaylightBrightness());
-    constexpr std::array<Vec3i, 6> delta
-    {
-        Vec3i(1, 0, 0), Vec3i(-1, 0, 0),
-        Vec3i(0, 1, 0), Vec3i(0,-1, 0),
-        Vec3i(0, 0, 1), Vec3i(0, 0,-1)
-    };
-    for (auto&& p : delta)
-        mWorld->doIfChunkLoaded(getPosition() + p, [](Chunk& chk)
-    {
-        chk.setUpdated(true);
-    });
 }
 
 void Chunk::build(int daylightBrightness)

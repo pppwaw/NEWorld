@@ -25,11 +25,12 @@
 #include "window.h"
 #include <engine/common.h>
 #include "renderer/blockrenderer.h"
+#include "worldclient.h"
 
 GameScene::GameScene(const std::string& name, const Window& window):
-    mWindow(window), mWorld(name, context.plugins, context.blocks), mPlayer(mWorld.getWorldID())
+    mWindow(window), mPlayer(0)
 {
-    mWorld.setRenderDistance(2);
+    chunkService.getWorlds().addWorld("test world");
     mPlayer.setPosition(Vec3d(-16.0, 48.0, 32.0));
     mPlayer.setRotation(Vec3d(-45.0, -22.5, 0.0));
 
@@ -112,8 +113,6 @@ void GameScene::update()
 #endif
         mPlayer.accelerate(Vec3d(0.0, -2 * speed, 0.0));
 
-    mWorld.sortChunkLoadUnloadList(Vec3i(mPlayer.getPosition()));
-    mWorld.tryLoadChunks(*mConnection);
     mWorld.update();
     mWorld.renderUpdate(Vec3i(mPlayer.getPosition()));
     mGUIWidgets.update();

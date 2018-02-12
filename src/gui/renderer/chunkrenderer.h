@@ -117,11 +117,4 @@ private:
     // Vertex buffer object
     VertexBuffer mBuffer, mBufferTrans;
 };
-
-
-// Read-only and does not involve OpenGL operation.
-inline void chunkRenderTask(WorldManager worldManager, const Vec3i& chunkPos) {
-    worldManager.getWorld(0)->getChunk(chunkPos);
-}
-
 #endif // !CHUNKCLIENT_H_

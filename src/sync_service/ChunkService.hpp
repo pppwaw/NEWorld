@@ -48,12 +48,17 @@ public:
     TaskDispatcher& getTaskDispatcher() noexcept {
         return mTaskDispatcher;
     }
+    
+    WorldManager& getWorlds() noexcept { return mWorlds; }
+    const WorldManager& getWorlds() const noexcept { return mWorlds; }
+
+    bool isAuthority() const noexcept { return mAuthority; }
 
 private:
-    WorldManager& getWorlds() noexcept { return mWorlds; }
     WorldManager mWorlds;
     TaskDispatcher mTaskDispatcher;
     bool mAuthority;
 };
 
+// TODO: Hide this and only expose Task Dispatcher.
 extern ChunkService chunkService;

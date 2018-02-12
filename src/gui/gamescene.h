@@ -45,8 +45,6 @@ private:
     const Window& mWindow;
     // Texture test
     Texture mTexture;
-    // World
-    WorldClient mWorld;
     // Player
     Player mPlayer;
     // Widget manager
@@ -55,6 +53,9 @@ private:
     RateMeter mUpdateScheduler{UpdateFrequency};
     // Rate counters
     int mFpsCounter, mUpsCounter, mFpsLatest, mUpsLatest;
+    // Current world
+    World* mCurrentWorld;
+
     RateMeter mRateCounterScheduler{1};
 
     std::mutex mMutex;

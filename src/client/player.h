@@ -30,8 +30,8 @@ public:
     {
         // Register update event
         RegularReadOnlyTask task{ {[this]() {return ReadOnlyTask{
-            [this](const WorldManager& worlds) {
-                update(*worlds.getWorld(mWorldID));
+            [this](const ChunkService& worlds) {
+                update(*worlds.getWorlds().getWorld(mWorldID));
             }
         }; } } };
         chunkService.getTaskDispatcher().addRegularReadOnlyTask(task);

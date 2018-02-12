@@ -29,9 +29,11 @@
 #include "nwchunk.h"
 #include <engine/common.h>
 
+class Player;
+class ChunkService;
 class PluginManager;
 
-class World : public NonCopyable
+class World final : public NonCopyable
 {
 public:
     World(std::string name, const PluginManager& plugins, const BlockManager& blocks)
@@ -44,7 +46,7 @@ public:
         mDaylightBrightness(rhs.mDaylightBrightness), mChunks(std::move(rhs.mChunks))
     {
     }
-    virtual ~World() = default;
+    ~World() = default;
 
     ////////////////////////////////////////
     // World Properties
@@ -81,7 +83,7 @@ public:
     };
 
     // Add Chunk
-    virtual Chunk* addChunk(const Vec3i& chunkPos, ChunkOnReleaseBehavior::Behavior behv = ChunkOnReleaseBehavior::Behavior::Release) 
+    Chunk* addChunk(const Vec3i& chunkPos, ChunkOnReleaseBehavior::Behavior behv = ChunkOnReleaseBehavior::Behavior::Release) 
     {
         return insertChunk(chunkPos, std::move(ChunkManager::data_t(new Chunk(chunkPos, *this), ChunkOnReleaseBehavior(behv))))->second.get();
     }
@@ -95,10 +97,19 @@ public:
 
     NWCOREAPI std::vector<AABB> getHitboxes(const AABB& range) const;
 
-    // Main update
-    NWCOREAPI void update();
-
     NWCOREAPI void updateChunkLoadStatus();
+
+    // Tasks
+    void initChunkTasks(ChunkService& chunkService, Player& player);
+private:
+    /**
+     * \brief Find chunks that needs to be loaded or unloaded
+     * \param playerPosition the position of the player, which will be used
+     *                       as the center position.
+     * \note Read-only and does not involve OpenGL operation.
+     *       *this will be used as the target world.
+     */
+    void loadUnloadDetector(const Vec3i& playerPosition) const;
 
 protected:
     // World name
@@ -115,6 +126,7 @@ protected:
     ChunkManager mChunks;
     int mDaylightBrightness;
 };
+
 
 class WorldManager
 {

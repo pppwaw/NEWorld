@@ -16,7 +16,7 @@ void TaskDispatcher::worker(size_t threadID) {
         // The last finished thread is responsible to do writing jobs
         if (mNumberOfUnfinishedThreads == 0) { // All other threads have finished?
             for (const auto& task : mReadWriteTasks) {
-                task.task(mChunkService.getWorlds());
+                task.task(mChunkService);
             }
 
             // ...and finish up!

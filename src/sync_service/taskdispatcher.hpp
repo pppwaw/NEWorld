@@ -21,6 +21,7 @@
 #include <thread>
 #include <vector>
 #include "sync_service/world/world.h"
+#include <any>
 
 class ChunkService;
 
@@ -34,7 +35,7 @@ class ChunkService;
  *        chunks.
  */
 struct ReadOnlyTask {
-    std::function<void(const WorldManager&)> task;
+    std::function<void(const ChunkService&)> task;
 };
 /**
  * \brief This type of tasks will be executed in one thread.
@@ -42,14 +43,15 @@ struct ReadOnlyTask {
  *        without the need to worry thread safety.
  */
 struct ReadWriteTask {
-    std::function<void(WorldManager&)> task;
+    std::function<void(ChunkService&)> task;
+    std::any data;
 };
 /**
  * \brief This type of tasks will be executed in main thread.
  *        Thus, it is safe to call OpenGL function inside.
  */
 struct RenderTask {
-    std::function<void(WorldManager&)> task;
+    std::function<void(const ChunkService&)> task;
 };
 
 template <class TaskType>
@@ -95,13 +97,16 @@ public:
         mRegularReadWriteTasks.emplace_back(task);
     }
 
-    const std::vector<RenderTask>& getRenderTasks() const noexcept {
-        return mRenderTasks;
-    }
-    void finishedRenderTasks() noexcept {
+    /**
+     * \brief Process render tasks.
+     *        This function should be called from the main thread.
+     */
+    void processRenderTasks() {
+        for (auto& task : mRenderTasks) task.task(mChunkService);
         mRenderTasks.clear();
         std::swap(mRenderTasks, mNextRenderTasks);
     }
+
 private:
     void worker(size_t threadID);
 
