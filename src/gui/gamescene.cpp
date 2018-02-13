@@ -123,7 +123,7 @@ void GameScene::keyboardUpdateTask()
 #endif
         mPlayer.accelerate(Vec3d(0.0, -2 * speed, 0.0));
 
-    mGUIWidgets.update();
+//    mGUIWidgets.update();
 }
 
 void GameScene::render()
@@ -163,5 +163,5 @@ void GameScene::render()
 
     glDisable(GL_DEPTH_TEST);
 
-    mGUIWidgets.render();
+//    mGUIWidgets.render();
 }

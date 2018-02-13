@@ -46,7 +46,7 @@ NEWorld::NEWorld()
         game.render();
         Renderer::checkError();
         window.swapBuffers();
-        SDL_Delay(delayPerFrame);
+        //SDL_Delay(delayPerFrame);
     }
 
     // Terminate

@@ -38,12 +38,12 @@ Window::Window(const std::string& title, int width, int height)
     SDL_GL_SetSwapInterval(0); // VSync
     makeCurrentDraw();
     Renderer::init();
-    mNuklearContext = nk_sdl_init(mWindow);
+    //mNuklearContext = nk_sdl_init(mWindow);
 }
 
 Window::~Window()
 {
-    nk_sdl_shutdown();
+//    nk_sdl_shutdown();
     SDL_DestroyWindow(mWindow);
     SDL_GL_DeleteContext(mContext);
     SDL_Quit();

@@ -57,11 +57,11 @@ public:
 
     void pollEvents()
     {
-        nk_input_begin(mNuklearContext);
+        //nk_input_begin(mNuklearContext);
         SDL_Event e;
         while (SDL_PollEvent(&e))
         {
-            nk_sdl_handle_event(&e);
+            //nk_sdl_handle_event(&e);
             switch (e.type)
             {
             case SDL_QUIT:
@@ -79,7 +79,7 @@ public:
                 break;
             }
         }
-        nk_input_end(mNuklearContext);
+        //nk_input_end(mNuklearContext);
     }
 
     static Window& getInstance(const std::string& title="", int width=0, int height=0)
@@ -103,7 +103,7 @@ private:
     ~Window();
 
     SDL_GLContext mContext;
-    nk_context* mNuklearContext;
+    //nk_context* mNuklearContext;
 };
 
 #endif
