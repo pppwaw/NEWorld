@@ -59,13 +59,14 @@ void WorldRenderer::registerTask(ChunkService & chunkService, Player & player) n
 
 void WorldRenderer::VAGenerate(const Chunk * chunk) {
     // TODO: only a workaround.
+    Vec3i chunkPosition = chunk->getPosition();
     RenderTask task;
     task.data = (void*)(new ChunkRenderData());
     task.task = {
         [=](const ChunkService&)
     {
         ChunkRenderData* crd = static_cast<ChunkRenderData*>(task.data);
-        VBOGenerateTask(chunk->getPosition(), *crd);
+        VBOGenerateTask(chunkPosition, *crd);
         delete crd;
     }
     };
