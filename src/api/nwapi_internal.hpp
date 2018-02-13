@@ -36,7 +36,7 @@
 #endif
 
 #ifndef NWAPICALL
-#ifdef _MSC_VER
+#ifdef _MSVC_LANG
 #define NWAPICALL __cdecl
 #else
 #define NWAPICALL __attribute__((__cdecl__))

@@ -20,8 +20,8 @@
 #ifndef PLAYER_H_
 #define PLAYER_H_
 
-#include "sync_service/world/playerobject.h"
-#include "sync_service/chunkservice.hpp"
+#include <sync_service/world/playerobject.h>
+#include <sync_service/chunkservice.hpp>
 
 class NWCOREAPI Player : public PlayerObject
 {

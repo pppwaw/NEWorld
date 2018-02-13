@@ -51,6 +51,11 @@ Compile NEWorld in Linux
 
 1. You need have the dependences installed.
    dependences: git,gcc/clang,cmake(3.1+),boost(1.61.0+),libgl,glew,sdl2,sdl_image,alsa,raknet,flatbuffers,gtest(optional)
+
+New dependencies:
+1. rpclib: https://github.com/rpclib/rpclib. Remember to use `cmake -DBUILD_SHARED_LIBS=ON` when compiling it.
+2. libsdl2-dev libsdl2-image-dev libglew-dev
+
 2. git clone https://github.com/Infinideastudio/NEWorld.git
 3. mkdir /build/cmake/
 4. cd /build/cmake/

@@ -23,6 +23,7 @@
 #include "engine/maintenance/nwlogger.hpp"
 #include "engine/nwstdlib/nwstrings.h"
 #include <unordered_map>
+#include <thread>
 
 class CommandExecuteStat
 {

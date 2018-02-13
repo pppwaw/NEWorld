@@ -23,11 +23,17 @@
 
 typedef void NWAPICALL MainFunction(int, char**);
 
+#ifdef _WIN32
+constexpr const char* GUIDllName = "GUI.dll";
+#else
+constexpr const char* GUIDllName = "libGUI.so";
+#endif
+
 int main(int argc, char** argv)
 {
     getSettings();
     Logger::addFileSink("./log/", "launcher");
-    std::string file = argc == 1 ? "GUI.dll" : argv[1];
+    std::string file = argc == 1 ? GUIDllName : argv[1];
     debugstream << "Load:" << file;
     Library(file).get<MainFunction>("cmain")(argc, argv);
 }

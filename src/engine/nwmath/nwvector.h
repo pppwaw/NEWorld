@@ -23,6 +23,7 @@
 #include <cmath>
 #include <type_traits>
 #include <utility>
+#include <functional>
 template <typename T>
 class Vec2
 {

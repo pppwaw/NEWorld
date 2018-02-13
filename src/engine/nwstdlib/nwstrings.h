@@ -18,6 +18,9 @@
 */
 
 #pragma once
+#include <vector>
+#include <algorithm>
+#include <string>
 
 #define FUNCTION_ALIAS(A,B) template <typename... Args> auto B(Args&&... args) -> decltype(A(std::forward<Args>(args)...)){return A(std::forward<Args>(args)...);}
 

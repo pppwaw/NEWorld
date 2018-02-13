@@ -246,6 +246,9 @@ res/fonts/
 .idea/
 .idea/*
 
+# VSCode
+.vscode/
+
 # Generated Makefile
 [Mm]ake[Ff]ile
 

@@ -20,7 +20,7 @@
 #pragma once
 
 // Compiler flags
-#ifdef _MSC_VER
+#ifdef _MSVC_LANG
     #define NEWORLD_COMPILER_MSVC
 #endif
 

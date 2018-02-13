@@ -6,3 +6,7 @@ CMakeCache.txt
 cmake_install.cmake
 imgui.ini
 settings*
+NEWorld
+NEWorld_Shell
+*.so
+nwcore
