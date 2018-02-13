@@ -60,7 +60,7 @@ void World::registerChunkTasks(ChunkService& chunkService, Player& player) {
     // LoadUnloadDetectorTask
     ReadOnlyTask loadUnloadDetectorTask{
         [&](const ChunkService& worlds) {
-        loadUnloadDetector(Vec3i(player.getPosition()));
+            loadUnloadDetector(Vec3i(player.getPosition()));
         }
     };
 
@@ -163,7 +163,7 @@ void World::loadUnloadDetector(const Vec3i& playerPosition) const {
     PODOrderedList<int, Chunk*, MaxChunkUnloadCount, std::greater> unloadList;
 
     // TODO: make the load range adjustable
-    generateLoadUnloadList(*this, playerPosition, 10, loadList, unloadList);
+    generateLoadUnloadList(*this, playerPosition, 3, loadList, unloadList);
 
     for (auto& loadPos : loadList) {
         if (chunkService.isAuthority()) {

@@ -128,7 +128,6 @@ void GameScene::keyboardUpdateTask()
 
 void GameScene::render()
 {
-    std::lock_guard<std::mutex> lock(mMutex);
     chunkService.getTaskDispatcher().processRenderTasks();
 
     mFpsCounter++;

@@ -59,8 +59,6 @@ private:
     WorldRenderer mWorldRenderer;
 
     RateMeter mRateCounterScheduler{1};
-
-    std::mutex mMutex;
 };
 
 #endif // !GAME_H_

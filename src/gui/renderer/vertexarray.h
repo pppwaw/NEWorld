@@ -60,7 +60,9 @@ try :
     }
     catch (std::bad_alloc&)
     {
-        warningstream << "Failed to create Vertex Array: Out of memory";
+        warningstream << "Failed to create Vertex Array: Out of memory. "
+        <<(mMaxVertexes * format.vertexAttributeCount)*sizeof(float)/1024
+        <<"KiB needed.";
     }
 
     ~VertexArray()

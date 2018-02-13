@@ -86,18 +86,23 @@ public:
 
     // TODO: NEED FIX! NOT THREAD SAFE!
     void addReadOnlyTask(const ReadOnlyTask& task) noexcept {
+        std::lock_guard<std::mutex> lock(mMutex);
         mNextReadOnlyTasks.emplace_back(task);
     }
     void addReadWriteTask(const ReadWriteTask& task) noexcept {
+        std::lock_guard<std::mutex> lock(mMutex);
         mNextReadWriteTasks.emplace_back(task);
     }
     void addRenderTask(const RenderTask& task) noexcept {
+        std::lock_guard<std::mutex> lock(mMutex);
         mNextRenderTasks.emplace_back(task);
     }
     void addRegularReadOnlyTask(const RegularReadOnlyTask& task) noexcept {
+        std::lock_guard<std::mutex> lock(mMutex);
         mRegularReadOnlyTasks.emplace_back(task);
     }
     void addRegularReadWriteTask(const RegularReadWriteTask& task) noexcept {
+        std::lock_guard<std::mutex> lock(mMutex);
         mRegularReadWriteTasks.emplace_back(task);
     }
 
@@ -113,6 +118,9 @@ public:
 
 private:
     void worker(size_t threadID);
+
+    // TODO: replace it with lock-free structure.
+    std::mutex mMutex;
 
     std::vector<ReadOnlyTask> mReadOnlyTasks, mNextReadOnlyTasks;
     std::vector<ReadWriteTask> mReadWriteTasks, mNextReadWriteTasks;

@@ -39,7 +39,7 @@ public:
      */
     ChunkService(bool isAuthority) noexcept
         : mWorlds(context.plugins, context.blocks),
-          mAuthority(isAuthority), mTaskDispatcher(1, *this) {
+          mAuthority(isAuthority), mTaskDispatcher(3, *this) {
         // TODO: make thread number adjustable in runtime
     }
 

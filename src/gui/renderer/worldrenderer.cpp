@@ -58,9 +58,10 @@ void WorldRenderer::registerTask(ChunkService & chunkService, Player & player) n
 }
 
 void WorldRenderer::VAGenerate(const Chunk * chunk) {
-    // TODO: only a workaround.
+    // TODO: only a workaround, avoid void* if possible
     Vec3i chunkPosition = chunk->getPosition();
     RenderTask task;
+    // TODO: maybe build a VA pool can speed this up.
     task.data = (void*)(new ChunkRenderData());
     task.task = {
         [=](const ChunkService&)
@@ -84,6 +85,7 @@ void WorldRenderer::VBOGenerateTask(const Vec3i & position, ChunkRenderData& crd
 }
 
 void WorldRenderer::renderDetector(const ChunkService & cs, size_t currentWorldID, Vec3d playerPosition) {
+    int counter = 0;
     // TODO: improve performance by adding multiple instances of this and set a step when itering the chunks.
     // Render build list
     //PODOrderedList<int, Chunk*, MaxChunkRenderCount> chunkRenderList;
@@ -96,6 +98,7 @@ void WorldRenderer::renderDetector(const ChunkService & cs, size_t currentWorldI
         {
             if (neighbourChunkLoadCheck(chunkPosition)) {
                 VAGenerate(chunk.second.get());
+                if (counter++ == 10) break;
             }
         }
         else
