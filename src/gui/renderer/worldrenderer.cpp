@@ -75,7 +75,11 @@ void WorldRenderer::VAGenerate(const Chunk * chunk) {
 }
 
 void WorldRenderer::VBOGenerateTask(const Vec3i & position, ChunkRenderData& crd) {
-    mWorld.getChunks()[position].setUpdated(false);
+    try {
+        mWorld.getChunks()[position].setUpdated(false);
+    } catch(std::out_of_range&) {
+        return; // chunk is unloaded
+    }
     mChunkRenderers.insert(std::make_pair(position, ChunkRenderer(crd)));
 }
 
