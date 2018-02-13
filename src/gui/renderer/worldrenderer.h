@@ -46,7 +46,7 @@ public:
 
 private:
     void VAGenerate(const Chunk* chunk);
-    void VBOGenerateTask(const Vec3i& position, ChunkRenderData&& crd);
+    void VBOGenerateTask(const Vec3i& position, ChunkRenderData& crd);
     void renderDetector(const ChunkService& cs, size_t currentWorldID, Vec3d playerPosition);
 
     const World& mWorld;

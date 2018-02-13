@@ -21,7 +21,6 @@
 #include <thread>
 #include <vector>
 #include "sync_service/world/world.h"
-#include <any>
 
 class ChunkService;
 
@@ -51,7 +50,7 @@ struct NWCOREAPI ReadWriteTask {
  */
 struct NWCOREAPI RenderTask {
     std::function<void(const ChunkService&)> task;
-    std::any data;
+    void* data;
 };
 
 template <class TaskType>

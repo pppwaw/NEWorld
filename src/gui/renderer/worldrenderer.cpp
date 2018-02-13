@@ -58,20 +58,22 @@ void WorldRenderer::registerTask(ChunkService & chunkService, Player & player) n
 }
 
 void WorldRenderer::VAGenerate(const Chunk * chunk) {
+    // TODO: only a workaround.
     RenderTask task;
-    task.data = std::make_any<std::shared_ptr<ChunkRenderData>>(new ChunkRenderData());
+    task.data = (void*)(new ChunkRenderData());
     task.task = {
         [=](const ChunkService&)
     {
-        auto&& crd = *std::any_cast<std::shared_ptr<ChunkRenderData>>(task.data);
-        VBOGenerateTask(chunk->getPosition(), std::move(crd));
+        ChunkRenderData* crd = static_cast<ChunkRenderData*>(task.data);
+        VBOGenerateTask(chunk->getPosition(), *crd);
+        delete crd;
     }
     };
-    std::any_cast<std::shared_ptr<ChunkRenderData>>(task.data)->generate(chunk);
+    static_cast<ChunkRenderData*>(task.data)->generate(chunk);
     chunkService.getTaskDispatcher().addRenderTask(task);
 }
 
-void WorldRenderer::VBOGenerateTask(const Vec3i & position, ChunkRenderData && crd) {
+void WorldRenderer::VBOGenerateTask(const Vec3i & position, ChunkRenderData& crd) {
     mWorld.getChunks()[position].setUpdated(false);
     mChunkRenderers.insert(std::make_pair(position, ChunkRenderer(crd)));
 }
