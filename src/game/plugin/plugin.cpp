@@ -23,83 +23,60 @@ typedef NWplugindata* NWAPICALL GetInfoFunction();
 typedef void NWAPICALL InitFunction(NWplugintype);
 typedef void NWAPICALL UnloadFunction();
 
-int Plugin::init(NWplugintype type)
-{
+int Plugin::init(NWplugintype type) {
     InitFunction* init = nullptr;
-    if (mLib.isLoaded())
-    {
-        try
-        {
+    if (mLib.isLoaded()) {
+        try {
             init = mLib.get<InitFunction>("init");
             auto mode = static_cast<NWplugintype>(type & (~mLoadStat));
             if (init)
                 init(mode);
-            else
-            {
-                warningstream << "Lack of init func!";
-            }
+            else { warningstream << "Lack of init func!"; }
         }
-        catch (std::exception& e)
-        {
-            warningstream << "Failed: unhandled exception: " << e.what();
-        }
+        catch (std::exception& e) { warningstream << "Failed: unhandled exception: " << e.what(); }
     }
     else
-        return mStatus = 1;  // Failed: could not load
+        return mStatus = 1; // Failed: could not load
     mLoadStat = static_cast<NWplugintype>(mLoadStat | type);
     return mStatus = 0;
 }
 
-int Plugin::loadFrom(const std::string& filename)
-{
+int Plugin::loadFrom(const std::string& filename) {
     GetInfoFunction* getinfo = nullptr;
     mLib.load(filename);
-    if (mLib.isLoaded())
-    {
-        try
-        {
+    if (mLib.isLoaded()) {
+        try {
             getinfo = mLib.get<GetInfoFunction>("getInfo");
             if (getinfo)
                 mData = getinfo();
-            else
-            {
+            else {
                 warningstream << "Lack of Info Func!";
                 return mStatus = 2;
             }
         }
-        catch (std::exception& e)
-        {
-            warningstream << "Failed: unhandled exception: " << e.what();
-        }
+        catch (std::exception& e) { warningstream << "Failed: unhandled exception: " << e.what(); }
     }
     else
-        return mStatus = 1;  // Failed: could not load
+        return mStatus = 1; // Failed: could not load
     return mStatus = 0;
 }
 
-void Plugin::unload()
-{
+void Plugin::unload() {
     if (mStatus != 0) return;
     mStatus = -1;
     UnloadFunction* unload = nullptr;
-    if (mLib.isLoaded())
-    {
-        try
-        {
+    if (mLib.isLoaded()) {
+        try {
             unload = mLib.get<UnloadFunction>("unload");
             if (unload)
                 unload();
-            else
-            {
+            else {
                 // Warning: entry not found
                 warningstream << "Subroutine unload() not found in plugin " << mData->internalName
-                              << ", skipped unloading!";
+                    << ", skipped unloading!";
             }
             mLib.unload();
         }
-        catch (std::exception& e)
-        {
-            warningstream << "Failed: unhandled exception: " << e.what();
-        }
+        catch (std::exception& e) { warningstream << "Failed: unhandled exception: " << e.what(); }
     }
 }

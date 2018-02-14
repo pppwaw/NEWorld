@@ -21,67 +21,61 @@
 
 #include "nwapi_internal.hpp"
 
-extern "C"
-{
+extern "C" {
 
-// NEWorld constants
+    // NEWorld constants
 
-const int NWChunkSize = 32;
-const int32_t NWAirID = 0;
+    const int NWChunkSize = 32;
+    const int32_t NWAirID = 0;
 
-// NEWorld structures
+    // NEWorld structures
 
-struct NWvec3i
-{
-    int32_t x, y, z;
-};
+    struct NWvec3i {
+        int32_t x, y, z;
+    };
 
-enum NWplugintype
-{
-    nwPluginTypeNone = 0,
-    nwPluginTypeGUI = 1,
-    nwPluginTypeCLI = 2,
-    nwPluginTypeCore = 3
-};
+    enum NWplugintype {
+        nwPluginTypeNone = 0,
+        nwPluginTypeGUI = 1,
+        nwPluginTypeCLI = 2,
+        nwPluginTypeCore = 3
+    };
 
-struct NWplugindata
-{
-    const char* pluginName;
-    const char* authorName;
-    const char* internalName;
-    int32_t pluginType;
-};
+    struct NWplugindata {
+        const char* pluginName;
+        const char* authorName;
+        const char* internalName;
+        int32_t pluginType;
+    };
 
-struct NWblockdata
-{
-    uint32_t id : 12;
-    uint32_t brightness : 4;
-    uint32_t state : 16;
-};
+    struct NWblockdata {
+        uint32_t id : 12;
+        uint32_t brightness : 4;
+        uint32_t state : 16;
+    };
 
-struct NWblocktype
-{
-    const char* blockname;
-    bool solid;
-    bool translucent;
-    bool opaque;
-    int32_t explodePower;
-    int32_t hardness;
-};
+    struct NWblocktype {
+        const char* blockname;
+        bool solid;
+        bool translucent;
+        bool opaque;
+        int32_t explodePower;
+        int32_t hardness;
+    };
 
-typedef void* NWchunk;
-typedef void* NWworld;
+    typedef void* NWchunk;
+    typedef void* NWworld;
 
-// NEWorld APIs
-NWAPIENTRY NWchunk NWAPICALL nwCreateChunk(NWworld, const NWvec3i*);
-NWAPIENTRY NWblockdata* NWAPICALL nwGetBlocksInChunk(NWchunk);
-NWAPIENTRY void NWAPICALL nwDeleteChunk(NWchunk);
+    // NEWorld APIs
+    NWAPIENTRY NWchunk NWAPICALL nwCreateChunk(NWworld, const NWvec3i*);
+    NWAPIENTRY NWblockdata* NWAPICALL nwGetBlocksInChunk(NWchunk);
+    NWAPIENTRY void NWAPICALL nwDeleteChunk(NWchunk);
 
-NWAPIENTRY size_t NWAPICALL nwRegisterBlock(const NWblocktype*);
-NWAPIENTRY void NWAPICALL nwLog(char* str);
+    NWAPIENTRY size_t NWAPICALL nwRegisterBlock(const NWblocktype*);
+    NWAPIENTRY void NWAPICALL nwLog(char* str);
 
-typedef void NWAPICALL NWchunkgenerator(const NWvec3i*, NWblockdata*, int32_t);
-NWAPIENTRY size_t NWAPICALL nwRegisterChunkGenerator(NWchunkgenerator* const generator);
+    typedef void NWAPICALL NWchunkgenerator(const NWvec3i*, NWblockdata*, int32_t);
+    NWAPIENTRY size_t NWAPICALL nwRegisterChunkGenerator(NWchunkgenerator* const generator);
 
 }
 

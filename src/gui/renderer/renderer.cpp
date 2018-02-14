@@ -21,8 +21,7 @@
 
 int Renderer::matrixMode = 0;
 
-void Renderer::init()
-{
+void Renderer::init() {
     debugstream << "Start to initialize GLEW...";
     const auto err = glewInit();
     if (err != GLEW_OK)

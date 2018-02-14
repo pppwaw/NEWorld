@@ -22,8 +22,7 @@
 
 extern "C" NWAPIEXPORT int NWAPICALL cmain(int, char**);
 
-int NWAPICALL cmain(int, char**)
-{
+int NWAPICALL cmain(int, char**) {
     NEWorld neworld;
     return 0;
 }

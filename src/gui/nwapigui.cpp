@@ -22,22 +22,16 @@
 #include "renderer/blockrenderer.h"
 #include <api/nwapigui.hpp>
 
-extern "C"
-{
-    NWAPIEXPORT void NWAPICALL nwSetBlockRenderFunc(size_t, NWblockrenderfunc)
-    {
+extern "C" {
+    NWAPIEXPORT void NWAPICALL nwSetBlockRenderFunc(size_t, NWblockrenderfunc) { }
 
-    }
-
-    NWAPIEXPORT void NWAPICALL nwUseDefaultBlockRenderFunc(size_t id, void *data)
-    {
+    NWAPIEXPORT void NWAPICALL nwUseDefaultBlockRenderFunc(size_t id, void* data) {
         NWblocktexture* ptr = reinterpret_cast<NWblocktexture*>(data);
-        size_t array[] = { ptr->right, ptr->left, ptr->top, ptr->bottom, ptr->front, ptr->back };
+        size_t array[] = {ptr->right, ptr->left, ptr->top, ptr->bottom, ptr->front, ptr->back};
         BlockRendererManager::setBlockRenderer(id, std::make_shared<DefaultBlockRenderer>(array));
     }
 
-    NWAPIEXPORT NWtextureid NWAPICALL nwRegisterTexture(const char* filename)
-    {
+    NWAPIEXPORT NWtextureid NWAPICALL nwRegisterTexture(const char* filename) {
         return BlockTextureBuilder::addTexture(filename);
     }
 }

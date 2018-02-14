@@ -36,10 +36,9 @@ class ChunkService;
 struct NWCOREAPI ReadOnlyTask {
     virtual ~ReadOnlyTask() = default;
     virtual void task(const ChunkService&) = 0;
-    virtual std::unique_ptr<ReadOnlyTask> clone() {
-        throw std::runtime_error("Function not implemented");
-    }
+    virtual std::unique_ptr<ReadOnlyTask> clone() { throw std::runtime_error("Function not implemented"); }
 };
+
 /**
  * \brief This type of tasks will be executed in one thread.
  *        Thus, it is safe to do write opeartions inside
@@ -48,10 +47,9 @@ struct NWCOREAPI ReadOnlyTask {
 struct NWCOREAPI ReadWriteTask {
     virtual ~ReadWriteTask() = default;
     virtual void task(ChunkService&) = 0;
-    virtual std::unique_ptr<ReadWriteTask> clone() {
-        throw std::runtime_error("Function not implemented");
-    }
+    virtual std::unique_ptr<ReadWriteTask> clone() { throw std::runtime_error("Function not implemented"); }
 };
+
 /**
  * \brief This type of tasks will be executed in main thread.
  *        Thus, it is safe to call OpenGL function inside.
@@ -59,9 +57,7 @@ struct NWCOREAPI ReadWriteTask {
 struct NWCOREAPI RenderTask {
     virtual ~RenderTask() = default;
     virtual void task(const ChunkService&) = 0;
-    virtual std::unique_ptr<RenderTask> clone() {
-        throw std::runtime_error("Function not implemented");
-    }
+    virtual std::unique_ptr<RenderTask> clone() { throw std::runtime_error("Function not implemented"); }
 };
 
 class NWCOREAPI TaskDispatcher {
@@ -72,9 +68,8 @@ public:
      * \param chunkService the chunk service that the dispatcher binds to
      */
     TaskDispatcher(size_t threadNumber, ChunkService& chunkService)
-        : mThreadNumber(threadNumber), mChunkService(chunkService) {
-    }
-    
+        : mThreadNumber(threadNumber), mChunkService(chunkService) { }
+
     ~TaskDispatcher() {
         mShouldExit = true;
         for (auto& thread : mThreads) thread.join();
@@ -84,7 +79,7 @@ public:
     void start() {
         mNumberOfUnfinishedThreads = mThreadNumber;
         for (size_t i = 0; i < mThreadNumber; ++i)
-            mThreads.emplace_back([this, i]() {worker(i); });
+            mThreads.emplace_back([this, i]() { worker(i); });
         infostream << "Update threads started.";
     }
 
@@ -92,18 +87,22 @@ public:
         std::lock_guard<std::mutex> lock(mMutex);
         mNextReadOnlyTasks.emplace_back(std::move(task));
     }
+
     void addReadWriteTask(std::unique_ptr<ReadWriteTask> task) noexcept {
         std::lock_guard<std::mutex> lock(mMutex);
         mNextReadWriteTasks.emplace_back(std::move(task));
     }
+
     void addRenderTask(std::unique_ptr<RenderTask> task) noexcept {
         std::lock_guard<std::mutex> lock(mMutex);
         mNextRenderTasks.emplace_back(std::move(task));
     }
+
     void addRegularReadOnlyTask(std::unique_ptr<ReadOnlyTask> task) noexcept {
         std::lock_guard<std::mutex> lock(mMutex);
         mRegularReadOnlyTasks.emplace_back(std::move(task));
     }
+
     void addRegularReadWriteTask(std::unique_ptr<ReadWriteTask> task) noexcept {
         std::lock_guard<std::mutex> lock(mMutex);
         mRegularReadWriteTasks.emplace_back(std::move(task));
@@ -133,7 +132,7 @@ private:
     std::vector<std::thread> mThreads;
     size_t mThreadNumber;
     std::atomic<size_t> mNumberOfUnfinishedThreads;
-    std::atomic<bool> mShouldExit{ false };
+    std::atomic<bool> mShouldExit{false};
 
     ChunkService& mChunkService;
 };

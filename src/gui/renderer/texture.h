@@ -26,17 +26,16 @@ using TextureID = GLuint;
 using ubyte = unsigned char;
 struct SDL_Surface;
 
-class Texture
-{
+class Texture {
 public:
-    enum
-    {
-        Texture2D = GL_TEXTURE_2D, Texture3D = GL_TEXTURE_3D
+    enum {
+        Texture2D = GL_TEXTURE_2D,
+        Texture3D = GL_TEXTURE_3D
     };
 
     Texture() = default;
 
-    explicit Texture(TextureID id) :mId(id) {}
+    explicit Texture(TextureID id) : mId(id) {}
 
     static void init();
 
@@ -56,8 +55,8 @@ public:
 
 private:
     TextureID mId;
-    class RawTexture
-    {
+
+    class RawTexture {
     public:
         ~RawTexture();
         explicit RawTexture(const std::string& filename);

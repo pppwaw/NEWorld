@@ -25,14 +25,12 @@ constexpr int MaxChunkLoadCount = 64, MaxChunkUnloadCount = 64;
 
 size_t World::IDCount = 0;
 
-std::vector<AABB> World::getHitboxes(const AABB& range) const
-{
+std::vector<AABB> World::getHitboxes(const AABB& range) const {
     std::vector<AABB> res;
     Vec3i curr;
     for (curr.x = int(floor(range.min.x)); curr.x < int(ceil(range.max.x)); curr.x++)
         for (curr.y = int(floor(range.min.y)); curr.y < int(ceil(range.max.y)); curr.y++)
-            for (curr.z = int(floor(range.min.z)); curr.z < int(ceil(range.max.z)); curr.z++)
-            {
+            for (curr.z = int(floor(range.min.z)); curr.z < int(ceil(range.max.z)); curr.z++) {
                 // TODO: BlockType::getAABB
                 if (!isChunkLoaded(getChunkPos(curr)))
                     continue;
@@ -44,11 +42,9 @@ std::vector<AABB> World::getHitboxes(const AABB& range) const
     return res;
 }
 
-void World::updateChunkLoadStatus()
-{
+void World::updateChunkLoadStatus() {
     std::unique_lock<std::mutex> lock(mMutex);
-    for (auto iter = mChunks.begin(); iter != mChunks.end();)
-    {
+    for (auto iter = mChunks.begin(); iter != mChunks.end();) {
         if (iter->second->checkReleaseable())
             iter = mChunks.erase(iter);
         else
@@ -56,8 +52,7 @@ void World::updateChunkLoadStatus()
     }
 }
 
-static constexpr Vec3i middleOffset() noexcept
-{
+static constexpr Vec3i middleOffset() noexcept {
     return Vec3i(Chunk::Size() / 2 - 1, Chunk::Size() / 2 - 1, Chunk::Size() / 2 - 1);
 }
 
@@ -73,13 +68,11 @@ static constexpr Vec3i middleOffset() noexcept
 static void generateLoadUnloadList(
     const World& world, const Vec3i& centerPos, int loadRange,
     PODOrderedList<int, Vec3i, MaxChunkLoadCount>& loadList,
-    PODOrderedList<int, Chunk*, MaxChunkUnloadCount, std::greater>& unloadList)
-{
+    PODOrderedList<int, Chunk*, MaxChunkUnloadCount, std::greater>& unloadList) {
     // centerPos to chunk coords
     Vec3i centerCPos = World::getChunkPos(centerPos);
 
-    for (auto&& chunk : world.getChunks())
-    {
+    for (auto&& chunk : world.getChunks()) {
         Vec3i curPos = chunk.second->getPosition();
         // Out of load range, pending to unload
         if (centerCPos.chebyshevDistance(curPos) > loadRange)
@@ -91,7 +84,8 @@ static void generateLoadUnloadList(
             for (int z = centerCPos.z - loadRange; z <= centerCPos.z + loadRange; z++)
                 // In load range, pending to load
                 if (!world.isChunkLoaded(Vec3i(x, y, z)))
-                    loadList.insert((Vec3i(x, y, z) * Chunk::Size() + middleOffset() - centerPos).lengthSqr(), Vec3i(x, y, z));
+                    loadList.insert((Vec3i(x, y, z) * Chunk::Size() + middleOffset() - centerPos).lengthSqr(),
+                                    Vec3i(x, y, z));
 }
 
 class AddToWorldTask : public ReadWriteTask {
@@ -103,8 +97,7 @@ public:
      * \param chunk the target chunk
      */
     AddToWorldTask(size_t worldID, std::unique_ptr<Chunk, ChunkOnReleaseBehavior> chunk)
-        : mWorldId(worldID), mChunk(std::move(chunk)) {
-    }
+        : mWorldId(worldID), mChunk(std::move(chunk)) { }
 
     void task(ChunkService& cs) override {
         auto world = chunkService.getWorlds().getWorld(mWorldId);
@@ -113,14 +106,11 @@ public:
         constexpr std::array<Vec3i, 6> delta
         {
             Vec3i(1, 0, 0), Vec3i(-1, 0, 0),
-            Vec3i(0, 1, 0), Vec3i(0,-1, 0),
-            Vec3i(0, 0, 1), Vec3i(0, 0,-1)
+            Vec3i(0, 1, 0), Vec3i(0, -1, 0),
+            Vec3i(0, 0, 1), Vec3i(0, 0, -1)
         };
         for (auto&& p : delta)
-            world->doIfChunkLoaded(chunkPos + p, [](Chunk& chk)
-        {
-            chk.setUpdated(true);
-        });
+            world->doIfChunkLoaded(chunkPos + p, [](Chunk& chk) { chk.setUpdated(true); });
     }
 
 private:
@@ -136,25 +126,26 @@ public:
      * \param chunkPosition the position of the chunk
      */
     BuildOrLoadChunkTask(const World& world, Vec3i chunkPosition)
-        : mWorld(world), mChunkPosition(chunkPosition) {
-        
-    }
+        : mWorld(world), mChunkPosition(chunkPosition) { }
 
     void task(const ChunkService& cs) override {
         // TODO: avoid using raw pointer directly somehow... if possible
         ChunkManager::data_t chunk;
-        if (false) { // TODO: should try to load from local first
+        if (false) {
+            // TODO: should try to load from local first
 
         }
-        else { // Not found: build it!
+        else {
+            // Not found: build it!
             chunk = ChunkManager::data_t(new Chunk(mChunkPosition, mWorld),
-                ChunkOnReleaseBehavior::Behavior::Release);
+                                         ChunkOnReleaseBehavior::Behavior::Release);
         }
         // Add addToWorldTask
         chunkService.getTaskDispatcher().addReadWriteTask(
             std::make_unique<AddToWorldTask>(mWorld.getWorldID(), std::move(chunk))
         );
     }
+
 private:
     const World& mWorld;
     Vec3i mChunkPosition;
@@ -162,8 +153,7 @@ private:
 
 class LoadUnloadDetectorTask : public ReadOnlyTask {
 public:
-    LoadUnloadDetectorTask(World& world, const Player& player): mPlayer(player), mWorld(world) {
-    }
+    LoadUnloadDetectorTask(World& world, const Player& player): mPlayer(player), mWorld(world) { }
 
     void task(const ChunkService& cs) override {
         PODOrderedList<int, Vec3i, MaxChunkLoadCount> loadList;
@@ -189,9 +179,7 @@ public:
         }
     }
 
-    std::unique_ptr<ReadOnlyTask> clone() override {
-        return std::make_unique<LoadUnloadDetectorTask>(*this);
-    }
+    std::unique_ptr<ReadOnlyTask> clone() override { return std::make_unique<LoadUnloadDetectorTask>(*this); }
 
 private:
     const Player& mPlayer;

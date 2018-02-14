@@ -15,8 +15,7 @@
 *
 * You should have received a copy of the GNU Lesser General Public License
 * along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
-*/
-#pragma once
+*//*
 #define NK_INCLUDE_FIXED_TYPES
 #define NK_INCLUDE_STANDARD_IO
 #define NK_INCLUDE_STANDARD_VARARGS
@@ -25,4 +24,5 @@
 #define NK_INCLUDE_FONT_BAKING
 #define NK_INCLUDE_DEFAULT_FONT
 #include <nuklear.h>
-#include "nuklear_sdl_gl3.h"
+#include "nuklear_sdl_gles2.h"
+*/

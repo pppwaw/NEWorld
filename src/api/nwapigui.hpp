@@ -21,16 +21,14 @@
 
 #include "nwapicore.hpp"
 
-extern "C"
-{
+extern "C" {
 
     // API related to GUI or renderer
 
     typedef size_t NWtextureid;
-    typedef void(*NWblockrenderfunc)(void* cthis, NWblockdata data, int x, int y, int z);
+    typedef void (*NWblockrenderfunc)(void* cthis, NWblockdata data, int x, int y, int z);
 
-    struct NWblocktexture
-    {
+    struct NWblocktexture {
         NWtextureid right, left, top, bottom, front, back;
     };
 
@@ -40,4 +38,3 @@ extern "C"
 }
 
 #endif // !NWAPIGUI_H_
-

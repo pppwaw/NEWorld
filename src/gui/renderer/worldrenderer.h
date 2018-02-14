@@ -27,13 +27,10 @@ const int MaxChunkRenderCount = 4;
 /**
  * \brief Manage the VBO of a world. It includes ChunkRenderer.
  */
-class WorldRenderer
-{
+class WorldRenderer {
 public:
     WorldRenderer(const World& world, int renderDistance)
-        : mWorld(world), mRenderDist(renderDistance)
-    {
-    }
+        : mWorld(world), mRenderDist(renderDistance) { }
 
     // Render all chunks
     size_t render(const Vec3i& position) const;

@@ -20,51 +20,41 @@
 #include <engine/common.h>
 #include "pluginmanager.h"
 
-PluginManager::PluginManager()
-{
+PluginManager::PluginManager() {
     infostream << "Start to load plugins...";
     using namespace FileSystem;
     size_t counter = 0;
     std::string path = "./plugins/";
-    if (exists(path))
-    {
-        forInDirectory(path, [&, this](std::string filename)
-        {
+    if (exists(path)) {
+        forInDirectory(path, [&, this](std::string filename) {
             std::string suffix = filename.substr(filename.size() - std::string(LibSuffix).size());
             strtolower(suffix);
             if (suffix != LibSuffix) return; //TODO: FIXME: may ignore linux plugins
             debugstream << "Loading:" << filename;
-            if(loadPlugin(filename))
+            if (loadPlugin(filename))
                 counter++;
         });
     }
     infostream << counter << " plugin(s) loaded";
 }
 
-PluginManager::~PluginManager()
-{
-    mPlugins.clear();
-}
+PluginManager::~PluginManager() { mPlugins.clear(); }
 
-void PluginManager::initializePlugins(NWplugintype flag)
-{
+void PluginManager::initializePlugins(NWplugintype flag) {
     for (auto&& plugin : mPlugins)
         plugin.init(flag);
 }
 
-bool PluginManager::loadPlugin(const std::string& filename)
-{
+bool PluginManager::loadPlugin(const std::string& filename) {
     mPlugins.push_back(std::move(Plugin(filename)));
     Plugin& plugin = mPlugins[mPlugins.size() - 1];
 
-    if (!plugin.isLoaded())
-    {
+    if (!plugin.isLoaded()) {
         mPlugins.pop_back();
         warningstream << "Failed to load plugin from \"" << filename << "\", skipping";
         return false;
     }
-    else
-    {
+    else {
         infostream << "Loaded plugin \"" << plugin.getData().pluginName << "\"["
             << plugin.getData().internalName
             << "], authored by \"" << plugin.getData().authorName << "\"";

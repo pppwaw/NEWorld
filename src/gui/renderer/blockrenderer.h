@@ -27,14 +27,12 @@
 
 class VertexArray;
 
-struct BlockTexCoord
-{
+struct BlockTexCoord {
     size_t pos = 0;
-    float d[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+    float d[4] = {0.0f, 0.0f, 0.0f, 0.0f};
 };
 
-class BlockRenderer
-{
+class BlockRenderer {
 public:
     virtual ~BlockRenderer() = default;
 
@@ -42,8 +40,7 @@ public:
     virtual void render(VertexArray& target, const class Chunk* chunk, const Vec3i& pos) = 0;
 };
 
-class DefaultBlockRenderer : public BlockRenderer
-{
+class DefaultBlockRenderer : public BlockRenderer {
 public:
     DefaultBlockRenderer(size_t data[]);
     void flushTexture() override;
@@ -52,8 +49,7 @@ private:
     BlockTexCoord tex[6];
 };
 
-class BlockTextureBuilder
-{
+class BlockTextureBuilder {
 public:
     static size_t capacity();
     static size_t capacityRaw();
@@ -74,8 +70,7 @@ private:
     static std::vector<Texture::RawTexture> mRawTexs;
 };
 
-class BlockRendererManager
-{
+class BlockRendererManager {
 public:
     static void render(VertexArray& target, size_t id, const class Chunk* chunk, const Vec3i& pos); //RenderList
     static void setBlockRenderer(size_t pos, std::shared_ptr<BlockRenderer>&& blockRenderer);

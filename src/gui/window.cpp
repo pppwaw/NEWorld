@@ -21,36 +21,8 @@
 #include "engine/maintenance/nwdebug.h"
 #include "renderer/renderer.h"
 
-void Window::pollEvents()
-{
-    nk_input_begin(mNuklearContext);
-    SDL_Event e;
-    while (SDL_PollEvent(&e))
-    {
-        nk_sdl_handle_event(&e);
-        switch (e.type)
-        {
-        case SDL_QUIT:
-            mShouldQuit = true;
-            break;
-        case SDL_WINDOWEVENT:
-            switch (e.window.event)
-            {
-            case SDL_WINDOWEVENT_RESIZED:
-            case SDL_WINDOWEVENT_SIZE_CHANGED:
-                mWidth = e.window.data1;
-                mHeight = e.window.data2;
-                break;
-            }
-            break;
-        }
-    }
-    nk_input_end(mNuklearContext);
-}
-
 Window::Window(const std::string& title, int width, int height)
-    : mTitle(title), mWidth(width), mHeight(height)
-{
+    : mTitle(title), mWidth(width), mHeight(height) {
     SDL_Init(SDL_INIT_VIDEO);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
@@ -58,33 +30,18 @@ Window::Window(const std::string& title, int width, int height)
 
     mWindow = SDL_CreateWindow(mTitle.c_str(), 100, 100, mWidth, mHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
     if (mWindow == nullptr)
-        fatalstream << "Failed to create SDL window!" << SDL_GetError();
+        fatalstream << "Failed to create SDL window!";
     Assert(mWindow != nullptr);
 
     mContext = SDL_GL_CreateContext(mWindow);
-    if (mContext == nullptr)
-        fatalstream << "Failed to create GL context! " << SDL_GetError();
-    Assert(mContext != nullptr);
     SDL_GL_SetSwapInterval(0); // VSync
     makeCurrentDraw();
     Renderer::init();
-    mNuklearContext = nk_sdl_init(mWindow);
-    {struct nk_font_atlas *atlas;
-    nk_sdl_font_stash_begin(&atlas);
-    /*struct nk_font *droid = nk_font_atlas_add_from_file(atlas, "../../../extra_font/DroidSans.ttf", 14, 0);*/
-    /*struct nk_font *roboto = nk_font_atlas_add_from_file(atlas, "../../../extra_font/Roboto-Regular.ttf", 16, 0);*/
-    /*struct nk_font *future = nk_font_atlas_add_from_file(atlas, "../../../extra_font/kenvector_future_thin.ttf", 13, 0);*/
-    /*struct nk_font *clean = nk_font_atlas_add_from_file(atlas, "../../../extra_font/ProggyClean.ttf", 12, 0);*/
-    /*struct nk_font *tiny = nk_font_atlas_add_from_file(atlas, "../../../extra_font/ProggyTiny.ttf", 10, 0);*/
-    /*struct nk_font *cousine = nk_font_atlas_add_from_file(atlas, "../../../extra_font/Cousine-Regular.ttf", 13, 0);*/
-    nk_sdl_font_stash_end();
-    /*nk_style_load_all_cursors(ctx, atlas->cursors);*/
-    /*nk_style_set_font(ctx, &roboto->handle);*/}
+    //mNuklearContext = nk_sdl_init(mWindow);
 }
 
-Window::~Window()
-{
-    nk_sdl_shutdown();
+Window::~Window() {
+    //    nk_sdl_shutdown();
     SDL_DestroyWindow(mWindow);
     SDL_GL_DeleteContext(mContext);
     SDL_Quit();

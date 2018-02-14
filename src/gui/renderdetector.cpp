@@ -25,15 +25,12 @@
 class VBOGenerateTask : public RenderTask {
 public:
     VBOGenerateTask(const World& world, const Vec3i& position, ChunkRenderData crd,
-        std::unordered_map<Vec3i, ChunkRenderer>& chunkRenderers)
+                    std::unordered_map<Vec3i, ChunkRenderer>& chunkRenderers)
         : mWorld(world), mPosition(position), mChunkRenderData(std::move(crd)),
-        mChunkRenderers(chunkRenderers) {
-    }
+          mChunkRenderers(chunkRenderers) { }
 
     void task(const ChunkService& cs) override {
-        try {
-            mWorld.getChunks()[mPosition].setUpdated(false);
-        }
+        try { mWorld.getChunks()[mPosition].setUpdated(false); }
         catch (std::out_of_range&) {
             return; // chunk is unloaded
         }
@@ -48,7 +45,7 @@ private:
 };
 
 
-void RenderDetectorTask::task(const ChunkService & cs) {
+void RenderDetectorTask::task(const ChunkService& cs) {
     int counter = 0;
     // TODO: improve performance by adding multiple instances of this and set a step when itering the chunks.
     // Render build list
@@ -60,20 +57,19 @@ void RenderDetectorTask::task(const ChunkService & cs) {
         auto chunkPosition = chunk->getPosition();
         // In render range, pending to render
         if (chunk->isUpdated() &&
-            chunkpos.chebyshevDistance(chunkPosition) <= mWorldRenderer.mRenderDist)
-        {
+            chunkpos.chebyshevDistance(chunkPosition) <= mWorldRenderer.mRenderDist) {
             if (neighbourChunkLoadCheck(*world, chunkPosition)) {
                 // TODO: maybe build a VA pool can speed this up.
                 ChunkRenderData crd;
                 crd.generate(chunk.get());
                 chunkService.getTaskDispatcher().addRenderTask(
-                    std::make_unique<VBOGenerateTask>(*world, chunkPosition, std::move(crd), mWorldRenderer.mChunkRenderers)
+                    std::make_unique<VBOGenerateTask>(*world, chunkPosition, std::move(crd),
+                                                      mWorldRenderer.mChunkRenderers)
                 );
                 if (counter++ == 10) break;
             }
         }
-        else
-        {
+        else {
             // TODO: Unload unneeded VBO.
             //       We can't do it here since it's not thread safe
             /*

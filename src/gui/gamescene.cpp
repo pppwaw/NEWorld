@@ -25,7 +25,7 @@
 #include "renderer/blockrenderer.h"
 #include <GL/glew.h>
 
-class KeyboardUpdateTask :public ReadOnlyTask {
+class KeyboardUpdateTask : public ReadOnlyTask {
 public:
     KeyboardUpdateTask(Player& player) : mPlayer(player) {}
 
@@ -63,9 +63,7 @@ public:
         //    mGUIWidgets.update();
     }
 
-    std::unique_ptr<ReadOnlyTask> clone() override {
-        return std::make_unique<KeyboardUpdateTask>(*this);
-    }
+    std::unique_ptr<ReadOnlyTask> clone() override { return std::make_unique<KeyboardUpdateTask>(*this); }
 
 private:
     Player& mPlayer;
@@ -74,10 +72,9 @@ private:
 // TODO: make render range adjustable.
 GameScene::GameScene(const std::string& name, const Window& window):
     mWindow(window),
-    mPlayer(0), mGUIWidgets(mWindow.getNkContext()),
+    mPlayer(0),
     mCurrentWorld(chunkService.getWorlds().addWorld("test world")),
-    mWorldRenderer(*mCurrentWorld, 3)
-{
+    mWorldRenderer(*mCurrentWorld, 3) {
     mPlayer.setPosition(Vec3d(-16.0, 48.0, 32.0));
     mPlayer.setRotation(Vec3d(-45.0, -22.5, 0.0));
 
@@ -93,12 +90,12 @@ GameScene::GameScene(const std::string& name, const Window& window):
     glDepthFunc(GL_LEQUAL);
 
     // Initialize Widgets
-    
-    mGUIWidgets.addWidget(std::make_shared<WidgetCallback>(
-        "Debug", nk_rect(20, 20, 200, 200),
-        NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
-        NK_WINDOW_CLOSABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE, [this](nk_context* ctx)
+    /*
+    mGUIWidgets.addWidget(std::make_shared<WidgetCallback>("Debug", nk_rect(100, 200), [this]
     {   
+        //NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
+        //NK_WINDOW_CLOSABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE
+
         mRateCounterScheduler.refresh();
         if (mRateCounterScheduler.shouldRun())
         {
@@ -109,14 +106,14 @@ GameScene::GameScene(const std::string& name, const Window& window):
             mUpsCounter = 0;
             mRateCounterScheduler.increaseTimer();
         }
-        nk_layout_row_dynamic(ctx, 15, 1);
-        nk_labelf(ctx, NK_TEXT_LEFT, "NEWorld %s (v%u)", NEWorldVersionName, NEWorldVersion);
-        nk_labelf(ctx, NK_TEXT_LEFT, "FPS %d, UPS %d", mFpsLatest, mUpsLatest);
-        nk_labelf(ctx, NK_TEXT_LEFT, "Position: x %.1f y %.1f z %.1f", mPlayer.getPosition().x, mPlayer.getPosition().y, mPlayer.getPosition().z);
-        nk_labelf(ctx, NK_TEXT_LEFT, "GUI Widgets: %zu", mGUIWidgets.getSize());
-        nk_labelf(ctx, NK_TEXT_LEFT, "Chunks Loaded: %zu", mCurrentWorld->getChunkCount());
+        ImGui::Text("NEWorld %s (v%u)", NEWorldVersionName, NEWorldVersion);
+        ImGui::Text("FPS %d, UPS %d", mFpsLatest, mUpsLatest);
+        ImGui::Text("Position: x %.1f y %.1f z %.1f", mPlayer.getPosition().x, mPlayer.getPosition().y, mPlayer.getPosition().z);
+        ImGui::Text("GUI Widgets: %zu", mGUIWidgets.getSize());
+        ImGui::Text("Chunks Loaded: %zu", mWorld.getChunkCount());
+
     }));
-    
+    */
 
     // Initialize connection
     context.rpc.enableClient(
@@ -127,12 +124,9 @@ GameScene::GameScene(const std::string& name, const Window& window):
     infostream << "Game initialized!";
 }
 
-GameScene::~GameScene()
-{
-}
+GameScene::~GameScene() {}
 
-void GameScene::render()
-{
+void GameScene::render() {
     chunkService.getTaskDispatcher().processRenderTasks();
 
     mFpsCounter++;
@@ -167,5 +161,5 @@ void GameScene::render()
 
     glDisable(GL_DEPTH_TEST);
 
-    mGUIWidgets.render();
+    //    mGUIWidgets.render();
 }

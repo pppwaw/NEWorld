@@ -26,54 +26,34 @@
 #include <api/nwapicore.hpp>
 
 // Single plugin
-class Plugin : public NonCopyable
-{
+class Plugin : public NonCopyable {
 public:
-    explicit Plugin(const std::string& filename) : mStatus(-1)
-    {
-        loadFrom(filename);
-    }
+    explicit Plugin(const std::string& filename) : mStatus(-1) { loadFrom(filename); }
 
-    Plugin(Plugin&& rhs) noexcept : mLib(std::move(rhs.mLib)), mData(rhs.mData), mStatus(rhs.mStatus)
-    {
+    Plugin(Plugin&& rhs) noexcept : mLib(std::move(rhs.mLib)), mData(rhs.mData), mStatus(rhs.mStatus) {
         rhs.mData = nullptr;
         rhs.mStatus = -1;
     }
 
-    ~Plugin()
-    {
-        unload();
-    }
+    ~Plugin() { unload(); }
 
     int init(NWplugintype type);
 
     // Get plugin data
-    const NWplugindata& getData() const
-    {
-        return *mData;
-    }
+    const NWplugindata& getData() const { return *mData; }
 
     // Get load status
-    int getStatus() const
-    {
-        return mStatus;
-    }
+    int getStatus() const { return mStatus; }
 
     // Is loaded
-    bool isLoaded() const
-    {
-        return mStatus == 0;
-    }
+    bool isLoaded() const { return mStatus == 0; }
 
     // Load plugin, return 0 for success
     int loadFrom(const std::string& filename);
     // Unload plugin
     void unload();
 
-    bool isCompatible(NWplugintype type) const
-    {
-        return ((mData->pluginType & type) > 0);
-    }
+    bool isCompatible(NWplugintype type) const { return ((mData->pluginType & type) > 0); }
 
 private:
     // Plugin DLL

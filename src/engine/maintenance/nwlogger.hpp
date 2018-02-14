@@ -28,20 +28,22 @@
 
 class LoggerManager;
 
-class NWCOREAPI Logger
-{
+class NWCOREAPI Logger {
 public:
-    enum class Level
-    {
-        verbose, debug, info, warning, error, fatal
+    enum class Level {
+        verbose,
+        debug,
+        info,
+        warning,
+        error,
+        fatal
     };
 
     Logger(const char* fileName, const char* funcName, int lineNumber, Level level, const char* mgr);
     ~Logger();
 
     template <typename T>
-    Logger& operator<<(const T& rhs)
-    {
+    Logger& operator<<(const T& rhs) {
         mContent << rhs;
         return *this;
     }
@@ -50,9 +52,9 @@ public:
 private:
     Level mLevel;
     int mLineNumber;
-    const char *mFileName;
-    const char *mFuncName;
-    bool fileOnly{ false };
+    const char* mFileName;
+    const char* mFuncName;
+    bool fileOnly{false};
     std::stringstream mContent;
     std::lock_guard<std::mutex> mLock;
 

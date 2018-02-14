@@ -26,8 +26,7 @@
 
 using PlayerID = std::string; // Player ID is player's name
 
-struct PlayerData
-{
+struct PlayerData {
     PlayerID mUid;
     bool mOnline;
     std::string mKey;
@@ -36,30 +35,25 @@ struct PlayerData
     AABB mHitbox;
 };
 
-class PlayerManager
-{
+class PlayerManager {
 public:
-    PlayerData* getPlayer(const PlayerID& uid)
-    {
+    PlayerData* getPlayer(const PlayerID& uid) {
         auto player = mPlayers.find(uid);
-        if (player == mPlayers.end())
-        {
+        if (player == mPlayers.end()) {
             warningstream << "Failed to find player:" << uid;
             return nullptr;
         }
         return &player->second;
     }
 
-    PlayerData* loginOrRegister(const PlayerID& uid, const std::string& key)
-    {
+    PlayerData* loginOrRegister(const PlayerID& uid, const std::string& key) {
         auto& player = mPlayers[uid];
-        if (player.mUid.empty())   // new user
+        if (player.mUid.empty()) // new user
         {
             player.mUid = uid;
             // init player data
         }
-        else
-        {
+        else {
             if (player.mKey != key) //wrong password
                 return nullptr;
         }

@@ -25,21 +25,19 @@
 #include "renderer/texture.h"
 #include "game/context/nwcontext.hpp"
 
-NEWorld::NEWorld()
-{
+NEWorld::NEWorld() {
     // Initialize
     getSettings();
     infostream << "Initializing...";
     Window& window = Window::getInstance("NEWorld", 852, 480);
     Texture::init();
     context.plugins.initializePlugins(nwPluginTypeGUI);
-    
+
     // Run
-    constexpr const static int fps = 60;// TODO: read from settings
-    constexpr const static double delayPerFrame = (1000/fps)-0.5;
+    constexpr const static int fps = 60; // TODO: read from settings
+    constexpr const static double delayPerFrame = (1000 / fps) - 0.5;
     GameScene game("TestWorld", window);
-    while(!window.shouldQuit())
-    {
+    while (!window.shouldQuit()) {
         // Update
         window.pollEvents();
         // Render

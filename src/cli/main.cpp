@@ -27,6 +27,6 @@ int NWAPIEXPORT main(int argc, char* argv[]) {
     Server server;
     // TODO: make thread number adjustable in runtime
     server.run(getJsonValue<unsigned short>(getSettings()["server"]["port"], 31111),
-        1);
+               1);
     cli.start();
 }

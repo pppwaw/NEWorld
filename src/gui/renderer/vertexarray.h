@@ -25,22 +25,19 @@
 #include "opengl.h"
 #include <engine/common.h>
 
-class VertexFormat
-{
+class VertexFormat {
 public:
     // Vertex attribute count
     size_t textureCount, colorCount, normalCount, coordinateCount;
     // Vertex attributes count (sum of all)
     int vertexAttributeCount;
 
-    VertexFormat() : textureCount(0), colorCount(0), normalCount(0), coordinateCount(0), vertexAttributeCount(0)
-    {
-    }
+    VertexFormat() : textureCount(0), colorCount(0), normalCount(0), coordinateCount(0), vertexAttributeCount(0) { }
 
     VertexFormat(int textureElementCount, int colorElementCount, int normalElementCount, int coordinateElementCount)
-        : textureCount(textureElementCount), colorCount(colorElementCount), normalCount(normalElementCount), coordinateCount(coordinateElementCount),
-          vertexAttributeCount(textureElementCount + colorElementCount + normalElementCount + coordinateElementCount)
-    {
+        : textureCount(textureElementCount), colorCount(colorElementCount), normalCount(normalElementCount),
+          coordinateCount(coordinateElementCount),
+          vertexAttributeCount(textureElementCount + colorElementCount + normalElementCount + coordinateElementCount) {
         Assert(textureCount <= 3);
         Assert(colorCount <= 4);
         Assert(normalCount == 0 || normalCount == 3);
@@ -48,25 +45,20 @@ public:
     }
 };
 
-class VertexArray
-{
+class VertexArray {
 public:
     VertexArray(int maxVertexes, const VertexFormat& format)
-try :
+    try :
         mMaxVertexes(maxVertexes), mVertexes(0), mFormat(format),
-                     mData(new float[mMaxVertexes * format.vertexAttributeCount]),
-                     mVertexAttributes(new float[format.vertexAttributeCount])
-    {
-    }
-    catch (std::bad_alloc&)
-    {
+        mData(new float[mMaxVertexes * format.vertexAttributeCount]),
+        mVertexAttributes(new float[format.vertexAttributeCount]) { }
+    catch (std::bad_alloc&) {
         warningstream << "Failed to create Vertex Array: Out of memory. "
-        <<(mMaxVertexes * format.vertexAttributeCount)*sizeof(float)/1024
-        <<"KiB needed.";
+            << (mMaxVertexes * format.vertexAttributeCount) * sizeof(float) / 1024
+            << "KiB needed.";
     }
 
-    ~VertexArray()
-    {
+    ~VertexArray() {
         delete[] mData;
         delete[] mVertexAttributes;
     }
@@ -97,78 +89,57 @@ try :
         return *this;
     }
 
-    void clear()
-    {
+    void clear() {
         memset(mData, 0, mMaxVertexes * mFormat.vertexAttributeCount * sizeof(float));
         memset(mVertexAttributes, 0, mFormat.vertexAttributeCount * sizeof(float));
         mVertexes = 0;
     }
 
     // Set texture coordinates
-    void setTexture(size_t size, const float* texture)
-    {
+    void setTexture(size_t size, const float* texture) {
         Assert(size <= mFormat.textureCount);
         memcpy(mVertexAttributes, texture, size * sizeof(float));
     }
 
-    void setTexture(std::initializer_list<float> texture)
-    {
-        setTexture(texture.size(), texture.begin());
-    }
+    void setTexture(std::initializer_list<float> texture) { setTexture(texture.size(), texture.begin()); }
 
     // Set color value
-    void setColor(size_t size, const float* color)
-    {
+    void setColor(size_t size, const float* color) {
         Assert(size <= mFormat.colorCount);
         memcpy(mVertexAttributes + mFormat.textureCount, color, size * sizeof(float));
     }
 
-    void setColor(std::initializer_list<float> color)
-    {
-        setColor(color.size(), color.begin());
-    }
+    void setColor(std::initializer_list<float> color) { setColor(color.size(), color.begin()); }
 
     // Set normal vector
-    void setNormal(size_t size, const float* normal)
-    {
+    void setNormal(size_t size, const float* normal) {
         Assert(size <= mFormat.normalCount);
         memcpy(mVertexAttributes + mFormat.textureCount + mFormat.colorCount, normal, size * sizeof(float));
     }
 
-    void setNormal(std::initializer_list<float> normal)
-    {
-        setNormal(normal.size(), normal.begin());
-    }
+    void setNormal(std::initializer_list<float> normal) { setNormal(normal.size(), normal.begin()); }
 
     // Add vertex
-    void addVertex(const float* coords)
-    {
+    void addVertex(const float* coords) {
         auto cnt = mFormat.textureCount + mFormat.colorCount + mFormat.normalCount;
         memcpy(mData + mVertexes * mFormat.vertexAttributeCount, mVertexAttributes, cnt * sizeof(float));
         memcpy(mData + mVertexes * mFormat.vertexAttributeCount + cnt, coords, mFormat.coordinateCount * sizeof(float));
         mVertexes++;
     }
 
-    void addVertex(std::initializer_list<float> coords)
-    {
-        addVertex(coords.begin());
-    }
+    void addVertex(std::initializer_list<float> coords) { addVertex(coords.begin()); }
 
-    void addPrimitive(size_t size, std::initializer_list<float> d)
-    {
-        memcpy(mData + mVertexes * mFormat.vertexAttributeCount, d.begin(), size * mFormat.vertexAttributeCount * sizeof(float));
+    void addPrimitive(size_t size, std::initializer_list<float> d) {
+        memcpy(mData + mVertexes * mFormat.vertexAttributeCount, d.begin(),
+               size * mFormat.vertexAttributeCount * sizeof(float));
         mVertexes += size;
     }
 
     // Get current vertex format
-    const VertexFormat& getFormat() const
-    {
-        return mFormat;
-    }
+    const VertexFormat& getFormat() const { return mFormat; }
 
     // Get current vertex data
-    const float* getData() const
-    {
+    const float* getData() const {
         /*debugstream << "getData() called: "
             << mVertexes << " used out of " << mMaxVertexes
             << " (" << int(mVertexes / mMaxVertexes * 1000) / 10 << "), \t"
@@ -178,10 +149,7 @@ try :
     }
 
     // Get current vertex count
-    size_t getVertexCount() const
-    {
-        return mVertexes;
-    }
+    size_t getVertexCount() const { return mVertexes; }
 
 private:
     // Max vertex count
@@ -196,40 +164,32 @@ private:
     float* mVertexAttributes;
 };
 
-class VertexBuffer : public NonCopyable
-{
+class VertexBuffer : public NonCopyable {
 public:
-    VertexBuffer(): id(0), vertexes(0)
-    {
-    }
+    VertexBuffer(): id(0), vertexes(0) { }
 
     VertexBuffer(VertexBufferID id_, int vertexes_, const VertexFormat& format_):
-        id(id_), vertexes(vertexes_), format(format_)
-    {
-    }
+        id(id_), vertexes(vertexes_), format(format_) { }
 
     VertexBuffer(VertexBuffer&& rhs) noexcept:
-            id(rhs.id), vertexes(rhs.vertexes), format(rhs.format)
-    {
+        id(rhs.id), vertexes(rhs.vertexes), format(rhs.format) {
         rhs.vertexes = rhs.id = 0;
         rhs.format = VertexFormat();
     }
 
     explicit VertexBuffer(const VertexArray& va);
 
-    VertexBuffer& operator=(VertexBuffer&& rhs) noexcept
-    {
+    VertexBuffer& operator=(VertexBuffer&& rhs) noexcept {
 
-        id = rhs.id; vertexes = rhs.vertexes; format = rhs.format;
+        id = rhs.id;
+        vertexes = rhs.vertexes;
+        format = rhs.format;
         rhs.vertexes = rhs.id = 0;
         rhs.format = VertexFormat();
         return *this;
     }
 
-    ~VertexBuffer()
-    {
-        destroy();
-    }
+    ~VertexBuffer() { destroy(); }
 
     // upload new data
     void update(const VertexArray& va);
@@ -238,20 +198,15 @@ public:
     void render() const;
 
     // Destroy vertex buffer
-    void destroy()
-    {
-        if (id)
-        {
+    void destroy() {
+        if (id) {
             glDeleteBuffersARB(1, &id);
             vertexes = id = 0;
             format = VertexFormat();
         }
     }
 
-    bool isEmpty() const noexcept
-    {
-        return (vertexes == 0);
-    }
+    bool isEmpty() const noexcept { return (vertexes == 0); }
 
 private:
     // Buffer ID

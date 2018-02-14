@@ -25,39 +25,24 @@
 
 
 template <typename T>
-class Mat4
-{
+class Mat4 {
 public:
     T data[16];
 
-    Mat4()
-    {
-        memset(data, 0, sizeof(data));
-    }
+    Mat4() { memset(data, 0, sizeof(data)); }
 
-    Mat4(const Mat4& rhs)
-    {
-        memcpy(data, rhs.data, sizeof(data));
-    }
+    Mat4(const Mat4& rhs) { memcpy(data, rhs.data, sizeof(data)); }
 
-    explicit Mat4(T x)
-    {
+    explicit Mat4(T x) {
         memset(data, 0, sizeof(data));
         data[0] = data[5] = data[10] = data[15] = x; // Identity matrix
     }
 
-    explicit Mat4(T* src)
-    {
-        memcpy(data, src, sizeof(data));
-    }
+    explicit Mat4(T* src) { memcpy(data, src, sizeof(data)); }
 
-    T* operator[](size_t index)
-    {
-        return data + index * 4;
-    }
+    T* operator[](size_t index) { return data + index * 4; }
 
-    Mat4 operator*(const Mat4& rhs) const
-    {
+    Mat4 operator*(const Mat4& rhs) const {
         Mat4 res;
         res.data[0] = data[0] * rhs.data[0] + data[1] * rhs.data[4] + data[2] * rhs.data[8] + data[3] * rhs.data[12];
         res.data[1] = data[0] * rhs.data[1] + data[1] * rhs.data[5] + data[2] * rhs.data[9] + data[3] * rhs.data[13];
@@ -69,24 +54,28 @@ public:
         res.data[7] = data[4] * rhs.data[3] + data[5] * rhs.data[7] + data[6] * rhs.data[11] + data[7] * rhs.data[15];
         res.data[8] = data[8] * rhs.data[0] + data[9] * rhs.data[4] + data[10] * rhs.data[8] + data[11] * rhs.data[12];
         res.data[9] = data[8] * rhs.data[1] + data[9] * rhs.data[5] + data[10] * rhs.data[9] + data[11] * rhs.data[13];
-        res.data[10] = data[8] * rhs.data[2] + data[9] * rhs.data[6] + data[10] * rhs.data[10] + data[11] * rhs.data[14];
-        res.data[11] = data[8] * rhs.data[3] + data[9] * rhs.data[7] + data[10] * rhs.data[11] + data[11] * rhs.data[15];
-        res.data[12] = data[12] * rhs.data[0] + data[13] * rhs.data[4] + data[14] * rhs.data[8] + data[15] * rhs.data[12];
-        res.data[13] = data[12] * rhs.data[1] + data[13] * rhs.data[5] + data[14] * rhs.data[9] + data[15] * rhs.data[13];
-        res.data[14] = data[12] * rhs.data[2] + data[13] * rhs.data[6] + data[14] * rhs.data[10] + data[15] * rhs.data[14];
-        res.data[15] = data[12] * rhs.data[3] + data[13] * rhs.data[7] + data[14] * rhs.data[11] + data[15] * rhs.data[15];
+        res.data[10] = data[8] * rhs.data[2] + data[9] * rhs.data[6] + data[10] * rhs.data[10] + data[11] * rhs.data[14
+        ];
+        res.data[11] = data[8] * rhs.data[3] + data[9] * rhs.data[7] + data[10] * rhs.data[11] + data[11] * rhs.data[15
+        ];
+        res.data[12] = data[12] * rhs.data[0] + data[13] * rhs.data[4] + data[14] * rhs.data[8] + data[15] * rhs.data[12
+        ];
+        res.data[13] = data[12] * rhs.data[1] + data[13] * rhs.data[5] + data[14] * rhs.data[9] + data[15] * rhs.data[13
+        ];
+        res.data[14] = data[12] * rhs.data[2] + data[13] * rhs.data[6] + data[14] * rhs.data[10] + data[15] * rhs.data[
+            14];
+        res.data[15] = data[12] * rhs.data[3] + data[13] * rhs.data[7] + data[14] * rhs.data[11] + data[15] * rhs.data[
+            15];
         return res;
     }
 
-    Mat4& operator*=(const Mat4& rhs)
-    {
+    Mat4& operator*=(const Mat4& rhs) {
         *this = *this * rhs;
         return *this;
     }
 
     // Transpose matrix
-    void transpose()
-    {
+    void transpose() {
         std::swap(data[1], data[4]);
         std::swap(data[2], data[8]);
         std::swap(data[3], data[12]);
@@ -96,8 +85,7 @@ public:
     }
 
     // Get transposed matrix
-    Mat4 getTranspose() const
-    {
+    Mat4 getTranspose() const {
         Mat4 res;
         res.data[0] = data[0], res.data[1] = data[4], res.data[2] = data[8], res.data[3] = data[12];
         res.data[4] = data[1], res.data[5] = data[5], res.data[6] = data[9], res.data[7] = data[13];
@@ -107,8 +95,7 @@ public:
     }
 
     // Construct a translation matrix
-    static Mat4 translation(const Vec3<T>& delta)
-    {
+    static Mat4 translation(const Vec3<T>& delta) {
         Mat4 res(T(1.0));
         res.data[3] = delta.x;
         res.data[7] = delta.y;
@@ -117,8 +104,7 @@ public:
     }
 
     // Construct a rotation matrix
-    static Mat4 rotation(T degrees, Vec3<T> vec)
-    {
+    static Mat4 rotation(T degrees, Vec3<T> vec) {
         Mat4 res;
         vec.normalize();
         T alpha = degrees * T(M_PI) / T(180.0), s = sin(alpha), c = cos(alpha), t = 1.0f - c;
@@ -136,8 +122,7 @@ public:
     }
 
     // Construct a perspective projection matrix
-    static Mat4 perspective(T fov, T aspect, T zNear, T zFar)
-    {
+    static Mat4 perspective(T fov, T aspect, T zNear, T zFar) {
         Mat4 res;
         T f = T(1.0) / tan(fov * T(M_PI) / T(180.0) / T(2.0));
         T a = zNear - zFar;
@@ -150,8 +135,7 @@ public:
     }
 
     // Construct an orthogonal projection matrix
-    static Mat4 ortho(T left, T right, T top, T bottom, T zNear, T zFar)
-    {
+    static Mat4 ortho(T left, T right, T top, T bottom, T zNear, T zFar) {
         T a = right - left;
         T b = top - bottom;
         T c = zFar - zNear;
@@ -167,8 +151,7 @@ public:
     }
 
     // Multiply with Vec3 (with homogeneous coords normalized)
-    Vec3<T> transformVec3(const Vec3<T>& vec) const
-    {
+    Vec3<T> transformVec3(const Vec3<T>& vec) const {
         Vec3<T> res(data[0] * vec.x + data[4] * vec.y + data[8] * vec.z + data[12],
                     data[1] * vec.x + data[5] * vec.y + data[9] * vec.z + data[13],
                     data[2] * vec.x + data[6] * vec.y + data[10] * vec.z + data[14]);

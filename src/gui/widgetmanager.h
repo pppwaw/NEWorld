@@ -16,6 +16,7 @@
 * You should have received a copy of the GNU Lesser General Public License
 * along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 */
+#if 0
 #ifndef WIDGET_MANAGER_H
 #define WIDGET_MANAGER_H
 #include <unordered_map>
@@ -24,14 +25,12 @@
 class WidgetManager
 {
 public:
-    WidgetManager(nk_context* nkctx):mNkContext(nkctx){}
     using WidgetType = std::unordered_map<std::string, std::shared_ptr<Widget>>;
     void render()
     {
         for (auto& widget : mWidgets)
-            widget.second->_render(mNkContext);
+            widget.second->_render();
 
-        nk_end(mNkContext);
         // TODO: add an option to adjust the arguments
         nk_sdl_render(NK_ANTI_ALIASING_ON, 512 * 1024, 128 * 1024);
     }
@@ -65,7 +64,7 @@ public:
     
 private:
     WidgetType mWidgets;
-    nk_context* mNkContext;
 };
 
+#endif
 #endif

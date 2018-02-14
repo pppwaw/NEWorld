@@ -24,8 +24,7 @@
 
 #define FUNCTION_ALIAS(A,B) template <typename... Args> auto B(Args&&... args) -> decltype(A(std::forward<Args>(args)...)){return A(std::forward<Args>(args)...);}
 
-inline std::vector<std::string> split(const std::string& s, char delim)
-{
+inline std::vector<std::string> split(const std::string& s, char delim) {
     std::vector<std::string> elems;
     std::stringstream ss;
     ss.str(s);
@@ -36,8 +35,7 @@ inline std::vector<std::string> split(const std::string& s, char delim)
     return elems;
 };
 
-inline void trim(std::string& s)
-{
+inline void trim(std::string& s) {
     if (s.empty())
         return;
 
@@ -45,8 +43,4 @@ inline void trim(std::string& s)
     s.erase(s.find_last_not_of(" ") + 1);
 }
 
-inline void strtolower(std::string& s)
-{
-    transform(s.begin(), s.end(), s.begin(), tolower);
-}
-
+inline void strtolower(std::string& s) { transform(s.begin(), s.end(), s.begin(), tolower); }

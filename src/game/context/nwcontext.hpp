@@ -3,8 +3,7 @@
 #include "sync_service/world/nwblock.h"
 #include "engine/nwrpc/nwrpc.hpp"
 
-struct GameContext
-{
+struct GameContext {
     BlockManager blocks;
     PluginManager plugins;
     RPC rpc;

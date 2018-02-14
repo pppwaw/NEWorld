@@ -20,8 +20,7 @@
 #include "server.h"
 #include "game/context/nwcontext.hpp"
 
-Server::Server()
-{
+Server::Server() {
     using namespace std::chrono;
     auto startTime = steady_clock::now();
 
@@ -37,20 +36,15 @@ Server::Server()
 }
 
 // This function won't block the thread
-void Server::run(uint16_t port, size_t threadNumber)
-{
+void Server::run(uint16_t port, size_t threadNumber) {
     // Network
     context.rpc.enableServer(port);
     context.rpc.getServer().async_run(threadNumber);
     infostream << "Server RPC started. Thread number: " << threadNumber;
 }
 
-void Server::stop()
-{
-    context.rpc.getServer().stop();
-}
+void Server::stop() { context.rpc.getServer().stop(); }
 
-Server::~Server()
-{
+Server::~Server() {
     // TODO: Terminate here
 }
