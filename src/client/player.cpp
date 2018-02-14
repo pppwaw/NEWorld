@@ -76,7 +76,7 @@ void Player::rotationMove()
     mRotationSpeed *= 0.6;
 }
 
-inline Player::Player(size_t worldID) : PlayerObject(worldID)
+Player::Player(size_t worldID) : PlayerObject(worldID)
 {
     // Register update event
     chunkService.getTaskDispatcher().addRegularReadOnlyTask(
