@@ -31,8 +31,7 @@ void VertexBuffer::update(const VertexArray& va)
             glGenBuffersARB(1, &id);
         glBindBufferARB(GL_ARRAY_BUFFER_ARB, id);
         glBufferDataARB(GL_ARRAY_BUFFER_ARB, va.getVertexCount() * sizeof(float) *
-            format.vertexAttributeCount,
-            va.getData(), GL_STATIC_DRAW_ARB);
+            format.vertexAttributeCount, va.getData(), GL_STATIC_DRAW_ARB);
     }
 }
 

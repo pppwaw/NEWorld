@@ -76,7 +76,7 @@ GameScene::GameScene(const std::string& name, const Window& window):
     mWindow(window),
     mPlayer(0),
     mCurrentWorld(chunkService.getWorlds().addWorld("test world")),
-    mWorldRenderer(*mCurrentWorld, 2)
+    mWorldRenderer(*mCurrentWorld, 3)
 {
     mPlayer.setPosition(Vec3d(-16.0, 48.0, 32.0));
     mPlayer.setRotation(Vec3d(-45.0, -22.5, 0.0));

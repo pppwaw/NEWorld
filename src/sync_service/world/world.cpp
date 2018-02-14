@@ -170,7 +170,7 @@ public:
         PODOrderedList<int, Chunk*, MaxChunkUnloadCount, std::greater> unloadList;
 
         // TODO: make the load range adjustable
-        generateLoadUnloadList(mWorld, mPlayer.getPosition(), 3, loadList, unloadList);
+        generateLoadUnloadList(mWorld, mPlayer.getPosition(), 4, loadList, unloadList);
 
         for (auto& loadPos : loadList) {
             if (chunkService.isAuthority()) {

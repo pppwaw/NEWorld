@@ -24,6 +24,7 @@
 #include "engine/nwstdlib/nwstrings.h"
 #include <unordered_map>
 #include <thread>
+#include <functional>
 
 class CommandExecuteStat
 {
