@@ -1,23 +1,21 @@
+image: Visual Studio 2017
 version: '{build}'
-cache:
-  - dependencies -> build\appveyor_install.bat
+cache: c:\tools\vcpkg\installed\
 platform:
   - x86
   - x64
 configuration:
+  - Debug
   - Release
 clone_folder: C:\NEWorld
 clone_depth: 1
 install:
-  # Install dependencies
-  - if not exist "dependencies\" .\build\appveyor_install.bat
-  - if %PLATFORM% equ x86 (.\scripts\bootstrap.bat) else (.\scripts\bootstrap_64.bat)
+  - if %PLATFORM% equ x86 (vcpkg.exe install sdl2 sdl2-image glew rpclib freetype) else (vcpkg.exe install sdl2:x64-windows sdl2-image:x64-windows glew:x64-windows rpclib:x64-windows freetype:x64-windows) > nul
 build:
   project: build/VisualStudio_v14/NEWorld.sln
   verbosity: minimal
 on_success:
   # Create an archive
-  - if %PLATFORM% equ x86 (copy .\dependencies\dll\* .\release\) else (copy .\dependencies\dll_x64\* .\release\) > nul
   - 7z a c:\NEWorld.zip .\licenses > nul
   - cd .\release
   - 7z a c:\NEWorld.zip . > nul
