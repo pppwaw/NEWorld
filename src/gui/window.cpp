@@ -21,6 +21,33 @@
 #include "engine/maintenance/nwdebug.h"
 #include "renderer/renderer.h"
 
+void Window::pollEvents()
+{
+    nk_input_begin(mNuklearContext);
+    SDL_Event e;
+    while (SDL_PollEvent(&e))
+    {
+        nk_sdl_handle_event(&e);
+        switch (e.type)
+        {
+        case SDL_QUIT:
+            mShouldQuit = true;
+            break;
+        case SDL_WINDOWEVENT:
+            switch (e.window.event)
+            {
+            case SDL_WINDOWEVENT_RESIZED:
+            case SDL_WINDOWEVENT_SIZE_CHANGED:
+                mWidth = e.window.data1;
+                mHeight = e.window.data2;
+                break;
+            }
+            break;
+        }
+    }
+    nk_input_end(mNuklearContext);
+}
+
 Window::Window(const std::string& title, int width, int height)
     : mTitle(title), mWidth(width), mHeight(height)
 {
@@ -38,12 +65,12 @@ Window::Window(const std::string& title, int width, int height)
     SDL_GL_SetSwapInterval(0); // VSync
     makeCurrentDraw();
     Renderer::init();
-    //mNuklearContext = nk_sdl_init(mWindow);
+    mNuklearContext = nk_sdl_init(mWindow);
 }
 
 Window::~Window()
 {
-//    nk_sdl_shutdown();
+    nk_sdl_shutdown();
     SDL_DestroyWindow(mWindow);
     SDL_GL_DeleteContext(mContext);
     SDL_Quit();

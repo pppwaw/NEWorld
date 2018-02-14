@@ -167,5 +167,5 @@ void GameScene::render()
 
     glDisable(GL_DEPTH_TEST);
 
-//    mGUIWidgets.render();
+    mGUIWidgets.render();
 }

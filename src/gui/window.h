@@ -45,42 +45,17 @@ public:
         return SDL_GetKeyboardState(nullptr);
     }
 
-    int getWidth() const
+    int getWidth() const noexcept
     {
         return mWidth;
     }
 
-    int getHeight() const
+    int getHeight() const noexcept
     {
         return mHeight;
     }
 
-    void pollEvents()
-    {
-        //nk_input_begin(mNuklearContext);
-        SDL_Event e;
-        while (SDL_PollEvent(&e))
-        {
-            //nk_sdl_handle_event(&e);
-            switch (e.type)
-            {
-            case SDL_QUIT:
-                mShouldQuit = true;
-                break;
-            case SDL_WINDOWEVENT:
-                switch (e.window.event)
-                {
-                case SDL_WINDOWEVENT_RESIZED:
-                case SDL_WINDOWEVENT_SIZE_CHANGED:
-                    mWidth = e.window.data1;
-                    mHeight = e.window.data2;
-                    break;
-                }
-                break;
-            }
-        }
-        //nk_input_end(mNuklearContext);
-    }
+    void pollEvents();
 
     static Window& getInstance(const std::string& title="", int width=0, int height=0)
     {
@@ -88,7 +63,7 @@ public:
         return win;
     }
 
-    bool shouldQuit() const
+    bool shouldQuit() const noexcept
     {
         return mShouldQuit;
     }
@@ -103,7 +78,7 @@ private:
     ~Window();
 
     SDL_GLContext mContext;
-    //nk_context* mNuklearContext;
+    nk_context* mNuklearContext;
 };
 
 #endif

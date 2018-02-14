@@ -48,7 +48,7 @@ private:
     // Player
     Player mPlayer;
     // Widget manager
-    //WidgetManager mGUIWidgets;
+    WidgetManager mGUIWidgets;
     // Update scheduler
     RateMeter mUpdateScheduler{UpdateFrequency};
     // Rate counters
