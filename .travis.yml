@@ -3,7 +3,6 @@ sudo: required
 dist: trusty
 cache:
   directories:
-    - rpclib
     - bin/CMakeFiles/
 matrix:
   include:
@@ -34,15 +33,11 @@ install:
   - sudo cp -r /usr/include/freetype2/* /usr/include/
   - sudo cp -r /usr/include/freetype2 /usr/include/freetype
   - |
-    if [ ! -f ./rpclib/cached_mark ];
-    then
     git clone https://github.com/rpclib/rpclib.git
     cd ./rpclib
     cmake . -DBUILD_SHARED_LIBS=ON && make -j8
     sudo make install 
-    touch cached_mark
     cd ..
-    fi
 script:
   - cd ./release/
   - cmake .

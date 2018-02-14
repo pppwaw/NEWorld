@@ -114,6 +114,8 @@ public:
      *        This function should be called from the main thread.
      */
     void processRenderTasks() {
+        std::lock_guard<std::mutex> lock(mMutex);
+
         for (auto& task : mRenderTasks) task->task(mChunkService);
         mRenderTasks.clear();
         std::swap(mRenderTasks, mNextRenderTasks);
