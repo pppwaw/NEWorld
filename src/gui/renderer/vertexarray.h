@@ -74,6 +74,29 @@ try :
     VertexArray(const VertexArray&) = delete;
     VertexArray& operator=(const VertexArray&) = delete;
 
+    VertexArray(VertexArray&& other):
+        mVertexes(std::move(other.mVertexes)),
+        mMaxVertexes(std::move(other.mMaxVertexes)),
+        mData(other.mData),
+        mVertexAttributes(other.mVertexAttributes),
+        mFormat(std::move(other.mFormat)) {
+        if (this == &other) return;
+        other.mData = nullptr;
+        other.mVertexAttributes = nullptr;
+    }
+
+    VertexArray& operator=(VertexArray&& other) {
+        if (this == &other) return *this;
+        mVertexes = other.mVertexes;
+        mMaxVertexes = other.mMaxVertexes;
+        mData = other.mData;
+        mVertexAttributes = other.mVertexAttributes;
+        mFormat = other.mFormat;
+        other.mData = nullptr;
+        other.mVertexAttributes = nullptr;
+        return *this;
+    }
+
     void clear()
     {
         memset(mData, 0, mMaxVertexes * mFormat.vertexAttributeCount * sizeof(float));
@@ -157,7 +180,7 @@ try :
 
 private:
     // Max vertex count
-    const size_t mMaxVertexes;
+    size_t mMaxVertexes;
     // Vertex count
     size_t mVertexes;
     // Vertex array format

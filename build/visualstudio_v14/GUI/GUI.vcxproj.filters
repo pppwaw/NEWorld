@@ -16,6 +16,9 @@
     <Filter Include="Source\window">
       <UniqueIdentifier>{90cec6ff-d8b3-4f5a-90df-6a293366de9f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\tasks">
+      <UniqueIdentifier>{5e3c0eec-be31-4c1c-9f64-45b936dbfc0e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\gui\renderer\opengl.h">
@@ -60,6 +63,9 @@
     <ClInclude Include="..\..\..\src\gui\renderer\worldrenderer.h">
       <Filter>Source\renderer</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\gui\renderdetector.hpp">
+      <Filter>Source\tasks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\gui\renderer\renderer.cpp">
@@ -94,6 +100,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\gui\renderer\worldrenderer.cpp">
       <Filter>Source\renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\gui\renderdetector.cpp">
+      <Filter>Source\tasks</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

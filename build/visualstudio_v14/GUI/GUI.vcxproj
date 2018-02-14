@@ -23,6 +23,7 @@
     <ClInclude Include="..\..\..\src\gui\gamescene.h" />
     <ClInclude Include="..\..\..\src\gui\neworld.h" />
     <ClInclude Include="..\..\..\src\gui\nuklear_helper.h" />
+    <ClInclude Include="..\..\..\src\gui\renderdetector.hpp" />
     <ClInclude Include="..\..\..\src\gui\renderer\blockrenderer.h" />
     <ClInclude Include="..\..\..\src\gui\renderer\chunkrenderer.h" />
     <ClInclude Include="..\..\..\src\gui\renderer\opengl.h" />
@@ -40,6 +41,7 @@
     <ClCompile Include="..\..\..\src\gui\neworld.cpp" />
     <ClCompile Include="..\..\..\src\gui\nuklear_helper.cpp" />
     <ClCompile Include="..\..\..\src\gui\nwapigui.cpp" />
+    <ClCompile Include="..\..\..\src\gui\renderdetector.cpp" />
     <ClCompile Include="..\..\..\src\gui\renderer\blockrenderer.cpp" />
     <ClCompile Include="..\..\..\src\gui\renderer\renderer.cpp" />
     <ClCompile Include="..\..\..\src\gui\renderer\texture.cpp" />

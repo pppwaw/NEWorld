@@ -34,7 +34,11 @@ class ChunkService;
  *        chunks.
  */
 struct NWCOREAPI ReadOnlyTask {
-    std::function<void(const ChunkService&)> task;
+    virtual ~ReadOnlyTask() = default;
+    virtual void task(const ChunkService&) = 0;
+    virtual std::unique_ptr<ReadOnlyTask> clone() {
+        throw std::runtime_error("Function not implemented");
+    }
 };
 /**
  * \brief This type of tasks will be executed in one thread.
@@ -42,23 +46,23 @@ struct NWCOREAPI ReadOnlyTask {
  *        without the need to worry thread safety.
  */
 struct NWCOREAPI ReadWriteTask {
-    std::function<void(ChunkService&)> task;
+    virtual ~ReadWriteTask() = default;
+    virtual void task(ChunkService&) = 0;
+    virtual std::unique_ptr<ReadWriteTask> clone() {
+        throw std::runtime_error("Function not implemented");
+    }
 };
 /**
  * \brief This type of tasks will be executed in main thread.
  *        Thus, it is safe to call OpenGL function inside.
  */
 struct NWCOREAPI RenderTask {
-    std::function<void(const ChunkService&)> task;
-    void* data;
+    virtual ~RenderTask() = default;
+    virtual void task(const ChunkService&) = 0;
+    virtual std::unique_ptr<RenderTask> clone() {
+        throw std::runtime_error("Function not implemented");
+    }
 };
-
-template <class TaskType>
-struct NWCOREAPI RegularTask {
-    std::function<TaskType()> taskGenerator;
-};
-using RegularReadOnlyTask = RegularTask<ReadOnlyTask>;
-using RegularReadWriteTask = RegularTask<ReadWriteTask>;
 
 class NWCOREAPI TaskDispatcher {
 public:
@@ -84,26 +88,25 @@ public:
         infostream << "Update threads started.";
     }
 
-    // TODO: NEED FIX! NOT THREAD SAFE!
-    void addReadOnlyTask(const ReadOnlyTask& task) noexcept {
+    void addReadOnlyTask(std::unique_ptr<ReadOnlyTask> task) noexcept {
         std::lock_guard<std::mutex> lock(mMutex);
-        mNextReadOnlyTasks.emplace_back(task);
+        mNextReadOnlyTasks.emplace_back(std::move(task));
     }
-    void addReadWriteTask(const ReadWriteTask& task) noexcept {
+    void addReadWriteTask(std::unique_ptr<ReadWriteTask> task) noexcept {
         std::lock_guard<std::mutex> lock(mMutex);
-        mNextReadWriteTasks.emplace_back(task);
+        mNextReadWriteTasks.emplace_back(std::move(task));
     }
-    void addRenderTask(const RenderTask& task) noexcept {
+    void addRenderTask(std::unique_ptr<RenderTask> task) noexcept {
         std::lock_guard<std::mutex> lock(mMutex);
-        mNextRenderTasks.emplace_back(task);
+        mNextRenderTasks.emplace_back(std::move(task));
     }
-    void addRegularReadOnlyTask(const RegularReadOnlyTask& task) noexcept {
+    void addRegularReadOnlyTask(std::unique_ptr<ReadOnlyTask> task) noexcept {
         std::lock_guard<std::mutex> lock(mMutex);
-        mRegularReadOnlyTasks.emplace_back(task);
+        mRegularReadOnlyTasks.emplace_back(std::move(task));
     }
-    void addRegularReadWriteTask(const RegularReadWriteTask& task) noexcept {
+    void addRegularReadWriteTask(std::unique_ptr<ReadWriteTask> task) noexcept {
         std::lock_guard<std::mutex> lock(mMutex);
-        mRegularReadWriteTasks.emplace_back(task);
+        mRegularReadWriteTasks.emplace_back(std::move(task));
     }
 
     /**
@@ -111,7 +114,7 @@ public:
      *        This function should be called from the main thread.
      */
     void processRenderTasks() {
-        for (auto& task : mRenderTasks) task.task(mChunkService);
+        for (auto& task : mRenderTasks) task->task(mChunkService);
         mRenderTasks.clear();
         std::swap(mRenderTasks, mNextRenderTasks);
     }
@@ -122,11 +125,9 @@ private:
     // TODO: replace it with lock-free structure.
     std::mutex mMutex;
 
-    std::vector<ReadOnlyTask> mReadOnlyTasks, mNextReadOnlyTasks;
-    std::vector<ReadWriteTask> mReadWriteTasks, mNextReadWriteTasks;
-    std::vector<RenderTask> mRenderTasks, mNextRenderTasks;
-    std::vector<RegularReadOnlyTask> mRegularReadOnlyTasks;
-    std::vector<RegularReadWriteTask> mRegularReadWriteTasks;
+    std::vector<std::unique_ptr<ReadOnlyTask>> mReadOnlyTasks, mNextReadOnlyTasks, mRegularReadOnlyTasks;
+    std::vector<std::unique_ptr<ReadWriteTask>> mReadWriteTasks, mNextReadWriteTasks, mRegularReadWriteTasks;
+    std::vector<std::unique_ptr<RenderTask>> mRenderTasks, mNextRenderTasks;
     std::vector<std::thread> mThreads;
     size_t mThreadNumber;
     std::atomic<size_t> mNumberOfUnfinishedThreads;

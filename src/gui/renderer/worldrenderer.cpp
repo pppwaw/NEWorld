@@ -19,6 +19,8 @@
 
 #include "worldrenderer.h"
 #include "client/player.h"
+#include "../renderdetector.hpp"
+#include <GL/glew.h>
 
 size_t WorldRenderer::render(const Vec3i& position) const
 {
@@ -46,84 +48,7 @@ size_t WorldRenderer::render(const Vec3i& position) const
 }
 
 void WorldRenderer::registerTask(ChunkService & chunkService, Player & player) noexcept {
-    ReadOnlyTask renderDetectorTask{
-        [&](const ChunkService& cs) {
-            renderDetector(cs, mWorld.getWorldID(), player.getPosition());
-        }
-    };
-
     chunkService.getTaskDispatcher().addRegularReadOnlyTask(
-        { [=]() {return renderDetectorTask; } }
+        std::make_unique<RenderDetectorTask>(*this, mWorld.getWorldID(), player)
     );
-}
-
-void WorldRenderer::VAGenerate(const Chunk * chunk) {
-    // TODO: only a workaround, avoid void* if possible
-    Vec3i chunkPosition = chunk->getPosition();
-    RenderTask task;
-    // TODO: maybe build a VA pool can speed this up.
-    task.data = (void*)(new ChunkRenderData());
-    task.task = {
-        [=](const ChunkService&)
-    {
-        ChunkRenderData* crd = static_cast<ChunkRenderData*>(task.data);
-        VBOGenerateTask(chunkPosition, *crd);
-        delete crd;
-    }
-    };
-    static_cast<ChunkRenderData*>(task.data)->generate(chunk);
-    chunkService.getTaskDispatcher().addRenderTask(task);
-}
-
-void WorldRenderer::VBOGenerateTask(const Vec3i & position, ChunkRenderData& crd) {
-    try {
-        mWorld.getChunks()[position].setUpdated(false);
-    } catch(std::out_of_range&) {
-        return; // chunk is unloaded
-    }
-    mChunkRenderers.insert(std::make_pair(position, ChunkRenderer(crd)));
-}
-
-void WorldRenderer::renderDetector(const ChunkService & cs, size_t currentWorldID, Vec3d playerPosition) {
-    int counter = 0;
-    // TODO: improve performance by adding multiple instances of this and set a step when itering the chunks.
-    // Render build list
-    //PODOrderedList<int, Chunk*, MaxChunkRenderCount> chunkRenderList;
-    Vec3i chunkpos = World::getChunkPos(playerPosition);
-    for (const auto& chunk : chunkService.getWorlds().getWorld(currentWorldID)->getChunks()) {
-        auto chunkPosition = chunk.second->getPosition();
-        // In render range, pending to render
-        if (chunk.second->isUpdated() &&
-            chunkpos.chebyshevDistance(chunkPosition) <= mRenderDist)
-        {
-            if (neighbourChunkLoadCheck(chunkPosition)) {
-                VAGenerate(chunk.second.get());
-                if (counter++ == 10) break;
-            }
-        }
-        else
-        {
-            // TODO: Unload unneeded VBO.
-            //       We can't do it here since it's not thread safe
-            /*
-            auto iter = mChunkRenderers.find(chunkPosition);
-            if (iter != mChunkRenderers.end())
-            mChunkRenderers.erase(iter);
-            */
-        }
-    }
-}
-
-
-bool WorldRenderer::neighbourChunkLoadCheck(const Vec3i& pos) const
-{
-    constexpr std::array<Vec3i, 6> delta
-    {
-            Vec3i(1, 0, 0), Vec3i(-1, 0, 0), Vec3i(0, 1, 0),
-            Vec3i(0,-1, 0), Vec3i(0, 0, 1), Vec3i(0, 0,-1)
-    };
-    for (auto&& p : delta)
-        if (!mWorld.isChunkLoaded(pos + p))
-            return false;
-    return true;
 }

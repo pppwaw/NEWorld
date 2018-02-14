@@ -17,13 +17,9 @@
 * along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef WORLDCLIENT_H_
-#define WORLDCLIENT_H_
-
-#include <array>
+#pragma once
 #include <unordered_map>
 #include "chunkrenderer.h"
-#include "engine/nwstdlib/nworderedlist.hpp"
 #include "sync_service/chunkservice.hpp"
 
 const int MaxChunkRenderCount = 4;
@@ -44,20 +40,12 @@ public:
 
     void registerTask(ChunkService& chunkService, Player& player) noexcept;
 
-private:
-    void VAGenerate(const Chunk* chunk);
-    void VBOGenerateTask(const Vec3i& position, ChunkRenderData& crd);
-    void renderDetector(const ChunkService& cs, size_t currentWorldID, Vec3d playerPosition);
+    friend class RenderDetectorTask;
 
+private:
     const World& mWorld;
     // Ranges
     int mRenderDist = 0;
     // Chunk Renderers
     std::unordered_map<Vec3i, ChunkRenderer> mChunkRenderers;
-    
-    bool neighbourChunkLoadCheck(const Vec3i& pos) const;
 };
-
-
-
-#endif // !WORLDCLIENT_H_

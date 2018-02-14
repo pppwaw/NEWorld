@@ -26,16 +26,7 @@
 class NWCOREAPI Player : public PlayerObject
 {
 public:
-    Player(size_t worldID) : PlayerObject(worldID)
-    {
-        // Register update event
-        RegularReadOnlyTask task{ {[this]() {return ReadOnlyTask{
-            [this](const ChunkService& worlds) {
-                update(*worlds.getWorlds().getWorld(mWorldID));
-            }
-        }; } } };
-        chunkService.getTaskDispatcher().addRegularReadOnlyTask(task);
-    }
+    Player(size_t worldID);
 
     void accelerate(const Vec3d& acceleration)
     {
@@ -64,6 +55,7 @@ public:
 
     void render() override;
 
+    friend class PlayerUpdateTask;
 private:
     Vec3d mSpeed, mRotationSpeed;
     Vec3d mPositionDelta, mRotationDelta;

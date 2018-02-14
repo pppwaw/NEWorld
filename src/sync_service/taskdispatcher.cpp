@@ -28,7 +28,7 @@ void TaskDispatcher::worker(size_t threadID) {
 
         // Process read-only work.
         for (auto i = threadID; i < mReadOnlyTasks.size(); i += mThreadNumber) {
-            mReadOnlyTasks[i].task(mChunkService);
+            mReadOnlyTasks[i]->task(mChunkService);
         }
 
         // Finish the tick
@@ -37,14 +37,16 @@ void TaskDispatcher::worker(size_t threadID) {
         // The last finished thread is responsible to do writing jobs
         if (mNumberOfUnfinishedThreads == 0) { // All other threads have finished?
             for (const auto& task : mReadWriteTasks) {
-                task.task(mChunkService);
+                task->task(mChunkService);
             }
 
             // ...and finish up!
             mReadOnlyTasks.clear();
             mReadWriteTasks.clear();
-            for (auto& task : mRegularReadOnlyTasks) mReadOnlyTasks.emplace_back(task.taskGenerator());
-            for (auto& task : mRegularReadWriteTasks) mReadWriteTasks.emplace_back(task.taskGenerator());
+            for (auto& task : mRegularReadOnlyTasks)
+                mReadOnlyTasks.emplace_back(task->clone());
+            for (auto& task : mRegularReadWriteTasks)
+                mReadWriteTasks.emplace_back(task->clone());
             std::swap(mReadOnlyTasks, mNextReadOnlyTasks);
             std::swap(mReadWriteTasks, mNextReadWriteTasks);
             // TODO: UPS limits should apply here

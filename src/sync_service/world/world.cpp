@@ -56,19 +56,6 @@ void World::updateChunkLoadStatus()
     }
 }
 
-void World::registerChunkTasks(ChunkService& chunkService, Player& player) {
-    // LoadUnloadDetectorTask
-    ReadOnlyTask loadUnloadDetectorTask{
-        [&](const ChunkService& worlds) {
-            loadUnloadDetector(Vec3i(player.getPosition()));
-        }
-    };
-
-    chunkService.getTaskDispatcher().addRegularReadOnlyTask(
-        { [=]() {return loadUnloadDetectorTask;} }
-    );
-}
-
 static constexpr Vec3i middleOffset() noexcept
 {
     return Vec3i(Chunk::Size() / 2 - 1, Chunk::Size() / 2 - 1, Chunk::Size() / 2 - 1);
@@ -107,80 +94,113 @@ static void generateLoadUnloadList(
                     loadList.insert((Vec3i(x, y, z) * Chunk::Size() + middleOffset() - centerPos).lengthSqr(), Vec3i(x, y, z));
 }
 
-/**
- * \brief Add a constructed chunk into world.
- * \param cs The chunk service
- * \param worldID the target world's id
- * \param chunk the target chunk
- * \note This function is supposed to be used as a read-write task.
- */
-static void addToWorldTask(ChunkService& cs, size_t worldID, std::unique_ptr<Chunk, ChunkOnReleaseBehavior> chunk) {
-    auto world = chunkService.getWorlds().getWorld(worldID);
-    auto chunkPos = chunk->getPosition();
-    world->insertChunk(chunkPos, std::move(chunk));
-    constexpr std::array<Vec3i, 6> delta
-    {
-        Vec3i(1, 0, 0), Vec3i(-1, 0, 0),
-        Vec3i(0, 1, 0), Vec3i(0,-1, 0),
-        Vec3i(0, 0, 1), Vec3i(0, 0,-1)
-    };
-    for (auto&& p : delta)
-        world->doIfChunkLoaded(chunkPos + p, [](Chunk& chk)
-    {
-        chk.setUpdated(true);
-    });
-}
-
-/**
- * \brief Given a chunk, it will try to load it or build it
- * \param world the target world
- * \param chunkPosition the position of the chunk
- * \note This function is supposed to be used as a read-only task.
- */
-static void buildOrLoadChunkTask(const World& world, Vec3i chunkPosition) {
-    // TODO: avoid using raw pointer directly somehow... if possible
-    Chunk* chunk;
-    if (false) { // TODO: should try to load from local first
-
+class AddToWorldTask : public ReadWriteTask {
+public:
+    /**
+     * \brief Add a constructed chunk into world.
+     * \param cs The chunk service
+     * \param worldID the target world's id
+     * \param chunk the target chunk
+     */
+    AddToWorldTask(size_t worldID, std::unique_ptr<Chunk, ChunkOnReleaseBehavior> chunk)
+        : mWorldId(worldID), mChunk(std::move(chunk)) {
     }
-    else { // Not found: build it!
-        chunk = new Chunk(chunkPosition, world);
-    }
-    // add addToWorldTask
-    chunkService.getTaskDispatcher().addReadWriteTask(
+
+    void task(ChunkService& cs) override {
+        auto world = chunkService.getWorlds().getWorld(mWorldId);
+        auto chunkPos = mChunk->getPosition();
+        world->insertChunk(chunkPos, std::move(mChunk));
+        constexpr std::array<Vec3i, 6> delta
         {
-           [chunk, id = world.getWorldID()](ChunkService& cs) mutable
-           {
-               addToWorldTask(cs, id, ChunkManager::data_t(chunk,
-                   ChunkOnReleaseBehavior(ChunkOnReleaseBehavior::Behavior::Release)));
-           }
+            Vec3i(1, 0, 0), Vec3i(-1, 0, 0),
+            Vec3i(0, 1, 0), Vec3i(0,-1, 0),
+            Vec3i(0, 0, 1), Vec3i(0, 0,-1)
+        };
+        for (auto&& p : delta)
+            world->doIfChunkLoaded(chunkPos + p, [](Chunk& chk)
+        {
+            chk.setUpdated(true);
+        });
+    }
+
+private:
+    size_t mWorldId;
+    std::unique_ptr<Chunk, ChunkOnReleaseBehavior> mChunk;
+};
+
+class BuildOrLoadChunkTask : public ReadOnlyTask {
+public:
+    /**
+     * \brief Given a chunk, it will try to load it or build it
+     * \param world the target world
+     * \param chunkPosition the position of the chunk
+     */
+    BuildOrLoadChunkTask(const World& world, Vec3i chunkPosition)
+        : mWorld(world), mChunkPosition(chunkPosition) {
+        
+    }
+
+    void task(const ChunkService& cs) override {
+        // TODO: avoid using raw pointer directly somehow... if possible
+        ChunkManager::data_t chunk;
+        if (false) { // TODO: should try to load from local first
+
         }
+        else { // Not found: build it!
+            chunk = ChunkManager::data_t(new Chunk(mChunkPosition, mWorld),
+                ChunkOnReleaseBehavior::Behavior::Release);
+        }
+        // Add addToWorldTask
+        chunkService.getTaskDispatcher().addReadWriteTask(
+            std::make_unique<AddToWorldTask>(mWorld.getWorldID(), std::move(chunk))
+        );
+    }
+private:
+    const World& mWorld;
+    Vec3i mChunkPosition;
+};
+
+class LoadUnloadDetectorTask : public ReadOnlyTask {
+public:
+    LoadUnloadDetectorTask(World& world, const Player& player): mPlayer(player), mWorld(world) {
+    }
+
+    void task(const ChunkService& cs) override {
+        PODOrderedList<int, Vec3i, MaxChunkLoadCount> loadList;
+        PODOrderedList<int, Chunk*, MaxChunkUnloadCount, std::greater> unloadList;
+
+        // TODO: make the load range adjustable
+        generateLoadUnloadList(mWorld, mPlayer.getPosition(), 3, loadList, unloadList);
+
+        for (auto& loadPos : loadList) {
+            if (chunkService.isAuthority()) {
+                // add BuildOrLoadChunkTask
+                chunkService.getTaskDispatcher().addReadOnlyTask(
+                    std::make_unique<BuildOrLoadChunkTask>(mWorld, loadPos.second)
+                );
+            }
+            else {
+                // TODO: Get chunk via RPC
+            }
+        }
+        for (auto& unloadChunk : unloadList) {
+            // TODO: add a unload task.
+
+        }
+    }
+
+    std::unique_ptr<ReadOnlyTask> clone() override {
+        return std::make_unique<LoadUnloadDetectorTask>(*this);
+    }
+
+private:
+    const Player& mPlayer;
+    const World& mWorld;
+};
+
+void World::registerChunkTasks(ChunkService& chunkService, Player& player) {
+    // LoadUnloadDetectorTask
+    chunkService.getTaskDispatcher().addRegularReadOnlyTask(
+        std::make_unique<LoadUnloadDetectorTask>(*this, player)
     );
-}
-
-void World::loadUnloadDetector(const Vec3i& playerPosition) const {
-    PODOrderedList<int, Vec3i, MaxChunkLoadCount> loadList;
-    PODOrderedList<int, Chunk*, MaxChunkUnloadCount, std::greater> unloadList;
-
-    // TODO: make the load range adjustable
-    generateLoadUnloadList(*this, playerPosition, 3, loadList, unloadList);
-
-    for (auto& loadPos : loadList) {
-        if (chunkService.isAuthority()) {
-            // add buildOrLoadChunkTask
-            chunkService.getTaskDispatcher().addReadOnlyTask(
-                {
-                    [=](const ChunkService&)
-                    {buildOrLoadChunkTask(*this, loadPos.second);}
-                }
-            );
-        }
-        else {
-            // TODO: Get chunk via RPC
-        }
-    }
-    for (auto& unloadChunk : unloadList) {
-        // TODO: add a unload task.
-
-    }
 }

@@ -19,6 +19,23 @@
 
 #include "player.h"
 
+class PlayerUpdateTask :public ReadOnlyTask {
+public:
+    PlayerUpdateTask(Player& player, size_t worldId): mPlayer(player), mWorldId(worldId) {}
+
+    void task(const ChunkService& cs) override {
+        mPlayer.update(*cs.getWorlds().getWorld(mWorldId));
+    }
+
+    std::unique_ptr<ReadOnlyTask> clone() override {
+        return std::make_unique<PlayerUpdateTask>(*this);
+    }
+
+private:
+    Player& mPlayer;
+    size_t mWorldId;
+};
+
 void Player::move(const World& world)
 {
     //mSpeed.normalize();
@@ -57,6 +74,14 @@ void Player::rotationMove()
     mRotation += mRotationSpeed;
     mRotationDelta = mRotationSpeed;
     mRotationSpeed *= 0.6;
+}
+
+inline Player::Player(size_t worldID) : PlayerObject(worldID)
+{
+    // Register update event
+    chunkService.getTaskDispatcher().addRegularReadOnlyTask(
+        std::make_unique<PlayerUpdateTask>(*this, mWorldID)
+    );
 }
 
 void Player::render()
