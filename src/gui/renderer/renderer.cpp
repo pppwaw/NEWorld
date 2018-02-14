@@ -26,7 +26,8 @@ void Renderer::init()
     debugstream << "Start to initialize GLEW...";
     const auto err = glewInit();
     if (err != GLEW_OK)
-        fatalstream << "Failed to initialize GLEW! Error code: " << err;
+        fatalstream << "Failed to initialize GLEW! Error code: "
+                    << err << ": "<< glewGetErrorString(err);
     else
         debugstream << "GLEW initialized!";
     glShadeModel(GL_SMOOTH);

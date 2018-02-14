@@ -90,8 +90,15 @@ private:
     {
         HandleType handle = LoadLibraryA(filename.c_str());
         success = handle != nullptr;
-        if (!success)
-            warningstream << "Failed to load " << filename << ". Error code:" << GetLastError();
+        if (!success) {
+            auto errcode = GetLastError();
+            warningstream << "Failed to load " << filename << ". Error code:" << errcode;
+            if (errcode == 126){
+                warningstream << "Note: Error code 126 usually means that you have dependencies missing.";
+                warningstream << "      Please make sure you have placed all dependent dll files along with the game.";
+            }
+
+        }
         return handle;
     }
 

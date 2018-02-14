@@ -55,15 +55,16 @@ Window::Window(const std::string& title, int width, int height)
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
     mWindow = SDL_CreateWindow(mTitle.c_str(), 100, 100, mWidth, mHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
     if (mWindow == nullptr)
-        fatalstream << "Failed to create SDL window!";
+        fatalstream << "Failed to create SDL window!" << SDL_GetError();
     Assert(mWindow != nullptr);
 
     mContext = SDL_GL_CreateContext(mWindow);
+    if (mContext == nullptr)
+        fatalstream << "Failed to create GL context! " << SDL_GetError();
+    Assert(mContext != nullptr);
     SDL_GL_SetSwapInterval(0); // VSync
     makeCurrentDraw();
     Renderer::init();
