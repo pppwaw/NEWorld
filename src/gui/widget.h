@@ -28,27 +28,25 @@
 class Widget
 {
 public:
-    Widget(nk_context* nkContext, std::string name, struct nk_rect size, int flags)
-        : mName(std::move(name)), mSize(size), mNkContext(nkContext), mFlags(flags) {}
+    Widget(std::string name, struct nk_rect size, int flags)
+        : mName(std::move(name)), mSize(size), mFlags(flags) {}
     virtual ~Widget() {}
-    void _render()
+    void _render(nk_context* ctx)
     {
-        if (nk_begin(mNkContext, mName.c_str(), mSize, mFlags))
-            render();
-        nk_menubar_end(mNkContext);
+        if (nk_begin(ctx, mName.c_str(), mSize, mFlags))
+            render(ctx);
     }
     virtual void update() = 0;
 
     void setOpen(bool open) { mOpen = open; }
     std::string getName() const { return mName; }
 protected:
-    virtual void render() = 0;
+    virtual void render(nk_context* ctx) = 0;
 
 private:
     std::string mName;
     bool mOpen = true;
     struct nk_rect mSize;
-    nk_context* mNkContext;
     int mFlags;
 };
 
@@ -56,16 +54,18 @@ private:
 class WidgetCallback : public Widget
 {
 public:
-    using Callback = std::function<void(void)>;
-    WidgetCallback(nk_context* ctx, std::string name, struct nk_rect size, int flags,
-        Callback renderFunc, Callback updateFunc = nullptr) :
-        Widget(ctx, name, size, flags), mRenderFunc(renderFunc), mUpdateFunc(updateFunc) {}
+    using RenderCallback = std::function<void(nk_context*)>;
+    using UpdateCallback = std::function<void()>;
+    WidgetCallback(std::string name, struct nk_rect size, int flags,
+        RenderCallback renderFunc, UpdateCallback updateFunc = nullptr) :
+        Widget(name, size, flags), mRenderFunc(renderFunc), mUpdateFunc(updateFunc) {}
 
-    void render() override { mRenderFunc(); }
+    void render(nk_context* ctx) override { mRenderFunc(ctx); }
     void update() override { if(mUpdateFunc) mUpdateFunc(); }
 
 private:
-    Callback mRenderFunc, mUpdateFunc;
+    RenderCallback mRenderFunc;
+    UpdateCallback mUpdateFunc;
 };
 
 #endif

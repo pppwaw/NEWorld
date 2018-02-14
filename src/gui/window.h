@@ -68,6 +68,8 @@ public:
         return mShouldQuit;
     }
 
+    nk_context* getNkContext() const noexcept { return mNuklearContext; }
+
 private:
     SDL_Window* mWindow = nullptr;
     std::string mTitle;

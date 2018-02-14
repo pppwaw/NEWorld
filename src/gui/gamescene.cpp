@@ -74,7 +74,7 @@ private:
 // TODO: make render range adjustable.
 GameScene::GameScene(const std::string& name, const Window& window):
     mWindow(window),
-    mPlayer(0),
+    mPlayer(0), mGUIWidgets(mWindow.getNkContext()),
     mCurrentWorld(chunkService.getWorlds().addWorld("test world")),
     mWorldRenderer(*mCurrentWorld, 3)
 {
@@ -93,12 +93,12 @@ GameScene::GameScene(const std::string& name, const Window& window):
     glDepthFunc(GL_LEQUAL);
 
     // Initialize Widgets
-    /*
-    mGUIWidgets.addWidget(std::make_shared<WidgetCallback>("Debug", nk_rect(100, 200), [this]
+    
+    mGUIWidgets.addWidget(std::make_shared<WidgetCallback>(
+        "Debug", nk_rect(20, 20, 200, 200),
+        NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
+        NK_WINDOW_CLOSABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE, [this](nk_context* ctx)
     {   
-        //NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
-        //NK_WINDOW_CLOSABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE
-
         mRateCounterScheduler.refresh();
         if (mRateCounterScheduler.shouldRun())
         {
@@ -109,14 +109,14 @@ GameScene::GameScene(const std::string& name, const Window& window):
             mUpsCounter = 0;
             mRateCounterScheduler.increaseTimer();
         }
-        ImGui::Text("NEWorld %s (v%u)", NEWorldVersionName, NEWorldVersion);
-        ImGui::Text("FPS %d, UPS %d", mFpsLatest, mUpsLatest);
-        ImGui::Text("Position: x %.1f y %.1f z %.1f", mPlayer.getPosition().x, mPlayer.getPosition().y, mPlayer.getPosition().z);
-        ImGui::Text("GUI Widgets: %zu", mGUIWidgets.getSize());
-        ImGui::Text("Chunks Loaded: %zu", mWorld.getChunkCount());
-
+        nk_layout_row_dynamic(ctx, 15, 1);
+        nk_labelf(ctx, NK_TEXT_LEFT, "NEWorld %s (v%u)", NEWorldVersionName, NEWorldVersion);
+        nk_labelf(ctx, NK_TEXT_LEFT, "FPS %d, UPS %d", mFpsLatest, mUpsLatest);
+        nk_labelf(ctx, NK_TEXT_LEFT, "Position: x %.1f y %.1f z %.1f", mPlayer.getPosition().x, mPlayer.getPosition().y, mPlayer.getPosition().z);
+        nk_labelf(ctx, NK_TEXT_LEFT, "GUI Widgets: %zu", mGUIWidgets.getSize());
+        nk_labelf(ctx, NK_TEXT_LEFT, "Chunks Loaded: %zu", mCurrentWorld->getChunkCount());
     }));
-    */
+    
 
     // Initialize connection
     context.rpc.enableClient(
