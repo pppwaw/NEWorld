@@ -45,8 +45,10 @@ public:
 
     friend class TaskDispatcher;
 
-    TaskDispatcher& getTaskDispatcher() noexcept { return mTaskDispatcher; }
-
+    TaskDispatcher& getTaskDispatcher() noexcept {
+        return mTaskDispatcher;
+    }
+    
     WorldManager& getWorlds() noexcept { return mWorlds; }
     const WorldManager& getWorlds() const noexcept { return mWorlds; }
 

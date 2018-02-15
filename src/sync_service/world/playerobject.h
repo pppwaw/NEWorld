@@ -22,33 +22,58 @@
 
 #include "object.h"
 
-class PlayerObject : public Object {
+class PlayerObject : public Object
+{
 public:
     explicit PlayerObject(size_t worldID)
         : Object(worldID, Vec3d(), Vec3d(), Vec3d(1.0, 1.0, 1.0), AABB()),
-          mHeight(1.6), mWidth(0.6), mSpeed(0.2) { refreshHitbox(); }
+          mHeight(1.6), mWidth(0.6), mSpeed(0.2)
+    {
+        refreshHitbox();
+    }
 
     PlayerObject(const Object& obj)
-        : Object(obj), mHeight(1.6), mWidth(0.6), mSpeed(0.2) { refreshHitbox(); }
+        : Object(obj), mHeight(1.6), mWidth(0.6), mSpeed(0.2)
+    {
+        refreshHitbox();
+    }
 
-    ~PlayerObject() { }
+    ~PlayerObject()
+    {
+    }
 
-    void rotate(const Vec3d& rotation) { mRotation += rotation; }
+    void rotate(const Vec3d& rotation)
+    {
+        mRotation += rotation;
+    }
 
-    void setDirection(const Vec3d& direction) { mRotation = direction; }
+    void setDirection(const Vec3d& direction)
+    {
+        mRotation = direction;
+    }
 
-    Vec3d getDirection() const { return mRotation; }
+    Vec3d getDirection() const
+    {
+        return mRotation;
+    }
 
-    void setSpeed(double speed) { mSpeed = speed; }
+    void setSpeed(double speed)
+    {
+        mSpeed = speed;
+    }
 
-    double getSpeed() const { return mSpeed; }
+    double getSpeed() const
+    {
+        return mSpeed;
+    }
 
 private:
     Vec3d mDirection; // Body direction, head direction is `mRotation` in class Object
     double mHeight, mWidth, mSpeed;
     Vec3d mHitboxSize;
 
-    void refreshHitbox() {
+    void refreshHitbox()
+    {
         mHitboxSize = Vec3d(mWidth, mHeight, mWidth);
         mHitbox = AABB(-mHitboxSize / 2, mHitboxSize / 2);
     }

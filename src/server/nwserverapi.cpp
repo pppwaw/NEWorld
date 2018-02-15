@@ -23,11 +23,16 @@
 #include "api/nwapicore.hpp"
 #include "sync_service/world/nwchunk.h"
 
-namespace PluginAPI {
+namespace PluginAPI
+{
 
-    BlockData convertBlockData(const NWblockdata& src) { return BlockData(src.id, src.brightness, src.state); }
+    BlockData convertBlockData(const NWblockdata& src)
+    {
+        return BlockData(src.id, src.brightness, src.state);
+    }
 
-    NWblockdata convertBlockData(const BlockData& src) {
+    NWblockdata convertBlockData(const BlockData& src)
+    {
         NWblockdata res;
         res.id = src.getID();
         res.brightness = src.getBrightness();
@@ -35,22 +40,29 @@ namespace PluginAPI {
         return res;
     }
 
-    BlockType convertBlockType(const NWblocktype& src) {
+    BlockType convertBlockType(const NWblocktype& src)
+    {
         return BlockType(src.blockname, src.solid, src.translucent, src.opaque, src.explodePower, src.hardness);
     }
 }
 
-extern "C" {
+extern "C"
+{
     using namespace PluginAPI;
 
-    NWAPIEXPORT size_t NWAPICALL nwRegisterBlock(const NWblocktype* block) {
+    NWAPIEXPORT size_t NWAPICALL nwRegisterBlock(const NWblocktype* block)
+    {
         return context.blocks.registerBlock(convertBlockType(*block));
     }
 
-    NWAPIEXPORT void NWAPICALL nwLog(char* str) { }
+    NWAPIEXPORT void NWAPICALL nwLog(char* str)
+    {
+    }
 
-    NWAPIEXPORT size_t NWAPICALL nwRegisterChunkGenerator(NWchunkgenerator* const generator) {
-        if (Chunk::ChunkGeneratorLoaded) {
+    NWAPIEXPORT size_t NWAPICALL nwRegisterChunkGenerator(NWchunkgenerator* const generator)
+    {
+        if (Chunk::ChunkGeneratorLoaded)
+        {
             warningstream << "Ignoring multiple chunk generators!";
             return 1;
         }

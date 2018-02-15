@@ -24,16 +24,18 @@
 
 #define NEWORLD_DEBUG
 // Assertion uses C++ exception
-inline void AssertFunc(bool expr, const char* file, const char* fname, int line) {
-    if (!expr) {
+inline void AssertFunc(bool expr, const char* file, const char* fname, int line)
+{
+    if (!expr)
+    {
         fatalstream << "Assertion failed!\nAt line " << line
-            << " in \"" << file << "\", function " << fname;
+                    << " in \"" << file << "\", function " << fname;
         throw std::runtime_error("Assertion failed!");
     }
 }
 
 #ifdef NEWORLD_DEBUG
-#define Assert(expr) AssertFunc((expr) != 0, __FILE__, __FUNCTION__, __LINE__)
+    #define Assert(expr) AssertFunc((expr) != 0, __FILE__, __FUNCTION__, __LINE__)
 #else
     #define Assert(expr) nullptr
 #endif
@@ -41,3 +43,4 @@ inline void AssertFunc(bool expr, const char* file, const char* fname, int line)
 // A notice that would cause compilation error 2333
 #undef assert
 #define assert(expr) static_assert(false, "Do not #include <cassert> or #include <assert.h>! Use Assert(expression) instead."); (void)(expr);
+

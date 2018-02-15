@@ -29,7 +29,8 @@ constexpr const char* GUIDllName = "GUI.dll";
 constexpr const char* GUIDllName = "libGUI.so";
 #endif
 
-int main(int argc, char** argv) {
+int main(int argc, char** argv)
+{
     getSettings();
     Logger::addFileSink("./log/", "launcher");
     std::string file = argc == 1 ? GUIDllName : argv[1];

@@ -23,19 +23,35 @@
 #include <sync_service/world/playerobject.h>
 #include <sync_service/chunkservice.hpp>
 
-class NWCOREAPI Player : public PlayerObject {
+class NWCOREAPI Player : public PlayerObject
+{
 public:
     Player(size_t worldID);
 
-    void accelerate(const Vec3d& acceleration) { mSpeed += acceleration; }
+    void accelerate(const Vec3d& acceleration)
+    {
+        mSpeed += acceleration;
+    }
 
-    void accelerateRotation(const Vec3d& acceleration) { mRotationSpeed += acceleration; }
+    void accelerateRotation(const Vec3d& acceleration)
+    {
+        mRotationSpeed += acceleration;
+    }
 
-    void setSpeed(const Vec3d& speed) { mSpeed = speed; }
+    void setSpeed(const Vec3d& speed)
+    {
+        mSpeed = speed;
+    }
 
-    Vec3d getPositionDelta() const { return mPositionDelta; }
+    Vec3d getPositionDelta() const
+    {
+        return mPositionDelta;
+    }
 
-    Vec3d getRotationDelta() const { return mRotationDelta; }
+    Vec3d getRotationDelta() const
+    {
+        return mRotationDelta;
+    }
 
     void render() override;
 
@@ -43,12 +59,11 @@ public:
 private:
     Vec3d mSpeed, mRotationSpeed;
     Vec3d mPositionDelta, mRotationDelta;
-
-    void update(const World& world) override {
+    void update(const World& world) override
+    {
         move(world);
         rotationMove();
     }
-
     void move(const World& world);
     void rotationMove();
 };

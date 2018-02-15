@@ -29,7 +29,8 @@
 #include "renderer/texture.h"
 #include "renderer/worldrenderer.h"
 
-class GameScene {
+class GameScene
+{
 public:
     // GameScene update frequency
     static constexpr int UpdateFrequency = 30;

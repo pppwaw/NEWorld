@@ -25,7 +25,7 @@
 #include "renderer/blockrenderer.h"
 #include <GL/glew.h>
 
-class KeyboardUpdateTask : public ReadOnlyTask {
+class KeyboardUpdateTask :public ReadOnlyTask {
 public:
     KeyboardUpdateTask(Player& player) : mPlayer(player) {}
 
@@ -63,7 +63,9 @@ public:
         //    mGUIWidgets.update();
     }
 
-    std::unique_ptr<ReadOnlyTask> clone() override { return std::make_unique<KeyboardUpdateTask>(*this); }
+    std::unique_ptr<ReadOnlyTask> clone() override {
+        return std::make_unique<KeyboardUpdateTask>(*this);
+    }
 
 private:
     Player& mPlayer;
@@ -88,9 +90,10 @@ private:
 // TODO: make render range adjustable.
 GameScene::GameScene(const std::string& name, const Window& window):
     mWindow(window),
-    mPlayer(0),
+    mPlayer(0), mGUIWidgets(mWindow.getNkContext()),
     mCurrentWorld(chunkService.getWorlds().addWorld("test world")),
-    mWorldRenderer(*mCurrentWorld, 3) {
+    mWorldRenderer(*mCurrentWorld, 3)
+{
     mPlayer.setPosition(Vec3d(-16.0, 48.0, 32.0));
     mPlayer.setRotation(Vec3d(-45.0, -22.5, 0.0));
 
@@ -113,6 +116,7 @@ GameScene::GameScene(const std::string& name, const Window& window):
         "Debug", nk_rect(20, 20, 200, 200),
         NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
         NK_WINDOW_CLOSABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE, [this](nk_context* ctx) {
+
         mRateCounterScheduler.refresh();
         if (mRateCounterScheduler.shouldRun()) {
             // Update FPS & UPS
@@ -122,7 +126,7 @@ GameScene::GameScene(const std::string& name, const Window& window):
             mUpsCounter = 0;
             mRateCounterScheduler.increaseTimer();
         }
-
+        
         nk_layout_row_dynamic(ctx, 15, 1);
         nk_labelf(ctx, NK_TEXT_LEFT, "NEWorld %s (v%u)", NEWorldVersionName, NEWorldVersion);
         nk_labelf(ctx, NK_TEXT_LEFT, "FPS %d, UPS %d", mFpsLatest, mUpsLatest);
@@ -138,7 +142,7 @@ GameScene::GameScene(const std::string& name, const Window& window):
             dispatcher.getRegularReadOnlyTaskCount(),
             dispatcher.getRegularReadWriteTaskCount());
     }));
-    */
+    
 
     // Initialize connection
     context.rpc.enableClient(
@@ -149,9 +153,12 @@ GameScene::GameScene(const std::string& name, const Window& window):
     infostream << "Game initialized!";
 }
 
-GameScene::~GameScene() {}
+GameScene::~GameScene()
+{
+}
 
-void GameScene::render() {
+void GameScene::render()
+{
     chunkService.getTaskDispatcher().processRenderTasks();
 
     mFpsCounter++;
@@ -186,5 +193,5 @@ void GameScene::render() {
 
     glDisable(GL_DEPTH_TEST);
 
-    //    mGUIWidgets.render();
+    mGUIWidgets.render();
 }

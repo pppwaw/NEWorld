@@ -20,22 +20,26 @@
 #include "nwblock.h"
 
 BlockManager::BlockManager()
-    : mBlocks{BlockType("Air", false, false, false, 0, 0)} {}
+    :mBlocks{ BlockType("Air", false, false, false, 0, 0) }
+{
+}
 
-size_t BlockManager::registerBlock(const BlockType& block) {
+size_t BlockManager::registerBlock(const BlockType& block)
+{
     mBlocks.push_back(block);
     debugstream << "Registered block:";
     showInfo(mBlocks.size() - 1);
     return mBlocks.size() - 1;
 }
 
-void BlockManager::showInfo(size_t id) const {
+void BlockManager::showInfo(size_t id) const
+{
     BlockType block = mBlocks[id];
     debugstream << "Block \"" << block.getName() << "\"(ID = " << id << ") = {"
-        << "Solid: " << block.isSolid()
-        << ", Translucent: " << block.isTranslucent()
-        << ", Opaque: " << block.isOpaque()
-        << ", Explode power: " << block.getExplodePower()
-        << ", Hardness: " << block.getHardness()
-        << "}";
+                << "Solid: " << block.isSolid()
+                << ", Translucent: " << block.isTranslucent()
+                << ", Opaque: " << block.isOpaque()
+                << ", Explode power: " << block.getExplodePower()
+                << ", Hardness: " << block.getHardness()
+                << "}";
 }

@@ -24,18 +24,22 @@
 
 #pragma warning(disable: 4673)
 
-namespace StringUtils {
+namespace StringUtils
+{
     template <typename... Args>
     std::string FormatString(const char* lpStr, Args&&... args);
 }
 
-namespace Exception {
-    namespace detail_ {
-        struct ExceptionStorage {
-            ExceptionStorage(std::exception_ptr nestedException, std::chrono::system_clock::time_point const& time,
-                             std::string file, unsigned line, std::string src, std::string desc) noexcept
-                : mNestedException(nestedException), mTime(time), mFile(file), mLine(line), mSource(src),
-                  mDescription(desc) { }
+namespace Exception
+{
+    namespace detail_
+    {
+        struct ExceptionStorage
+        {
+            ExceptionStorage(std::exception_ptr nestedException, std::chrono::system_clock::time_point const& time, std::string file, unsigned line, std::string src, std::string desc) noexcept
+                : mNestedException(nestedException), mTime(time), mFile(file), mLine(line), mSource(src), mDescription(desc)
+            {
+            }
 
             std::exception_ptr mNestedException;
             std::chrono::system_clock::time_point mTime;
@@ -47,38 +51,57 @@ namespace Exception {
     }
 
     class Exception
-        : protected detail_::ExceptionStorage, public virtual std::exception {
+        : protected detail_::ExceptionStorage, public virtual std::exception
+    {
     public:
         template <typename... Args>
-        Exception(std::exception_ptr nestedException, const char* Src, const char* File, unsigned Line,
-                  const char* Desc, Args&&... args) noexcept
-            : detail_::ExceptionStorage {
-                nestedException, std::chrono::system_clock::now(), File, Line, Src,
-                StringUtils::FormatString(Desc, std::forward<Args>(args)...)
-            } { }
+        Exception(std::exception_ptr nestedException, const char* Src, const char* File, unsigned Line, const char* Desc, Args&&... args) noexcept
+            : detail_::ExceptionStorage { nestedException, std::chrono::system_clock::now(), File, Line, Src, StringUtils::FormatString(Desc, std::forward<Args>(args)...) }
+        {
+        }
 
         template <typename... Args>
         Exception(const char* Src, const char* File, unsigned Line, const char* Desc, Args&&... args) noexcept
-            : detail_::ExceptionStorage {
-                {}, std::chrono::system_clock::now(), File, Line, Src,
-                StringUtils::FormatString(Desc, std::forward<Args>(args)...)
-            } { }
+            : detail_::ExceptionStorage { {}, std::chrono::system_clock::now(), File, Line, Src, StringUtils::FormatString(Desc, std::forward<Args>(args)...) }
+        {
+        }
 
         ~Exception() = default;
 
-        std::chrono::system_clock::time_point GetTime() const noexcept { return mTime; }
+        std::chrono::system_clock::time_point GetTime() const noexcept
+        {
+            return mTime;
+        }
 
-        const char* GetFile() const noexcept { return mFile.c_str(); }
+        const char* GetFile() const noexcept
+        {
+            return mFile.c_str();
+        }
 
-        unsigned GetLine() const noexcept { return mLine; }
+        unsigned GetLine() const noexcept
+        {
+            return mLine;
+        }
 
-        const char* GetSource() const noexcept { return mSource.c_str(); }
+        const char* GetSource() const noexcept
+        {
+            return mSource.c_str();
+        }
 
-        const char* GetDesc() const noexcept { return mDescription.c_str(); }
+        const char* GetDesc() const noexcept
+        {
+            return mDescription.c_str();
+        }
 
-        std::exception_ptr GetNestedException() const noexcept { return mNestedException; }
+        std::exception_ptr GetNestedException() const noexcept
+        {
+            return mNestedException;
+        }
 
-        const char* what() const noexcept override { return mDescription.c_str(); }
+        const char* what() const noexcept override
+        {
+            return mDescription.c_str();
+        }
     };
 
 #define DeclareException(ExceptionClass, ExtendException, DefaultDescription) \

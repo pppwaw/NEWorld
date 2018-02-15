@@ -20,8 +20,8 @@
 #pragma once
 
 #ifdef NEWORLD_TARGET_WINDOWS
-#include <io.h>
-#include <direct.h>
+    #include <io.h>
+    #include <direct.h>
 #else
     #include <unistd.h>
     #include <sys/types.h>
@@ -29,8 +29,10 @@
     #include <sys/dir.h>
 #endif
 
-namespace FileSystem {
-    inline bool exists(const std::string& path) {
+namespace FileSystem
+{
+    inline bool exists(const std::string& path)
+    {
 #ifdef NEWORLD_TARGET_WINDOWS
         return _access(path.c_str(), 0) == 0;
 #else
@@ -38,7 +40,8 @@ namespace FileSystem {
 #endif
     }
 
-    inline void createDirectory(const std::string& path) {
+    inline void createDirectory(const std::string& path)
+    {
 #ifdef NEWORLD_TARGET_WINDOWS
         _mkdir(path.c_str());
 #else
@@ -46,11 +49,13 @@ namespace FileSystem {
 #endif
     }
 
-    inline void forInDirectory(const std::string& path, std::function<void(std::string)> callback) {
+    inline void forInDirectory(const std::string& path, std::function<void(std::string)> callback)
+    {
 #ifdef NEWORLD_TARGET_WINDOWS
         WIN32_FIND_DATA ffd;
         HANDLE hFind = FindFirstFileA((path + "\\*").c_str(), &ffd);
-        do {
+        do
+        {
             if (ffd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) continue;
             callback(path + "\\" + ffd.cFileName);
         }

@@ -27,11 +27,12 @@
 
 constexpr int UpdateInterval = 1000 / 60, GlobalUpdateInterval = 1000 / 60; // unit: ms
 
-class NWAPIEXPORT Server {
+class NWAPIEXPORT Server
+{
 public:
     Server();
     void run(uint16_t port, size_t threadNumber);
-    void stop();
+     void stop();
     ~Server();
 protected:
     RateMeter mRateCounterScheduler{1};

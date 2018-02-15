@@ -26,17 +26,22 @@
 #include <thread>
 #include <functional>
 
-class CommandExecuteStat {
+class CommandExecuteStat
+{
 public:
-    CommandExecuteStat(bool s, std::string i) : success(s), info(i) { }
+    CommandExecuteStat(bool s, std::string i) : success(s), info(i)
+    {
+    }
 
     bool success;
     std::string info;
 };
 
-class Command {
+class Command
+{
 public:
-    explicit Command(std::string rawString) {
+    explicit Command(std::string rawString)
+    {
         args = split(rawString, ' ');
         name = args.size() != 0 ? args[0] : "";
         if (args.size() != 0) args.erase(args.begin());
@@ -46,9 +51,12 @@ public:
     std::vector<std::string> args;
 };
 
-class CommandInfo {
+class CommandInfo
+{
 public:
-    CommandInfo(std::string a, std::string h) : author(a), help(h) { }
+    CommandInfo(std::string a, std::string h) : author(a), help(h)
+    {
+    }
 
     std::string author;
     std::string help;
@@ -58,18 +66,25 @@ using CommandHandleFunction = std::function<CommandExecuteStat(Command)>;
 using CommandMap = std::unordered_map<std::string, std::pair<CommandInfo, CommandHandleFunction>>;
 
 
-class CommandManager {
+class CommandManager
+{
 public:
     CommandManager() :
-        mMainloop([this] { inputLoop(); }) { }
+        mMainloop([this] { inputLoop(); })
+    {
 
-    ~CommandManager() {
+    }
+
+    ~CommandManager()
+    {
         mThreadRunning.store(false, std::memory_order_release);
-        if (!mWaitingForInput.load(std::memory_order_acquire)) {
+        if (!mWaitingForInput.load(std::memory_order_acquire))
+        {
             mMainloop.join();
             debugstream << "Input thread exited.";
         }
-        else {
+        else
+        {
             mMainloop.detach();
             debugstream << "Input thread detached.";
         }
@@ -80,8 +95,10 @@ public:
 
     CommandMap& getCommandMap() { return mCommandMap; }
 
-    void inputLoop() {
-        while (mThreadRunning.load(std::memory_order_acquire)) {
+    void inputLoop()
+    {
+        while (mThreadRunning.load(std::memory_order_acquire))
+        {
             std::string input;
             //std::cout << LColorFunc::white << "$> " << LColorFunc::lwhite;
             mWaitingForInput.store(true, std::memory_order_release);
@@ -93,23 +110,28 @@ public:
         }
     }
 
-    void setRunningStatus(bool s) { mThreadRunning = s; }
+    void setRunningStatus(bool s)
+    {
+        mThreadRunning = s;
+    }
 
-    void registerCommand(std::string name, CommandInfo info, CommandHandleFunction func) {
-        mCommandMap.insert({name, {info, func}});
+    void registerCommand(std::string name, CommandInfo info, CommandHandleFunction func)
+    {
+        mCommandMap.insert({ name,{ info, func } });
     }
 
 private:
-    CommandExecuteStat handleCommand(Command cmd) {
+    CommandExecuteStat handleCommand(Command cmd)
+    {
         strtolower(cmd.name);
         auto result = mCommandMap.find(cmd.name);
         if (result != mCommandMap.end())
             return (*result).second.second(cmd);
-        return {false, "Command not exists, type help for available commands."};
+        return{ false,"Command not exists, type help for available commands." };
     }
 
     std::thread mMainloop;
-    std::atomic_bool mThreadRunning{true};
-    std::atomic_bool mWaitingForInput{false};
+    std::atomic_bool mThreadRunning{ true };
+    std::atomic_bool mWaitingForInput{ false };
     CommandMap mCommandMap;
 };

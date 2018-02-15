@@ -21,8 +21,9 @@
 #include <functional>
 
 // POD ONLY!
-template <class Tk, class Td, int size, template<class>class Compare = std::less>
-class PODOrderedList {
+template <class Tk, class Td, size_t size, template<class>class Compare = std::less>
+class PODOrderedList
+{
 public:
     PODOrderedList() noexcept : mComp(), mSize(0) {}
     using ArrayType = std::array<std::pair<Tk, Td>, size>;
@@ -32,27 +33,28 @@ public:
     ConstIterator begin() const noexcept { return mList.begin(); }
     Iterator end() noexcept { return mList.begin() + mSize; }
     ConstIterator end() const noexcept { return mList.begin() + mSize; }
-
-    void insert(Tk key, Td data) noexcept {
+    void insert(Tk key, Td data) noexcept
+    {
         int first = 0, last = mSize - 1;
-        while (first <= last) {
+        while (first <= last)
+        {
             int middle = (first + last) / 2;
             if (mComp(key, mList[middle].first))
                 last = middle - 1;
             else
                 first = middle + 1;
         }
-        if (first <= mSize && first < size) {
+        if (first <= mSize && first < size)
+        {
             mSize = std::min(size, mSize + 1);
             for (int j = size - 1; j > first; j--)
                 mList[j] = mList[j - 1];
             mList[first] = std::pair<Tk, Td>(key, data);
         }
     }
-
     void clear() noexcept { mSize = 0; }
 private:
-    int mSize;
+    size_t mSize;
     ArrayType mList;
     Compare<Tk> mComp;
 };

@@ -46,7 +46,8 @@ public:
         Vec3i tmp;
         for (tmp.x = 0; tmp.x < Chunk::Size(); ++tmp.x)
             for (tmp.y = 0; tmp.y < Chunk::Size(); ++tmp.y)
-                for (tmp.z = 0; tmp.z < Chunk::Size(); ++tmp.z) {
+                for (tmp.z = 0; tmp.z < Chunk::Size(); ++tmp.z)
+                {
                     BlockData b = chunk->getBlock(tmp);
                     auto target = context.blocks[b.getID()].isTranslucent() ? &mVATranslucent : &mVAOpacity;
                     BlockRendererManager::render(*target, b.getID(), chunk, tmp);
@@ -56,8 +57,8 @@ public:
     const VertexArray& getVAOpacity() const noexcept { return mVAOpacity; }
     const VertexArray& getVATranslucent() const noexcept { return mVATranslucent; }
 private:
-    VertexArray mVAOpacity{262144, VertexFormat(2, 3, 0, 3)};
-    VertexArray mVATranslucent{262144, VertexFormat(2, 3, 0, 3)};
+    VertexArray mVAOpacity{ 262144, VertexFormat(2, 3, 0, 3) };
+    VertexArray mVATranslucent{ 262144, VertexFormat(2, 3, 0, 3) };
 };
 
 /**
@@ -65,7 +66,8 @@ private:
  *        VBO that we need to render. It can be generated from a
  *        ChunkRenderData
  */
-class ChunkRenderer : public NonCopyable {
+class ChunkRenderer : public NonCopyable
+{
 public:
     /**
      * \brief Generate VBO from VA. Note that this function will call
@@ -79,25 +81,30 @@ public:
     }
 
     ChunkRenderer(ChunkRenderer&& rhs) noexcept:
-        mBuffer(std::move(rhs.mBuffer)), mBufferTrans(std::move(rhs.mBufferTrans)) {}
-
-    ChunkRenderer& operator=(ChunkRenderer&& rhs) noexcept {
+            mBuffer(std::move(rhs.mBuffer)), mBufferTrans(std::move(rhs.mBufferTrans)) {}
+    
+    ChunkRenderer& operator=(ChunkRenderer&& rhs) noexcept
+    {
         mBuffer = std::move(rhs.mBuffer);
         mBufferTrans = std::move(rhs.mBufferTrans);
         return *this;
     }
 
     // Draw call
-    void render(const Vec3i& c) const {
-        if (!mBuffer.isEmpty()) {
+    void render(const Vec3i& c) const
+    {
+        if (!mBuffer.isEmpty())
+        {
             Renderer::translate(Vec3f(c * Chunk::Size()));
             mBuffer.render();
             Renderer::translate(Vec3f(-c * Chunk::Size()));
         }
     }
 
-    void renderTrans(const Vec3i& c) const {
-        if (!mBufferTrans.isEmpty()) {
+    void renderTrans(const Vec3i& c) const
+    {
+        if (!mBufferTrans.isEmpty())
+        {
             Renderer::translate(Vec3f(c * Chunk::Size()));
             mBufferTrans.render();
             Renderer::translate(Vec3f(-c * Chunk::Size()));

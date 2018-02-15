@@ -19,26 +19,33 @@
 
 #include "vertexarray.h"
 
-void VertexBuffer::update(const VertexArray& va) {
+void VertexBuffer::update(const VertexArray& va)
+{
     vertexes = va.getVertexCount();
     format = va.getFormat();
     if (vertexes == 0)
         destroy();
-    else {
+    else
+    {
         if (id == 0)
             glGenBuffersARB(1, &id);
         glBindBufferARB(GL_ARRAY_BUFFER_ARB, id);
         glBufferDataARB(GL_ARRAY_BUFFER_ARB, va.getVertexCount() * sizeof(float) *
-                        format.vertexAttributeCount, va.getData(), GL_STATIC_DRAW_ARB);
+            format.vertexAttributeCount, va.getData(), GL_STATIC_DRAW_ARB);
     }
 }
 
 VertexBuffer::VertexBuffer(const VertexArray& va)
-    : VertexBuffer() { update(va); }
+    :VertexBuffer()
+{
+    update(va);
+}
 
-void VertexBuffer::render() const {
+void VertexBuffer::render() const
+{
     glBindBufferARB(GL_ARRAY_BUFFER_ARB, id);
-    if (format.textureCount != 0) {
+    if (format.textureCount != 0)
+    {
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         glTexCoordPointer(
             format.textureCount, GL_FLOAT,
@@ -46,7 +53,8 @@ void VertexBuffer::render() const {
             nullptr
         );
     }
-    if (format.colorCount != 0) {
+    if (format.colorCount != 0)
+    {
         glEnableClientState(GL_COLOR_ARRAY);
         glColorPointer(
             format.colorCount, GL_FLOAT,
@@ -54,15 +62,17 @@ void VertexBuffer::render() const {
             reinterpret_cast<float*>(format.textureCount * sizeof(float))
         );
     }
-    if (format.normalCount != 0) {
+    if (format.normalCount != 0)
+    {
         glEnableClientState(GL_NORMAL_ARRAY);
         glNormalPointer(
             /*format.normalCount,*/ GL_FLOAT,
-                                    format.vertexAttributeCount * sizeof(float),
-                                    reinterpret_cast<float*>((format.textureCount + format.colorCount) * sizeof(float))
+            format.vertexAttributeCount * sizeof(float),
+            reinterpret_cast<float*>((format.textureCount + format.colorCount) * sizeof(float))
         );
     }
-    if (format.coordinateCount != 0) {
+    if (format.coordinateCount != 0)
+    {
         glEnableClientState(GL_VERTEX_ARRAY);
         glVertexPointer(
             format.coordinateCount, GL_FLOAT,

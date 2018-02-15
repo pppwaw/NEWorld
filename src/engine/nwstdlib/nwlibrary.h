@@ -23,42 +23,59 @@
     #include <dlfcn.h>
 #endif
 
-class Library : public NonCopyable {
+class Library : public NonCopyable
+{
 public:
     Library() = default;
 
-    Library(const std::string& filename) : Library{} { load(filename); }
+    Library(const std::string& filename) : Library{}
+    {
+        load(filename);
+    }
 
-    Library(Library&& library) noexcept : Library {} {
+    Library(Library&& library) noexcept : Library {}
+    {
         std::swap(library.mDllHandle, mDllHandle);
         std::swap(library.mLoaded, mLoaded);
     }
 
-    Library&& operator=(Library&& library) noexcept {
+    Library&& operator=(Library&& library) noexcept
+    {
         std::swap(library.mDllHandle, mDllHandle);
         std::swap(library.mLoaded, mLoaded);
         return std::move(*this);
     }
 
-    ~Library() {
+    ~Library()
+    {
         if (isLoaded())
             freeLibrary(mDllHandle);
     }
 
-    template <class T>
-    auto get(const std::string& name) { return getFunc<T>(mDllHandle, name); }
+    template<class T> auto get(const std::string& name)
+    {
+        return getFunc<T>(mDllHandle, name);
+    }
 
-    operator bool() const { return isLoaded(); }
+    operator bool() const
+    {
+        return isLoaded();
+    }
 
-    bool isLoaded() const { return mLoaded; }
+    bool isLoaded() const
+    {
+        return mLoaded;
+    }
 
-    void load(const std::string& filename) {
+    void load(const std::string& filename)
+    {
         if (isLoaded())
             unload();
         mDllHandle = loadLibrary(filename, mLoaded);
     }
 
-    void unload() {
+    void unload()
+    {
         freeLibrary(mDllHandle);
         mLoaded = false;
     }
@@ -69,7 +86,8 @@ private:
 
     using HandleType = HMODULE;
 
-    static HandleType loadLibrary(const std::string& filename, bool& success) {
+    static HandleType loadLibrary(const std::string& filename, bool& success)
+    {
         HandleType handle = LoadLibraryA(filename.c_str());
         success = handle != nullptr;
         if (!success) {
@@ -84,13 +102,16 @@ private:
         return handle;
     }
 
-    template <class T>
-    static auto getFunc(HandleType handle, const std::string& name) {
+    template<class T> static auto getFunc(HandleType handle, const std::string& name)
+    {
         Assert(handle != nullptr);
         return reinterpret_cast<std::decay_t<T>>(GetProcAddress(handle, name.c_str()));
     }
 
-    static void freeLibrary(HandleType handle) { FreeLibrary(handle); }
+    static void freeLibrary(HandleType handle)
+    {
+        FreeLibrary(handle);
+    }
 
 #else
 

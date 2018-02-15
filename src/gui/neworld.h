@@ -20,10 +20,12 @@
 #ifndef NEWORLD_H_
 #define NEWORLD_H_
 
-class NEWorld {
+class NEWorld
+{
 public:
     NEWorld();
 };
+
 
 
 #endif // !NEWORLD_H_

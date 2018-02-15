@@ -21,7 +21,9 @@
 
 class ServerCommandLine {
 public:
-    ServerCommandLine() { initBuiltinCommands(); }
+    ServerCommandLine() {
+        initBuiltinCommands();
+    }
     void start() { mCommands.inputLoop(); }
 
 private:
