@@ -106,8 +106,22 @@ public:
     void addRegularReadWriteTask(std::unique_ptr<ReadWriteTask> task) noexcept {
         std::lock_guard<std::mutex> lock(mMutex);
         mRegularReadWriteTasks.emplace_back(std::move(task));
+    }/*
+    size_t getNextReadOnlyTaskCount() const noexcept {
+        return mNextReadOnlyTasks.size();
     }
-
+    size_t getNextReadWriteTaskCount() const noexcept {
+        return mNextReadWriteTasks.size();
+    }
+    size_t getNextRenderTaskCount() const noexcept {
+        return mNextRenderTasks.size();
+    }*/
+    size_t getRegularReadOnlyTaskCount() const noexcept {
+        return mRegularReadOnlyTasks.size();
+    }
+    size_t getRegularReadWriteTaskCount() const noexcept {
+        return mRegularReadWriteTasks.size();
+    }
     /**
      * \brief Process render tasks.
      *        This function should be called from the main thread.

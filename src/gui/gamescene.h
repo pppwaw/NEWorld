@@ -51,7 +51,7 @@ private:
     // Update scheduler
     RateMeter mUpdateScheduler{UpdateFrequency};
     // Rate counters
-    int mFpsCounter, mUpsCounter, mFpsLatest, mUpsLatest;
+    size_t mFpsCounter, mUpsCounter, mFpsLatest, mUpsLatest;
     // Current world
     World* mCurrentWorld;
     // World renderer
