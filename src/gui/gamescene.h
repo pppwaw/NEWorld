@@ -17,14 +17,11 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#ifndef GAME_H_
-#define GAME_H_
+#pragma once
 
-#include <thread>
-#include <mutex>
+#include "engine/nwstdlib/nwratemeter.h"
 #include "client/player.h"
 #include "widgetmanager.h"
-#include <engine/common.h>
 #include "window.h"
 #include "renderer/texture.h"
 #include "renderer/worldrenderer.h"
@@ -59,5 +56,3 @@ private:
 
     RateMeter mRateCounterScheduler{1};
 };
-
-#endif // !GAME_H_

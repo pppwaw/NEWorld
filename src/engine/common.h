@@ -57,6 +57,5 @@
 #include "nwstdlib/nwconsole.hpp"
 #include "nwstdlib/nwfilesys.h"
 #include "nwstdlib/nwlibrary.h"
-#include "nwstdlib/nwratemeter.h"
 // Concurrency Library
 #include "concurrency/nwconcurrency.hpp"

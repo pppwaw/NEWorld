@@ -158,22 +158,20 @@ namespace LColorFunc {
 }
 
 namespace LColor {
-#define cccp constexpr const char*
-    cccp black = "&0";
-    cccp red = "&1";
-    cccp yellow = "&2";
-    cccp green = "&3";
-    cccp cyan = "&4";
-    cccp blue = "&5";
-    cccp magenta = "&6";
-    cccp white = "&7";
-    cccp lblack = "&8";
-    cccp lred = "&9";
-    cccp lyellow = "&a";
-    cccp lgreen = "&b";
-    cccp lcyan = "&c";
-    cccp lblue = "&d";
-    cccp lmagenta = "&e";
-    cccp lwhite = "&f";
-#undef cccp
+    constexpr const char* black = "&0";
+    constexpr const char* red = "&1";
+    constexpr const char* yellow = "&2";
+    constexpr const char* green = "&3";
+    constexpr const char* cyan = "&4";
+    constexpr const char* blue = "&5";
+    constexpr const char* magenta = "&6";
+    constexpr const char* white = "&7";
+    constexpr const char* lblack = "&8";
+    constexpr const char* lred = "&9";
+    constexpr const char* lyellow = "&a";
+    constexpr const char* lgreen = "&b";
+    constexpr const char* lcyan = "&c";
+    constexpr const char* lblue = "&d";
+    constexpr const char* lmagenta = "&e";
+    constexpr const char* lwhite = "&f";
 }

@@ -19,85 +19,47 @@
 
 #pragma once
 
+#include <chrono>
+
 class RateMeter {
+    static auto getTimeNow() noexcept { return std::chrono::steady_clock::now(); }
 public:
-    explicit RateMeter(int limit = 0) : mOnlineTimer(getTimeNow()), mOfflineTimer(getTimeNow()), mLimit(limit) {
-#ifdef NEWORLD_USE_WINAPI
-        LARGE_INTEGER num;
-        QueryPerformanceFrequency(&num);
-        mFrequency = num.QuadPart;
-#endif
-    }
+    explicit RateMeter(const int limit = 0) noexcept : mLimit(limit), mOnlineTimer(getTimeNow()),
+                                                       mOfflineTimer(getTimeNow()) { }
 
-    void refresh() {
+    void refresh() noexcept {
         mOnlineTimer = getTimeNow();
-#ifdef NEWORLD_USE_WINAPI
-        mDeltaTime = mOnlineTimer - mOfflineTimer;
-#else
-        mDeltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(mOnlineTimer - mOfflineTimer).count();
-#endif
+        mElapsed = mOnlineTimer - mOfflineTimer;
     }
 
-    void sync() {
+    void sync() noexcept {
         mOfflineTimer = mOnlineTimer;
-        mDeltaTime = 0;
+        mElapsed = std::chrono::steady_clock::duration(0);
     }
 
-    double getDeltaTimeMs() const {
-#ifndef NEWORLD_USE_WINAPI
-        return mDeltaTime;
-#else
-        return 1000.0 * mDeltaTime / mFrequency;
-#endif
+    auto getDeltaTimeMs() const noexcept {
+        return std::chrono::duration_cast<std::chrono::milliseconds>(mElapsed).count();
     }
 
     // Notice: this function will not call refresh()!
-    bool shouldRun() const {
-        if (mLimit == 0) return true;
-#ifndef NEWORLD_USE_WINAPI
-        auto stdDelta = std::chrono::milliseconds(1000 / mLimit);
-        auto deltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(mOnlineTimer - mOfflineTimer);
-#else
-        double stdDelta = 1.0 / mLimit;
-        double deltaTime = static_cast<double>(mOnlineTimer - mOfflineTimer) / mFrequency;
-#endif
-        return stdDelta <= deltaTime;
+    bool shouldRun() const noexcept {
+        if (mLimit) {
+            const auto stdDelta = std::chrono::milliseconds(1000 / mLimit);
+            const auto deltaTime = mOnlineTimer - mOfflineTimer;
+            return stdDelta <= deltaTime;
+        }
+        return true;
     }
 
-    void increaseTimer() {
-        if (mLimit == 0) return;
-#ifndef NEWORLD_USE_WINAPI
-        mOfflineTimer += std::chrono::milliseconds(1000 / mLimit);
-        mDeltaTime = std::chrono::duration_cast<std::chrono::milliseconds>(mOnlineTimer - mOfflineTimer).count();
-#else
-        mOfflineTimer += mFrequency / mLimit;
-        mDeltaTime = mOnlineTimer - mOfflineTimer;
-#endif
+    void increaseTimer() noexcept {
+        if (mLimit) {
+            mOfflineTimer += std::chrono::milliseconds(1000 / mLimit);
+            mElapsed = mOnlineTimer - mOfflineTimer;
+        }
     }
 
 private:
-#ifndef NEWORLD_USE_WINAPI
-    std::chrono::steady_clock::time_point mOnlineTimer;
-    std::chrono::steady_clock::time_point mOfflineTimer;
-    long long mDeltaTime = 0ll;
-
-    static std::chrono::steady_clock::time_point getTimeNow()
-    {
-        return std::chrono::steady_clock::now();
-    }
-#else
-    __int64 mOnlineTimer;
-    __int64 mOfflineTimer;
-    __int64 mFrequency;
-    __int64 mDeltaTime = 0ll;
-
-    static __int64 getTimeNow() {
-        LARGE_INTEGER num;
-        QueryPerformanceCounter(&num);
-        return num.QuadPart;
-    }
-#endif
-
     int mLimit;
-    bool mValid = false;
+    std::chrono::steady_clock::duration mElapsed{};
+    std::chrono::steady_clock::time_point mOnlineTimer, mOfflineTimer;
 };
