@@ -32,7 +32,7 @@ PluginManager::PluginManager()
         {
             std::string suffix = filename.substr(filename.size() - std::string(LibSuffix).size());
             strtolower(suffix);
-            if (suffix != LibSuffix) return; //TODO: FIXME: may ignore linux plugins
+            if (suffix != LibSuffix) return;
             debugstream << "Loading:" << filename;
             if(loadPlugin(filename))
                 counter++;

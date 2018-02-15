@@ -35,8 +35,9 @@ NEWorld::NEWorld()
     context.plugins.initializePlugins(nwPluginTypeGUI);
     
     // Run
-    constexpr const static int fps = 60;// TODO: read from settings
-    constexpr const static double delayPerFrame = (1000/fps)-0.5;
+    const auto fps = getJsonValue<size_t>(getSettings()["gui"]["fps"], 60);
+    const auto shouldLimitFps = getJsonValue<bool>(getSettings()["gui"]["limit"], false);
+    const auto delayPerFrame = 1000/fps-0.5;
     GameScene game("TestWorld", window);
     while(!window.shouldQuit())
     {
@@ -46,7 +47,7 @@ NEWorld::NEWorld()
         game.render();
         Renderer::checkError();
         window.swapBuffers();
-        //SDL_Delay(delayPerFrame);
+        if(shouldLimitFps) SDL_Delay(delayPerFrame);
     }
 
     // Terminate

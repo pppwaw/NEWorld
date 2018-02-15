@@ -41,9 +41,9 @@ extern "C"
     NWAPIEXPORT NWplugindata* NWAPICALL getInfo()
     {
         auto plugin = new NWplugindata();
-        plugin->pluginName = "NEWorld Core";
+        plugin->pluginName = "NEWorld";
         plugin->authorName = "INFINIDEAS";
-        plugin->internalName = "infinideas.neworld.main.core";
+        plugin->internalName = "infinideas.neworld.main";
         plugin->pluginType = nwPluginTypeCore;
         return plugin;
     }

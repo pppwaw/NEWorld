@@ -39,8 +39,7 @@ public:
      */
     ChunkService(bool isAuthority) noexcept
         : mWorlds(context.plugins, context.blocks),
-          mAuthority(isAuthority), mTaskDispatcher(1, *this) {
-        // TODO: make thread number adjustable in runtime
+          mAuthority(isAuthority), mTaskDispatcher(getJsonValue<size_t>(getSettings()["nwcore"]["update_thread_number"], 2), *this) {
     }
 
     friend class TaskDispatcher;

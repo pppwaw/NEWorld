@@ -141,7 +141,6 @@ public:
     }
 
     void task(const ChunkService& cs) override {
-        // TODO: avoid using raw pointer directly somehow... if possible
         ChunkManager::data_t chunk;
         if (false) { // TODO: should try to load from local first
 
@@ -169,8 +168,9 @@ public:
         PODOrderedList<int, Vec3i, MaxChunkLoadCount> loadList;
         PODOrderedList<int, Chunk*, MaxChunkUnloadCount, std::greater> unloadList;
 
-        // TODO: make the load range adjustable
-        generateLoadUnloadList(mWorld, mPlayer.getPosition(), 4, loadList, unloadList);
+        generateLoadUnloadList(mWorld, mPlayer.getPosition(),
+            getJsonValue<size_t>(getSettings()["server"]["load_distance"], 4),
+            loadList, unloadList);
 
         for (auto& loadPos : loadList) {
             if (chunkService.isAuthority()) {

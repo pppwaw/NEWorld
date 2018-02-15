@@ -19,6 +19,7 @@
 
 #include "cli.hpp"
 #include "game/context/nwcontext.hpp"
+#include "sync_service/chunkservice.hpp"
 
 void ServerCommandLine::initBuiltinCommands() noexcept
 {
@@ -95,18 +96,13 @@ void ServerCommandLine::initBuiltinCommands() noexcept
         return{ true,"[Server UPS counter not finished yet!]" };
     });
 
-    // TODO: Fix this
-    /*
     mCommands.registerCommand("chunks.count",
         { "internal","Show how many chunks are loaded" },
         [this](Command cmd)->CommandExecuteStat
     {
         size_t sum = 0;
-        for (auto&& world : mWorlds)
-        {
+        for (auto&& world : chunkService.getWorlds())
             sum += world->getChunkCount();
-        }
         return{ true,"Chunks loaded: " + std::to_string(sum) };
     });
-    */
 }
