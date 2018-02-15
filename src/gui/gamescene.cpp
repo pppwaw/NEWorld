@@ -31,7 +31,7 @@ public:
 
     void task(const ChunkService& cs) override {
 
-        constexpr double speed = 0.05;
+        constexpr double speed = 0.1;
 
         // TODO: Read keys from the configuration file
         auto state = Window::getKeyBoardState();
@@ -51,6 +51,8 @@ public:
             mPlayer.accelerate(Vec3d(-speed, 0.0, 0.0));
         if (state[SDL_SCANCODE_D])
             mPlayer.accelerate(Vec3d(speed, 0.0, 0.0));
+        if (state[SDL_SCANCODE_E])
+            mPlayer.accelerate(Vec3d(0.0, 0.0, -speed*10));
         if (state[SDL_SCANCODE_SPACE])
             mPlayer.accelerate(Vec3d(0.0, 2 * speed, 0.0));
 #ifdef NEWORLD_TARGET_MACOSX

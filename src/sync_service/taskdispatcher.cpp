@@ -25,7 +25,7 @@ void TaskDispatcher::worker(size_t threadID) {
     debugstream << "Worker thread " << threadID << " initialized.";
     while (!mShouldExit) {
         // A tick starts
-        RateMeter meter{ 60 };
+        RateMeter meter{ 30 };
         meter.sync();
 
         const size_t currentRoundNumber = mRoundNumber;
@@ -53,10 +53,8 @@ void TaskDispatcher::worker(size_t threadID) {
                 mNextReadWriteTasks.emplace_back(task->clone());
             std::swap(mReadOnlyTasks, mNextReadOnlyTasks);
             std::swap(mReadWriteTasks, mNextReadWriteTasks);
-            // TODO: UPS limits should apply here
-            //using namespace std::chrono_literals;
-            //std::this_thread::sleep_for(10ms);
 
+            // Limit UPS
             while (!meter.shouldRun()){
                 std::this_thread::yield();
                 meter.refresh();
