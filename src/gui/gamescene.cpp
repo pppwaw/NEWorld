@@ -129,7 +129,7 @@ GameScene::GameScene(const std::string& name, const Window& window):
         
         nk_layout_row_dynamic(ctx, 15, 1);
         nk_labelf(ctx, NK_TEXT_LEFT, "NEWorld %s (v%u)", NEWorldVersionName, NEWorldVersion);
-        nk_labelf(ctx, NK_TEXT_LEFT, "FPS %d, UPS %d", mFpsLatest, mUpsLatest);
+        nk_labelf(ctx, NK_TEXT_LEFT, "FPS %zu, UPS %zu", mFpsLatest, mUpsLatest);
         nk_labelf(ctx, NK_TEXT_LEFT, "Position: x %.1f y %.1f z %.1f",
             mPlayer.getPosition().x, mPlayer.getPosition().y, mPlayer.getPosition().z);
         nk_labelf(ctx, NK_TEXT_LEFT, "GUI Widgets: %zu", mGUIWidgets.getSize());
@@ -167,7 +167,7 @@ void GameScene::render()
     glClearDepth(1.0f);
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_DEPTH_TEST);
-
+    
     mUpdateScheduler.refresh();
     double timeDelta = mUpdateScheduler.getDeltaTimeMs() / 1000.0 * UpdateFrequency;
     if (timeDelta > 1.0) timeDelta = 1.0;
@@ -184,11 +184,10 @@ void GameScene::render()
     Renderer::rotate(float(-playerRenderedRotation.y), Vec3f(0.0f, 1.0f, 0.0f));
     Renderer::rotate(float(-playerRenderedRotation.z), Vec3f(0.0f, 0.0f, 1.0f));
     Renderer::translate(-playerRenderedPosition);
-
+    
     // Render
 
     mWorldRenderer.render(Vec3i(mPlayer.getPosition()));
-
     // mPlayer.render();
 
     glDisable(GL_DEPTH_TEST);

@@ -14,7 +14,7 @@
 #define NK_SDL_GL3_H_
 
 #include <SDL2/SDL.h>
-#include <gl/glew.h>
+#include <GL/glew.h>
 
 NK_API struct nk_context*   nk_sdl_init(SDL_Window *win);
 NK_API void                 nk_sdl_font_stash_begin(struct nk_font_atlas **atlas);
@@ -36,7 +36,9 @@ NK_API void                 nk_sdl_device_create(void);
  */
 #ifdef NK_SDL_GL3_IMPLEMENTATION
 
+#include "engine/maintenance/nwlogger.hpp"
 #include <string.h>
+#include <string>
 
 struct nk_sdl_device {
     struct nk_buffer cmds;
@@ -109,6 +111,12 @@ nk_sdl_device_create(void)
     glCompileShader(dev->vert_shdr);
     glCompileShader(dev->frag_shdr);
     glGetShaderiv(dev->vert_shdr, GL_COMPILE_STATUS, &status);
+    if(status != GL_TRUE){
+        char szLog[1024] = {0};  
+        GLsizei logLen = 0;  
+        glGetShaderInfoLog(dev->vert_shdr,1024,&logLen,szLog);
+        errorstream<< "Could not compile vert shader, error " << status << ": " << szLog;
+    }
     assert(status == GL_TRUE);
     glGetShaderiv(dev->frag_shdr, GL_COMPILE_STATUS, &status);
     assert(status == GL_TRUE);

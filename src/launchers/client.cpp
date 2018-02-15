@@ -23,10 +23,12 @@
 
 typedef void NWAPICALL MainFunction(int, char**);
 
-#ifdef _WIN32
-constexpr const char* GUIDllName = "GUI.dll";
-#else
-constexpr const char* GUIDllName = "libGUI.so";
+#if defined(NEWORLD_TARGET_WINDOWS)
+    constexpr const char* GUIDllName = "GUI.dll";
+#elif defined(NEWORLD_TARGET_MACOSX)
+    constexpr const char* GUIDllName = "libGUI.dylib";
+#elif defined(NEWORLD_TARGET_LINUX)
+    constexpr const char* GUIDllName = "libGUI.so";
 #endif
 
 int main(int argc, char** argv)

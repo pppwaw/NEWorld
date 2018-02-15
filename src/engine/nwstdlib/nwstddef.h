@@ -86,9 +86,7 @@ For details see "LICENSE".
 
 #if defined(NEWORLD_TARGET_WINDOWS)
     constexpr const char* LibSuffix = "dll";
-#elif defined(NEWORLD_TARGET_MACOSX)
-    constexpr const char* LibSuffix = "dylib";
-#elif defined(NEWORLD_TARGET_LINUX)
+#else
     constexpr const char* LibSuffix = "so";
 #endif
 
