@@ -112,7 +112,7 @@ GameScene::GameScene(const std::string& name, const Window& window):
 
     // Initialize Widgets
     mGUIWidgets.addWidget(std::make_shared<WidgetCallback>(
-        "Debug", nk_rect(20, 20, 200, 200),
+        "Debug", nk_rect(20, 20, 300, 300),
         NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
         NK_WINDOW_CLOSABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE, [this](nk_context* ctx) {
 
@@ -134,9 +134,14 @@ GameScene::GameScene(const std::string& name, const Window& window):
         nk_labelf(ctx, NK_TEXT_LEFT, "GUI Widgets: %zu", mGUIWidgets.getSize());
         nk_labelf(ctx, NK_TEXT_LEFT, "Chunks Loaded: %zu", mCurrentWorld->getChunkCount());
         auto& dispatcher = chunkService.getTaskDispatcher();
-        /*nk_labelf(ctx, NK_TEXT_LEFT, "Tasks: Next %zu read %zu write %zu render",
+        /*nk_labelf(ctx, NK_TEXT_LEFT, "Tasks: Next read %zu write %zu render %zu",
             dispatcher.getNextReadOnlyTaskCount(), dispatcher.getNextReadWriteTaskCount(),
             dispatcher.getNextRenderTaskCount());*/
+        nk_labelf(ctx, NK_TEXT_LEFT, "Update threads workload:");
+        for(size_t i = 0; i<dispatcher.getTimeUsed().size();++i) {
+            auto time = dispatcher.getTimeUsed()[i];
+            nk_labelf(ctx, NK_TEXT_LEFT, "Thread %zu: %.3f ms (%.1f)", i, time, 1000/time);
+        }
         nk_labelf(ctx, NK_TEXT_LEFT, "Regular Tasks: read %zu write %zu",
             dispatcher.getRegularReadOnlyTaskCount(),
             dispatcher.getRegularReadWriteTaskCount());
