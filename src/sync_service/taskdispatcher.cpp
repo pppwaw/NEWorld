@@ -25,40 +25,49 @@ void TaskDispatcher::worker(size_t threadID) {
     debugstream << "Worker thread " << threadID << " initialized.";
     while (!mShouldExit) {
         // A tick starts
+        RateMeter meter{ 30 };
+        meter.sync();
 
+        const size_t currentRoundNumber = mRoundNumber;
         // Process read-only work.
         for (auto i = threadID; i < mReadOnlyTasks.size(); i += mThreadNumber) {
             mReadOnlyTasks[i]->task(mChunkService);
         }
 
         // Finish the tick
-        --mNumberOfUnfinishedThreads;
+        meter.refresh();
+        mTimeUsed[threadID] = meter.getDeltaTimeMs();
 
         // The last finished thread is responsible to do writing jobs
-        if (mNumberOfUnfinishedThreads == 0) {
-            // All other threads have finished?
-            for (const auto& task : mReadWriteTasks) { task->task(mChunkService); }
+        if (mNumberOfUnfinishedThreads.fetch_sub(1) == 1) { // All other threads have finished?
+            for (const auto& task : mReadWriteTasks) {
+                task->task(mChunkService);
+            }
 
             // ...and finish up!
             mReadOnlyTasks.clear();
             mReadWriteTasks.clear();
             for (auto& task : mRegularReadOnlyTasks)
-                mReadOnlyTasks.emplace_back(task->clone());
+                mNextReadOnlyTasks.emplace_back(task->clone());
             for (auto& task : mRegularReadWriteTasks)
-                mReadWriteTasks.emplace_back(task->clone());
+                mNextReadWriteTasks.emplace_back(task->clone());
             std::swap(mReadOnlyTasks, mNextReadOnlyTasks);
             std::swap(mReadWriteTasks, mNextReadWriteTasks);
-            // TODO: UPS limits should apply here
-            using namespace std::chrono_literals;
-            std::this_thread::sleep_for(10ms);
+
+            // Limit UPS
+            while (!meter.shouldRun()){
+                std::this_thread::yield();
+                meter.refresh();
+            }
 
             // Time to move to next tick!
             // Notify other threads that we are good to go
             mNumberOfUnfinishedThreads = mThreadNumber;
+            ++mRoundNumber;
         }
         else {
             // Wait for other threads...
-            while (mNumberOfUnfinishedThreads != mThreadNumber)
+            while (mRoundNumber == currentRoundNumber)
                 std::this_thread::yield();
         }
     }

@@ -68,8 +68,10 @@ public:
      * \param chunkService the chunk service that the dispatcher binds to
      */
     TaskDispatcher(size_t threadNumber, ChunkService& chunkService)
-        : mThreadNumber(threadNumber), mChunkService(chunkService) { }
-
+        : mThreadNumber(threadNumber), mChunkService(chunkService),
+          mTimeUsed(threadNumber, 0){
+    }
+    
     ~TaskDispatcher() {
         mShouldExit = true;
         for (auto& thread : mThreads) thread.join();
@@ -106,19 +108,13 @@ public:
     void addRegularReadWriteTask(std::unique_ptr<ReadWriteTask> task) noexcept {
         std::lock_guard<std::mutex> lock(mMutex);
         mRegularReadWriteTasks.emplace_back(std::move(task));
-    } /*
-    size_t getNextReadOnlyTaskCount() const noexcept {
-        return mNextReadOnlyTasks.size();
     }
-    size_t getNextReadWriteTaskCount() const noexcept {
-        return mNextReadWriteTasks.size();
+    size_t getRegularReadOnlyTaskCount() const noexcept {
+        return mRegularReadOnlyTasks.size();
     }
-    size_t getNextRenderTaskCount() const noexcept {
-        return mNextRenderTasks.size();
-    }*/
-    size_t getRegularReadOnlyTaskCount() const noexcept { return mRegularReadOnlyTasks.size(); }
-    size_t getRegularReadWriteTaskCount() const noexcept { return mRegularReadWriteTasks.size(); }
-
+    size_t getRegularReadWriteTaskCount() const noexcept {
+        return mRegularReadWriteTasks.size();
+    }
     /**
      * \brief Process render tasks.
      *        This function should be called from the main thread.
@@ -131,6 +127,8 @@ public:
         std::swap(mRenderTasks, mNextRenderTasks);
     }
 
+    const std::vector<double>& getTimeUsed() const noexcept { return mTimeUsed; }
+
 private:
     void worker(size_t threadID);
 
@@ -142,8 +140,11 @@ private:
     std::vector<std::unique_ptr<RenderTask>> mRenderTasks, mNextRenderTasks;
     std::vector<std::thread> mThreads;
     size_t mThreadNumber;
+    std::atomic<size_t> mRoundNumber{ 0 };
     std::atomic<size_t> mNumberOfUnfinishedThreads;
     std::atomic<bool> mShouldExit{false};
 
     ChunkService& mChunkService;
+
+    std::vector<double> mTimeUsed; // For statistical purpose only
 };

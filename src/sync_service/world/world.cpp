@@ -118,6 +118,27 @@ private:
     std::unique_ptr<Chunk, ChunkOnReleaseBehavior> mChunk;
 };
 
+class UnloadChunkTask : public ReadWriteTask {
+public:
+    /**
+    * \brief Given a chunk, it will try to unload it (decrease a ref)
+    * \param world the target world
+    * \param chunkPosition the position of the chunk
+    */
+    UnloadChunkTask(const World& world, Vec3i chunkPosition)
+        : mWorld(world), mChunkPosition(chunkPosition) {
+
+    }
+
+    void task(ChunkService& cs) override {
+        //TODO: for multiplayer situation, it should decrease ref counter instead of deleting
+        cs.getWorlds().getWorld(mWorld.getWorldID())->deleteChunk(mChunkPosition);
+    }
+private:
+    const World& mWorld;
+    Vec3i mChunkPosition;
+};
+
 class BuildOrLoadChunkTask : public ReadOnlyTask {
 public:
     /**
@@ -174,7 +195,10 @@ public:
             }
         }
         for (auto& unloadChunk : unloadList) {
-            // TODO: add a unload task.
+            // add a unload task.
+            chunkService.getTaskDispatcher().addReadWriteTask(
+                std::make_unique<UnloadChunkTask>(mWorld, unloadChunk.second->getPosition())
+            );
 
         }
     }

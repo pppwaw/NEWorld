@@ -31,7 +31,7 @@ public:
 
     void task(const ChunkService& cs) override {
 
-        constexpr double speed = 0.05;
+        constexpr double speed = 0.1;
 
         // TODO: Read keys from the configuration file
         auto state = Window::getKeyBoardState();
@@ -51,6 +51,8 @@ public:
             mPlayer.accelerate(Vec3d(-speed, 0.0, 0.0));
         if (state[SDL_SCANCODE_D])
             mPlayer.accelerate(Vec3d(speed, 0.0, 0.0));
+        if (state[SDL_SCANCODE_E])
+            mPlayer.accelerate(Vec3d(0.0, 0.0, -speed*10));
         if (state[SDL_SCANCODE_SPACE])
             mPlayer.accelerate(Vec3d(0.0, 2 * speed, 0.0));
 #ifdef NEWORLD_TARGET_MACOSX
@@ -105,35 +107,41 @@ GameScene::GameScene(const std::string& name, const Window& window):
 
     // Initialize Widgets
     mGUIWidgets.addWidget(std::make_shared<WidgetCallback>(
-        "Debug", nk_rect(20, 20, 200, 200),
+        "Debug", nk_rect(20, 20, 300, 300),
         NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
         NK_WINDOW_CLOSABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE, [this](nk_context* ctx) {
-            mRateCounterScheduler.refresh();
-            if (mRateCounterScheduler.shouldRun()) {
-                // Update FPS & UPS
-                mFpsLatest = mFpsCounter;
-                mUpsLatest = mUpsCounter;
-                mFpsCounter = 0;
-                mUpsCounter = 0;
-                mRateCounterScheduler.increaseTimer();
-            }
 
-            nk_layout_row_dynamic(ctx, 15, 1);
-            nk_labelf(ctx, NK_TEXT_LEFT, "NEWorld %s (v%u)", NEWorldVersionName, NEWorldVersion);
-            nk_labelf(ctx, NK_TEXT_LEFT, "FPS %zu, UPS %zu", mFpsLatest, mUpsLatest);
-            nk_labelf(ctx, NK_TEXT_LEFT, "Position: x %.1f y %.1f z %.1f",
-                      mPlayer.getPosition().x, mPlayer.getPosition().y, mPlayer.getPosition().z);
-            nk_labelf(ctx, NK_TEXT_LEFT, "GUI Widgets: %zu", mGUIWidgets.getSize());
-            nk_labelf(ctx, NK_TEXT_LEFT, "Chunks Loaded: %zu", mCurrentWorld->getChunkCount());
-            auto& dispatcher = chunkService.getTaskDispatcher();
-            /*nk_labelf(ctx, NK_TEXT_LEFT, "Tasks: Next %zu read %zu write %zu render",
-                dispatcher.getNextReadOnlyTaskCount(), dispatcher.getNextReadWriteTaskCount(),
-                dispatcher.getNextRenderTaskCount());*/
-            nk_labelf(ctx, NK_TEXT_LEFT, "Regular Tasks: read %zu write %zu",
-                      dispatcher.getRegularReadOnlyTaskCount(),
-                      dispatcher.getRegularReadWriteTaskCount());
-        }));
-
+        mRateCounterScheduler.refresh();
+        if (mRateCounterScheduler.shouldRun()) {
+            // Update FPS & UPS
+            mFpsLatest = mFpsCounter;
+            mUpsLatest = mUpsCounter;
+            mFpsCounter = 0;
+            mUpsCounter = 0;
+            mRateCounterScheduler.increaseTimer();
+        }
+        
+        nk_layout_row_dynamic(ctx, 15, 1);
+        nk_labelf(ctx, NK_TEXT_LEFT, "NEWorld %s (v%u)", NEWorldVersionName, NEWorldVersion);
+        nk_labelf(ctx, NK_TEXT_LEFT, "FPS %zu, UPS %zu", mFpsLatest, mUpsLatest);
+        nk_labelf(ctx, NK_TEXT_LEFT, "Position: x %.1f y %.1f z %.1f",
+            mPlayer.getPosition().x, mPlayer.getPosition().y, mPlayer.getPosition().z);
+        nk_labelf(ctx, NK_TEXT_LEFT, "GUI Widgets: %zu", mGUIWidgets.getSize());
+        nk_labelf(ctx, NK_TEXT_LEFT, "Chunks Loaded: %zu", mCurrentWorld->getChunkCount());
+        auto& dispatcher = chunkService.getTaskDispatcher();
+        /*nk_labelf(ctx, NK_TEXT_LEFT, "Tasks: Next read %zu write %zu render %zu",
+            dispatcher.getNextReadOnlyTaskCount(), dispatcher.getNextReadWriteTaskCount(),
+            dispatcher.getNextRenderTaskCount());*/
+        nk_labelf(ctx, NK_TEXT_LEFT, "Update threads workload:");
+        for(size_t i = 0; i<dispatcher.getTimeUsed().size();++i) {
+            auto time = dispatcher.getTimeUsed()[i];
+            nk_labelf(ctx, NK_TEXT_LEFT, "Thread %zu: %.3f ms (%.1f)", i, time, 1000/time);
+        }
+        nk_labelf(ctx, NK_TEXT_LEFT, "Regular Tasks: read %zu write %zu",
+            dispatcher.getRegularReadOnlyTaskCount(),
+            dispatcher.getRegularReadWriteTaskCount());
+    }));
+    
 
     // Initialize connection
     context.rpc.enableClient(
