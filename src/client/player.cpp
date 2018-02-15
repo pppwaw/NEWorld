@@ -1,43 +1,38 @@
-/*
-* NEWorld: A free game with similar rules to Minecraft.
-* Copyright (C) 2016 NEWorld Team
-*
-* This file is part of NEWorld.
-* NEWorld is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* NEWorld is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public License
-* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
-*/
+// 
+// nwcore: player.cpp
+// NEWorld: A Free Game with Similar Rules to Minecraft.
+// Copyright (C) 2015-2018 NEWorld Team
+// 
+// NEWorld is free software: you can redistribute it and/or modify it 
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or 
+// (at your option) any later version.
+// 
+// NEWorld is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General 
+// Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+// 
 
 #include "player.h"
 
-class PlayerUpdateTask :public ReadOnlyTask {
+class PlayerUpdateTask : public ReadOnlyTask {
 public:
     PlayerUpdateTask(Player& player, size_t worldId): mPlayer(player), mWorldId(worldId) {}
 
-    void task(const ChunkService& cs) override {
-        mPlayer.update(*cs.getWorlds().getWorld(mWorldId));
-    }
+    void task(const ChunkService& cs) override { mPlayer.update(*cs.getWorlds().getWorld(mWorldId)); }
 
-    std::unique_ptr<ReadOnlyTask> clone() override {
-        return std::make_unique<PlayerUpdateTask>(*this);
-    }
+    std::unique_ptr<ReadOnlyTask> clone() override { return std::make_unique<PlayerUpdateTask>(*this); }
 
 private:
     Player& mPlayer;
     size_t mWorldId;
 };
 
-void Player::move(const World& world)
-{
+void Player::move(const World& world) {
     //mSpeed.normalize();
     //m.speed *= PlayerSpeed;
     mPositionDelta = Mat4d::rotation(mRotation.y, Vec3d(0.0, 1.0, 0.0)).transformVec3(mSpeed);
@@ -65,8 +60,7 @@ void Player::move(const World& world)
     //mSpeed += Vec3d(0.0, -0.05, 0.0);
 }
 
-void Player::rotationMove()
-{
+void Player::rotationMove() {
     if (mRotation.x + mRotationSpeed.x > 90.0)
         mRotationSpeed.x = 90.0 - mRotation.x;
     if (mRotation.x + mRotationSpeed.x < -90.0)
@@ -76,16 +70,14 @@ void Player::rotationMove()
     mRotationSpeed *= 0.6;
 }
 
-Player::Player(size_t worldID) : PlayerObject(worldID)
-{
+Player::Player(size_t worldID) : PlayerObject(worldID) {
     // Register update event
     chunkService.getTaskDispatcher().addRegularReadOnlyTask(
         std::make_unique<PlayerUpdateTask>(*this, mWorldID)
     );
 }
 
-void Player::render()
-{
+void Player::render() {
     // Player model not finished yet
     /*
     glDisable(GL_CULL_FACE);

@@ -1,21 +1,21 @@
-/*
-* NEWorld: A free game with similar rules to Minecraft.
-* Copyright (C) 2016 NEWorld Team
-*
-* This file is part of NEWorld.
-* NEWorld is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* NEWorld is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public License
-* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
-*/
+// 
+// GUI: gamescene.cpp
+// NEWorld: A Free Game with Similar Rules to Minecraft.
+// Copyright (C) 2015-2018 NEWorld Team
+// 
+// NEWorld is free software: you can redistribute it and/or modify it 
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or 
+// (at your option) any later version.
+// 
+// NEWorld is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General 
+// Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+// 
 
 #include <atomic>
 #include <chrono>
@@ -25,7 +25,7 @@
 #include "renderer/blockrenderer.h"
 #include <GL/glew.h>
 
-class KeyboardUpdateTask :public ReadOnlyTask {
+class KeyboardUpdateTask : public ReadOnlyTask {
 public:
     KeyboardUpdateTask(Player& player) : mPlayer(player) {}
 
@@ -63,36 +63,29 @@ public:
         //    mGUIWidgets.update();
     }
 
-    std::unique_ptr<ReadOnlyTask> clone() override {
-        return std::make_unique<KeyboardUpdateTask>(*this);
-    }
+    std::unique_ptr<ReadOnlyTask> clone() override { return std::make_unique<KeyboardUpdateTask>(*this); }
 
 private:
     Player& mPlayer;
 };
 
-class UpsCounter :public ReadOnlyTask {
+class UpsCounter : public ReadOnlyTask {
 public:
     UpsCounter(size_t& updateCounter) : mUpdateCounter(updateCounter) {}
-    
-    void task(const ChunkService&) override {
-        mUpdateCounter++;
-    }
 
-    std::unique_ptr<ReadOnlyTask> clone() override {
-        return std::make_unique<UpsCounter>(*this);
-    }
+    void task(const ChunkService&) override { mUpdateCounter++; }
+
+    std::unique_ptr<ReadOnlyTask> clone() override { return std::make_unique<UpsCounter>(*this); }
 
 private:
-    size_t & mUpdateCounter;
+    size_t& mUpdateCounter;
 };
 
 GameScene::GameScene(const std::string& name, const Window& window):
     mWindow(window),
     mPlayer(0), mGUIWidgets(mWindow.getNkContext()),
     mCurrentWorld(chunkService.getWorlds().addWorld("test world")),
-    mWorldRenderer(*mCurrentWorld, getJsonValue<size_t>(getSettings()["gui"]["render_distance"], 3))
-{
+    mWorldRenderer(*mCurrentWorld, getJsonValue<size_t>(getSettings()["gui"]["render_distance"], 3)) {
     mPlayer.setPosition(Vec3d(-16.0, 48.0, 32.0));
     mPlayer.setRotation(Vec3d(-45.0, -22.5, 0.0));
 
@@ -115,33 +108,32 @@ GameScene::GameScene(const std::string& name, const Window& window):
         "Debug", nk_rect(20, 20, 200, 200),
         NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
         NK_WINDOW_CLOSABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE, [this](nk_context* ctx) {
+            mRateCounterScheduler.refresh();
+            if (mRateCounterScheduler.shouldRun()) {
+                // Update FPS & UPS
+                mFpsLatest = mFpsCounter;
+                mUpsLatest = mUpsCounter;
+                mFpsCounter = 0;
+                mUpsCounter = 0;
+                mRateCounterScheduler.increaseTimer();
+            }
 
-        mRateCounterScheduler.refresh();
-        if (mRateCounterScheduler.shouldRun()) {
-            // Update FPS & UPS
-            mFpsLatest = mFpsCounter;
-            mUpsLatest = mUpsCounter;
-            mFpsCounter = 0;
-            mUpsCounter = 0;
-            mRateCounterScheduler.increaseTimer();
-        }
-        
-        nk_layout_row_dynamic(ctx, 15, 1);
-        nk_labelf(ctx, NK_TEXT_LEFT, "NEWorld %s (v%u)", NEWorldVersionName, NEWorldVersion);
-        nk_labelf(ctx, NK_TEXT_LEFT, "FPS %zu, UPS %zu", mFpsLatest, mUpsLatest);
-        nk_labelf(ctx, NK_TEXT_LEFT, "Position: x %.1f y %.1f z %.1f",
-            mPlayer.getPosition().x, mPlayer.getPosition().y, mPlayer.getPosition().z);
-        nk_labelf(ctx, NK_TEXT_LEFT, "GUI Widgets: %zu", mGUIWidgets.getSize());
-        nk_labelf(ctx, NK_TEXT_LEFT, "Chunks Loaded: %zu", mCurrentWorld->getChunkCount());
-        auto& dispatcher = chunkService.getTaskDispatcher();
-        /*nk_labelf(ctx, NK_TEXT_LEFT, "Tasks: Next %zu read %zu write %zu render",
-            dispatcher.getNextReadOnlyTaskCount(), dispatcher.getNextReadWriteTaskCount(),
-            dispatcher.getNextRenderTaskCount());*/
-        nk_labelf(ctx, NK_TEXT_LEFT, "Regular Tasks: read %zu write %zu",
-            dispatcher.getRegularReadOnlyTaskCount(),
-            dispatcher.getRegularReadWriteTaskCount());
-    }));
-    
+            nk_layout_row_dynamic(ctx, 15, 1);
+            nk_labelf(ctx, NK_TEXT_LEFT, "NEWorld %s (v%u)", NEWorldVersionName, NEWorldVersion);
+            nk_labelf(ctx, NK_TEXT_LEFT, "FPS %zu, UPS %zu", mFpsLatest, mUpsLatest);
+            nk_labelf(ctx, NK_TEXT_LEFT, "Position: x %.1f y %.1f z %.1f",
+                      mPlayer.getPosition().x, mPlayer.getPosition().y, mPlayer.getPosition().z);
+            nk_labelf(ctx, NK_TEXT_LEFT, "GUI Widgets: %zu", mGUIWidgets.getSize());
+            nk_labelf(ctx, NK_TEXT_LEFT, "Chunks Loaded: %zu", mCurrentWorld->getChunkCount());
+            auto& dispatcher = chunkService.getTaskDispatcher();
+            /*nk_labelf(ctx, NK_TEXT_LEFT, "Tasks: Next %zu read %zu write %zu render",
+                dispatcher.getNextReadOnlyTaskCount(), dispatcher.getNextReadWriteTaskCount(),
+                dispatcher.getNextRenderTaskCount());*/
+            nk_labelf(ctx, NK_TEXT_LEFT, "Regular Tasks: read %zu write %zu",
+                      dispatcher.getRegularReadOnlyTaskCount(),
+                      dispatcher.getRegularReadWriteTaskCount());
+        }));
+
 
     // Initialize connection
     context.rpc.enableClient(
@@ -152,12 +144,9 @@ GameScene::GameScene(const std::string& name, const Window& window):
     infostream << "Game initialized!";
 }
 
-GameScene::~GameScene()
-{
-}
+GameScene::~GameScene() {}
 
-void GameScene::render()
-{
+void GameScene::render() {
     chunkService.getTaskDispatcher().processRenderTasks();
 
     mFpsCounter++;
@@ -166,7 +155,7 @@ void GameScene::render()
     glClearDepth(1.0f);
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_DEPTH_TEST);
-    
+
     mUpdateScheduler.refresh();
     double timeDelta = mUpdateScheduler.getDeltaTimeMs() / 1000.0 * UpdateFrequency;
     if (timeDelta > 1.0) timeDelta = 1.0;
@@ -183,7 +172,7 @@ void GameScene::render()
     Renderer::rotate(float(-playerRenderedRotation.y), Vec3f(0.0f, 1.0f, 0.0f));
     Renderer::rotate(float(-playerRenderedRotation.z), Vec3f(0.0f, 0.0f, 1.0f));
     Renderer::translate(-playerRenderedPosition);
-    
+
     // Render
 
     mWorldRenderer.render(Vec3i(mPlayer.getPosition()));

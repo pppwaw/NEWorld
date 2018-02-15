@@ -1,21 +1,21 @@
-/*
-* NEWorld: A free game with similar rules to Minecraft.
-* Copyright (C) 2016 NEWorld Team
-*
-* This file is part of NEWorld.
-* NEWorld is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* NEWorld is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public License
-* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
-*/
+// 
+// GUI: texture.h
+// NEWorld: A Free Game with Similar Rules to Minecraft.
+// Copyright (C) 2015-2018 NEWorld Team
+// 
+// NEWorld is free software: you can redistribute it and/or modify it 
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or 
+// (at your option) any later version.
+// 
+// NEWorld is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General 
+// Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+// 
 
 #ifndef TEXTURES_H
 #define TEXTURES_H
@@ -26,17 +26,16 @@ using TextureID = GLuint;
 using ubyte = unsigned char;
 struct SDL_Surface;
 
-class Texture
-{
+class Texture {
 public:
-    enum
-    {
-        Texture2D = GL_TEXTURE_2D, Texture3D = GL_TEXTURE_3D
+    enum {
+        Texture2D = GL_TEXTURE_2D,
+        Texture3D = GL_TEXTURE_3D
     };
 
     Texture() = default;
 
-    explicit Texture(TextureID id) :mId(id) {}
+    explicit Texture(TextureID id) : mId(id) {}
 
     static void init();
 
@@ -56,8 +55,8 @@ public:
 
 private:
     TextureID mId;
-    class RawTexture
-    {
+
+    class RawTexture {
     public:
         ~RawTexture();
         explicit RawTexture(const std::string& filename);

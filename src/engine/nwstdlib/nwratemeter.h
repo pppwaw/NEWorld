@@ -1,29 +1,27 @@
-/*
-* NEWorld: A free game with similar rules to Minecraft.
-* Copyright (C) 2016 NEWorld Team
-*
-* This file is part of NEWorld.
-* NEWorld is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* NEWorld is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public License
-* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
-*/
+// 
+// nwcore: nwratemeter.h
+// NEWorld: A Free Game with Similar Rules to Minecraft.
+// Copyright (C) 2015-2018 NEWorld Team
+// 
+// NEWorld is free software: you can redistribute it and/or modify it 
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or 
+// (at your option) any later version.
+// 
+// NEWorld is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General 
+// Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+// 
 
 #pragma once
 
-class RateMeter
-{
+class RateMeter {
 public:
-    explicit RateMeter(int limit = 0) : mOnlineTimer(getTimeNow()), mOfflineTimer(getTimeNow()), mLimit(limit)
-    {
+    explicit RateMeter(int limit = 0) : mOnlineTimer(getTimeNow()), mOfflineTimer(getTimeNow()), mLimit(limit) {
 #ifdef NEWORLD_USE_WINAPI
         LARGE_INTEGER num;
         QueryPerformanceFrequency(&num);
@@ -31,8 +29,7 @@ public:
 #endif
     }
 
-    void refresh()
-    {
+    void refresh() {
         mOnlineTimer = getTimeNow();
 #ifdef NEWORLD_USE_WINAPI
         mDeltaTime = mOnlineTimer - mOfflineTimer;
@@ -41,14 +38,12 @@ public:
 #endif
     }
 
-    void sync()
-    {
+    void sync() {
         mOfflineTimer = mOnlineTimer;
         mDeltaTime = 0;
     }
 
-    double getDeltaTimeMs() const
-    {
+    double getDeltaTimeMs() const {
 #ifndef NEWORLD_USE_WINAPI
         return mDeltaTime;
 #else
@@ -57,8 +52,7 @@ public:
     }
 
     // Notice: this function will not call refresh()!
-    bool shouldRun() const
-    {
+    bool shouldRun() const {
         if (mLimit == 0) return true;
 #ifndef NEWORLD_USE_WINAPI
         auto stdDelta = std::chrono::milliseconds(1000 / mLimit);
@@ -70,8 +64,7 @@ public:
         return stdDelta <= deltaTime;
     }
 
-    void increaseTimer()
-    {
+    void increaseTimer() {
         if (mLimit == 0) return;
 #ifndef NEWORLD_USE_WINAPI
         mOfflineTimer += std::chrono::milliseconds(1000 / mLimit);
@@ -98,8 +91,7 @@ private:
     __int64 mFrequency;
     __int64 mDeltaTime = 0ll;
 
-    static __int64 getTimeNow()
-    {
+    static __int64 getTimeNow() {
         LARGE_INTEGER num;
         QueryPerformanceCounter(&num);
         return num.QuadPart;

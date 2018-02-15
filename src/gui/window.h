@@ -1,21 +1,21 @@
-/*
-* NEWorld: A free game with similar rules to Minecraft.
-* Copyright (C) 2016 NEWorld Team
-*
-* This file is part of NEWorld.
-* NEWorld is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* NEWorld is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public License
-* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
-*/
+// 
+// GUI: window.h
+// NEWorld: A Free Game with Similar Rules to Minecraft.
+// Copyright (C) 2015-2018 NEWorld Team
+// 
+// NEWorld is free software: you can redistribute it and/or modify it 
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or 
+// (at your option) any later version.
+// 
+// NEWorld is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General 
+// Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+// 
 
 #ifndef WINDOW_H_
 #define WINDOW_H_
@@ -24,49 +24,29 @@
 #include <SDL2/SDL.h>
 #include "nuklear_helper.h"
 
-class Window
-{
+class Window {
 public:
     Window(const Window&) = delete;
     Window& operator=(const Window&) = delete;
 
-    void makeCurrentDraw() const
-    {
-        SDL_GL_MakeCurrent(mWindow, mContext);
-    }
+    void makeCurrentDraw() const { SDL_GL_MakeCurrent(mWindow, mContext); }
 
-    void swapBuffers() const
-    {
-        SDL_GL_SwapWindow(mWindow);
-    }
+    void swapBuffers() const { SDL_GL_SwapWindow(mWindow); }
 
-    static const Uint8* getKeyBoardState()
-    {
-        return SDL_GetKeyboardState(nullptr);
-    }
+    static const Uint8* getKeyBoardState() { return SDL_GetKeyboardState(nullptr); }
 
-    int getWidth() const noexcept
-    {
-        return mWidth;
-    }
+    int getWidth() const noexcept { return mWidth; }
 
-    int getHeight() const noexcept
-    {
-        return mHeight;
-    }
+    int getHeight() const noexcept { return mHeight; }
 
     void pollEvents();
 
-    static Window& getInstance(const std::string& title="", int width=0, int height=0)
-    {
+    static Window& getInstance(const std::string& title = "", int width = 0, int height = 0) {
         static Window win(title, width, height);
         return win;
     }
 
-    bool shouldQuit() const noexcept
-    {
-        return mShouldQuit;
-    }
+    bool shouldQuit() const noexcept { return mShouldQuit; }
 
     nk_context* getNkContext() const noexcept { return mNuklearContext; }
 

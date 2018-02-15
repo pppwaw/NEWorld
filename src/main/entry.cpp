@@ -1,21 +1,21 @@
-/*
-* NEWorld: A free game with similar rules to Minecraft.
-* Copyright (C) 2016 NEWorld Team
-*
-* This file is part of NEWorld.
-* NEWorld is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* NEWorld is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public License
-* along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
-*/
+// 
+// MainPlugin: entry.cpp
+// NEWorld: A Free Game with Similar Rules to Minecraft.
+// Copyright (C) 2015-2018 NEWorld Team
+// 
+// NEWorld is free software: you can redistribute it and/or modify it 
+// under the terms of the GNU Lesser General Public License as published
+// by the Free Software Foundation, either version 3 of the License, or 
+// (at your option) any later version.
+// 
+// NEWorld is distributed in the hope that it will be useful, but WITHOUT
+// ANY WARRANTY; without even the implied warranty of MERCHANTABILITY 
+// or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General 
+// Public License for more details.
+// 
+// You should have received a copy of the GNU Lesser General Public License
+// along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
+// 
 
 #include "worldgen.h"
 #include "api/nwapigui.hpp"
@@ -23,8 +23,7 @@
 int32_t GrassID, RockID, DirtID, SandID, WaterID;
 
 int32_t registerBlock(const char* name, bool solid, bool translucent, bool opaque,
-    int explodepower, int hardness)
-{
+                      int explodepower, int hardness) {
     NWblocktype block;
     block.blockname = name;
     block.solid = solid;
@@ -35,11 +34,9 @@ int32_t registerBlock(const char* name, bool solid, bool translucent, bool opaqu
     return nwRegisterBlock(&block);
 }
 
-extern "C"
-{
+extern "C" {
 
-    NWAPIEXPORT NWplugindata* NWAPICALL getInfo()
-    {
+    NWAPIEXPORT NWplugindata* NWAPICALL getInfo() {
         auto plugin = new NWplugindata();
         plugin->pluginName = "NEWorld";
         plugin->authorName = "INFINIDEAS";
@@ -49,16 +46,14 @@ extern "C"
     }
 
     // Main function
-    NWAPIEXPORT void NWAPICALL init(NWplugintype type)
-    {
+    NWAPIEXPORT void NWAPICALL init(NWplugintype type) {
         nwRegisterChunkGenerator(generator);
         GrassID = registerBlock("Grass", true, false, true, 0, 2);
         RockID = registerBlock("Rock", true, false, true, 0, 2);
         DirtID = registerBlock("Dirt", true, false, true, 0, 2);
         SandID = registerBlock("Sand", true, false, true, 0, 2);
         WaterID = registerBlock("Water", false, true, false, 0, 2);
-        if (type & nwPluginTypeGUI)
-        {
+        if (type & nwPluginTypeGUI) {
             NWtextureid id[] =
             {
                 nwRegisterTexture("./res/blocks/grass_top.png"),
@@ -68,11 +63,11 @@ extern "C"
                 nwRegisterTexture("./res/blocks/sand.png"),
                 nwRegisterTexture("./res/blocks/water.png")
             };
-            NWblocktexture grass{ id[1], id[1], id[0], id[2], id[1], id[1] };
-            NWblocktexture rock{ id[3], id[3], id[3], id[3], id[3], id[3] };
-            NWblocktexture dirt{ id[2], id[2], id[2], id[2], id[2], id[2] };
-            NWblocktexture sand{ id[4], id[4], id[4], id[4], id[4], id[4] };
-            NWblocktexture water{ id[5], id[5], id[5], id[5], id[5], id[5] };
+            NWblocktexture grass{id[1], id[1], id[0], id[2], id[1], id[1]};
+            NWblocktexture rock{id[3], id[3], id[3], id[3], id[3], id[3]};
+            NWblocktexture dirt{id[2], id[2], id[2], id[2], id[2], id[2]};
+            NWblocktexture sand{id[4], id[4], id[4], id[4], id[4], id[4]};
+            NWblocktexture water{id[5], id[5], id[5], id[5], id[5], id[5]};
             nwUseDefaultBlockRenderFunc(GrassID, &grass);
             nwUseDefaultBlockRenderFunc(RockID, &rock);
             nwUseDefaultBlockRenderFunc(DirtID, &dirt);
@@ -82,7 +77,5 @@ extern "C"
     }
 
     // Unload function
-    NWAPIEXPORT void NWAPICALL unload()
-    {
-    }
+    NWAPIEXPORT void NWAPICALL unload() { }
 }
