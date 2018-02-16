@@ -24,11 +24,9 @@
 
 void TaskDispatcher::worker(size_t threadID) {
     debugstream << "Worker thread " << threadID << " initialized.";
+    RateController meter{ 30 };
     while (!mShouldExit) {
         // A tick starts
-        RateMeter meter{ 30 };
-        meter.sync();
-
         const size_t currentRoundNumber = mRoundNumber;
         // Process read-only work.
         for (auto i = threadID; i < mReadOnlyTasks.size(); i += mThreadNumber) {
@@ -36,7 +34,6 @@ void TaskDispatcher::worker(size_t threadID) {
         }
 
         // Finish the tick
-        meter.refresh();
         mTimeUsed[threadID] = meter.getDeltaTimeMs();
 
         // The last finished thread is responsible to do writing jobs
@@ -56,10 +53,7 @@ void TaskDispatcher::worker(size_t threadID) {
             std::swap(mReadWriteTasks, mNextReadWriteTasks);
 
             // Limit UPS
-            while (!meter.shouldRun()){
-                std::this_thread::yield();
-                meter.refresh();
-            }
+            meter.yield();
 
             // Time to move to next tick!
             // Notify other threads that we are good to go
@@ -67,6 +61,7 @@ void TaskDispatcher::worker(size_t threadID) {
             ++mRoundNumber;
         }
         else {
+            meter.yield();
             // Wait for other threads...
             while (mRoundNumber == currentRoundNumber)
                 std::this_thread::yield();

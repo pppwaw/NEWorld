@@ -46,7 +46,7 @@ private:
     // Widget manager
     WidgetManager mGUIWidgets;
     // Update scheduler
-    RateMeter mUpdateScheduler{UpdateFrequency};
+    RateController mUpdateScheduler{UpdateFrequency};
     // Rate counters
     size_t mFpsCounter, mUpsCounter, mFpsLatest, mUpsLatest;
     // Current world
@@ -54,5 +54,5 @@ private:
     // World renderer
     WorldRenderer mWorldRenderer;
 
-    RateMeter mRateCounterScheduler{1};
+    RateController mRateCounterScheduler{1};
 };

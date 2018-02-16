@@ -20,46 +20,61 @@
 #pragma once
 
 #include <chrono>
+#include <thread>
 
-class RateMeter {
-    static auto getTimeNow() noexcept { return std::chrono::steady_clock::now(); }
+/**
+ * \brief Rate Contrll Helper. Used to controll task execution rate
+ */
+class RateController {
+    using Clock = std::chrono::high_resolution_clock;
 public:
-    explicit RateMeter(const int limit = 0) noexcept : mLimit(limit), mOnlineTimer(getTimeNow()),
-                                                       mOfflineTimer(getTimeNow()) { }
+    /**
+     * \brief Construct an instance with a given execution rate
+     * \param rate Exectution Rate
+     */
+    explicit RateController(const int rate = 0) noexcept : mRate(rate), mDue(Clock::now()), mLast(Clock::now()) {}
 
-    void refresh() noexcept {
-        mOnlineTimer = getTimeNow();
-        mElapsed = mOnlineTimer - mOfflineTimer;
-    }
+    /**
+     * \brief Synchronize the internal timer with system clock. For cases that the timer doesn't keep up or forced resets
+     */
+    void sync() noexcept { mLast = mDue = Clock::now(); }
 
-    void sync() noexcept {
-        mOfflineTimer = mOnlineTimer;
-        mElapsed = std::chrono::steady_clock::duration(0);
-    }
-
+    /**
+     * \brief Get elapsed time from the start of the tick, in milliseconds
+     * \return Elapsed time from the start of the tick, in milliseconds
+     */
     auto getDeltaTimeMs() const noexcept {
-        return std::chrono::duration_cast<std::chrono::milliseconds>(mElapsed).count();
+        return std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - mLast).count();
     }
 
-    // Notice: this function will not call refresh()!
-    bool shouldRun() const noexcept {
-        if (mLimit) {
-            const auto stdDelta = std::chrono::milliseconds(1000 / mLimit);
-            const auto deltaTime = mOnlineTimer - mOfflineTimer;
-            return stdDelta <= deltaTime;
-        }
-        return true;
-    }
+    /**
+     * \brief Check if the deadline of the current tick has pased
+     * \return true if the deadline is passed, false otherwise
+     */
+    bool isDue() const noexcept { return mRate ? Clock::now() >= mDue : true; }
 
+    /**
+     * \brief Increase the internal timer by one tick
+     */
     void increaseTimer() noexcept {
-        if (mLimit) {
-            mOfflineTimer += std::chrono::milliseconds(1000 / mLimit);
-            mElapsed = mOnlineTimer - mOfflineTimer;
+        if (mRate) {
+            mLast = mDue;
+            mDue += std::chrono::milliseconds(1000 / mRate);
         }
+    }
+
+    /**
+     * \brief End the current tick and wait until the next tick starts
+     */
+    void yield() noexcept {
+        if (!isDue())
+            std::this_thread::sleep_until(mDue);
+        else
+            sync();
+        increaseTimer();
     }
 
 private:
-    int mLimit;
-    std::chrono::steady_clock::duration mElapsed{};
-    std::chrono::steady_clock::time_point mOnlineTimer, mOfflineTimer;
+    int mRate;
+    Clock::time_point mDue, mLast;
 };
