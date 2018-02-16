@@ -111,8 +111,7 @@ GameScene::GameScene(const std::string& name, const Window& window):
         NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
         NK_WINDOW_CLOSABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE, [this](nk_context* ctx) {
 
-        mRateCounterScheduler.refresh();
-        if (mRateCounterScheduler.shouldRun()) {
+        if (mRateCounterScheduler.isDue()) {
             // Update FPS & UPS
             mFpsLatest = mFpsCounter;
             mUpsLatest = mUpsCounter;
@@ -134,8 +133,8 @@ GameScene::GameScene(const std::string& name, const Window& window):
             dispatcher.getNextRenderTaskCount());*/
         nk_labelf(ctx, NK_TEXT_LEFT, "Update threads workload:");
         for(size_t i = 0; i<dispatcher.getTimeUsed().size();++i) {
-            auto time = dispatcher.getTimeUsed()[i];
-            nk_labelf(ctx, NK_TEXT_LEFT, "Thread %zu: %.3f ms (%.1f)", i, time, 1000/time);
+            auto time = std::max(dispatcher.getTimeUsed()[i], 0.0);
+            nk_labelf(ctx, NK_TEXT_LEFT, "Thread %zu: %.3f ms (%.1f)%", i, time, time / 33.3333);
         }
         nk_labelf(ctx, NK_TEXT_LEFT, "Regular Tasks: read %zu write %zu",
             dispatcher.getRegularReadOnlyTaskCount(),
@@ -164,7 +163,6 @@ void GameScene::render() {
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_DEPTH_TEST);
 
-    mUpdateScheduler.refresh();
     double timeDelta = mUpdateScheduler.getDeltaTimeMs() / 1000.0 * UpdateFrequency;
     if (timeDelta > 1.0) timeDelta = 1.0;
     Vec3d playerRenderedPosition = mPlayer.getPosition() - mPlayer.getPositionDelta() * (1.0 - timeDelta);

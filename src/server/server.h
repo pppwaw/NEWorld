@@ -34,5 +34,5 @@ public:
     void stop();
     ~Server();
 protected:
-    RateMeter mRateCounterScheduler{1};
+    RateController mRateCounterScheduler{1};
 };

@@ -20,46 +20,37 @@
 #pragma once
 
 #include <chrono>
+#include <thread>
 
-class RateMeter {
-    static auto getTimeNow() noexcept { return std::chrono::steady_clock::now(); }
+class RateController {
+    using Clock = std::chrono::high_resolution_clock;
 public:
-    explicit RateMeter(const int limit = 0) noexcept : mLimit(limit), mOnlineTimer(getTimeNow()),
-                                                       mOfflineTimer(getTimeNow()) { }
+    explicit RateController(const int rate = 0) noexcept : mRate(rate), mDue(Clock::now()), mLast(Clock::now()) {}
 
-    void refresh() noexcept {
-        mOnlineTimer = getTimeNow();
-        mElapsed = mOnlineTimer - mOfflineTimer;
-    }
-
-    void sync() noexcept {
-        mOfflineTimer = mOnlineTimer;
-        mElapsed = std::chrono::steady_clock::duration(0);
-    }
+    void sync() noexcept { mLast = mDue = Clock::now(); }
 
     auto getDeltaTimeMs() const noexcept {
-        return std::chrono::duration_cast<std::chrono::milliseconds>(mElapsed).count();
+        return std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - mLast).count();
     }
 
-    // Notice: this function will not call refresh()!
-    bool shouldRun() const noexcept {
-        if (mLimit) {
-            const auto stdDelta = std::chrono::milliseconds(1000 / mLimit);
-            const auto deltaTime = mOnlineTimer - mOfflineTimer;
-            return stdDelta <= deltaTime;
-        }
-        return true;
-    }
+    bool isDue() const noexcept { return mRate ? Clock::now() >= mDue : true; }
 
     void increaseTimer() noexcept {
-        if (mLimit) {
-            mOfflineTimer += std::chrono::milliseconds(1000 / mLimit);
-            mElapsed = mOnlineTimer - mOfflineTimer;
+        if (mRate) {
+            mLast = mDue;
+            mDue += std::chrono::milliseconds(1000 / mRate);
         }
+    }
+
+    void yield() noexcept {
+        if (!isDue())
+            std::this_thread::sleep_until(mDue);
+        else
+            sync();
+        increaseTimer();
     }
 
 private:
-    int mLimit;
-    std::chrono::steady_clock::duration mElapsed{};
-    std::chrono::steady_clock::time_point mOnlineTimer, mOfflineTimer;
+    int mRate;
+    Clock::time_point mDue, mLast;
 };
