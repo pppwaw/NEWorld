@@ -22,19 +22,40 @@
 #include <chrono>
 #include <thread>
 
+/**
+ * \brief Rate Contrll Helper. Used to controll task execution rate
+ */
 class RateController {
     using Clock = std::chrono::high_resolution_clock;
 public:
+    /**
+     * \brief Construct an instance with a given execution rate
+     * \param rate Exectution Rate
+     */
     explicit RateController(const int rate = 0) noexcept : mRate(rate), mDue(Clock::now()), mLast(Clock::now()) {}
 
+    /**
+     * \brief Synchronize the internal timer with system clock. For cases that the timer doesn't keep up or forced resets
+     */
     void sync() noexcept { mLast = mDue = Clock::now(); }
 
+    /**
+     * \brief Get elapsed time from the start of the tick, in milliseconds
+     * \return Elapsed time from the start of the tick, in milliseconds
+     */
     auto getDeltaTimeMs() const noexcept {
         return std::chrono::duration_cast<std::chrono::milliseconds>(Clock::now() - mLast).count();
     }
 
+    /**
+     * \brief Check if the deadline of the current tick has pased
+     * \return true if the deadline is passed, false otherwise
+     */
     bool isDue() const noexcept { return mRate ? Clock::now() >= mDue : true; }
 
+    /**
+     * \brief Increase the internal timer by one tick
+     */
     void increaseTimer() noexcept {
         if (mRate) {
             mLast = mDue;
@@ -42,6 +63,9 @@ public:
         }
     }
 
+    /**
+     * \brief End the current tick and wait until the next tick starts
+     */
     void yield() noexcept {
         if (!isDue())
             std::this_thread::sleep_until(mDue);
