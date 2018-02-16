@@ -84,8 +84,7 @@ private:
 };
 
 GameScene::GameScene(const std::string& name, const Window& window):
-    mWindow(window),
-    mPlayer(0), mGUIWidgets(mWindow.getNkContext()),
+    mWindow(window), mPlayer(0), mGUIWidgets(mWindow.getNkContext()),
     mCurrentWorld(chunkService.getWorlds().addWorld("test world")),
     mWorldRenderer(*mCurrentWorld, getJsonValue<size_t>(getSettings()["gui"]["render_distance"], 3)) {
     mPlayer.setPosition(Vec3d(-16.0, 48.0, 32.0));

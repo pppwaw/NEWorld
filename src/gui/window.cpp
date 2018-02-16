@@ -72,15 +72,10 @@ Window::Window(const std::string& title, int width, int height)
     {
         struct nk_font_atlas* atlas;
         nk_sdl_font_stash_begin(&atlas);
-        /*struct nk_font *droid = nk_font_atlas_add_from_file(atlas, "../../../extra_font/DroidSans.ttf", 14, 0);*/
-        /*struct nk_font *roboto = nk_font_atlas_add_from_file(atlas, "../../../extra_font/Roboto-Regular.ttf", 16, 0);*/
-        /*struct nk_font *future = nk_font_atlas_add_from_file(atlas, "../../../extra_font/kenvector_future_thin.ttf", 13, 0);*/
-        /*struct nk_font *clean = nk_font_atlas_add_from_file(atlas, "../../../extra_font/ProggyClean.ttf", 12, 0);*/
-        /*struct nk_font *tiny = nk_font_atlas_add_from_file(atlas, "../../../extra_font/ProggyTiny.ttf", 10, 0);*/
-        /*struct nk_font *cousine = nk_font_atlas_add_from_file(atlas, "../../../extra_font/Cousine-Regular.ttf", 13, 0);*/
+        //struct nk_font *sourceHanSans = nk_font_atlas_add_from_file(atlas, "res/Fonts/SourceHanSansCN-Normal.otf", 12, 0);
         nk_sdl_font_stash_end();
         /*nk_style_load_all_cursors(ctx, atlas->cursors);*/
-        /*nk_style_set_font(ctx, &roboto->handle);*/
+        //nk_style_set_font(mNuklearContext, &sourceHanSans->handle);
     }
 }
 
