@@ -32,10 +32,12 @@ public:
 
     void initializePlugins(NWplugintype flag);
 
+    size_t getCount() const noexcept { return mPlugins.size(); }
+
+private:
     // Load single plugin
     bool loadPlugin(const std::string& filename);
 
-private:
     std::vector<Plugin> mPlugins;
 };
 
