@@ -37,9 +37,9 @@ extern "C" {
 
     enum NWplugintype {
         nwPluginTypeNone = 0,
-        nwPluginTypeGUI = 1,
-        nwPluginTypeCLI = 2,
-        nwPluginTypeCore = 3
+        nwPluginTypeCore = 1 << 1,
+        nwPluginTypeGUI = 1 << 2,
+        nwPluginTypeCLI = 1 << 3,
     };
 
     struct NWplugindata {

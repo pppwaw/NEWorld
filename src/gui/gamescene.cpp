@@ -83,12 +83,31 @@ private:
     size_t& mUpdateCounter;
 };
 
+size_t GameScene::requestWorld()
+{
+    // TODO: change this
+    // It's a simple wait-until-we-have-a-world procedure now.
+    // But it should be changed into get player information
+    // and get the world id from it.
+    while (chunkService.getWorlds().getWorld(0) == nullptr)
+        std::this_thread::yield();
+    return 0;
+}
+
 GameScene::GameScene(const std::string& name, const Window& window):
     mWindow(window), mPlayer(0), mGUIWidgets(mWindow.getNkContext()),
-    mCurrentWorld(chunkService.getWorlds().addWorld("test world")),
+    mCurrentWorld(chunkService.getWorlds().getWorld(requestWorld())),
     mWorldRenderer(*mCurrentWorld, getJsonValue<size_t>(getSettings()["gui"]["render_distance"], 3)) {
     mPlayer.setPosition(Vec3d(-16.0, 48.0, 32.0));
     mPlayer.setRotation(Vec3d(-45.0, -22.5, 0.0));
+    
+    // Initialize server
+    mServer.run(getJsonValue<unsigned short>(getSettings()["server"]["port"], 31111),
+        getJsonValue<size_t>(getSettings()["server"]["rpc_thread_number"], 1));
+    
+    // Initialize plugins
+    infostream << "Initializing GUI plugins...";
+    mPlugins.initializePlugins(nwPluginTypeGUI);
 
     // Initialize update events
     mCurrentWorld->registerChunkTasks(chunkService, mPlayer);
@@ -125,7 +144,7 @@ GameScene::GameScene(const std::string& name, const Window& window):
         nk_labelf(ctx, NK_TEXT_LEFT, "Position: x %.1f y %.1f z %.1f",
             mPlayer.getPosition().x, mPlayer.getPosition().y, mPlayer.getPosition().z);
         nk_labelf(ctx, NK_TEXT_LEFT, "GUI Widgets: %zu", mGUIWidgets.getSize());
-        nk_labelf(ctx, NK_TEXT_LEFT, "Plugins Loaded: %zu", context.plugins.getCount());
+        nk_labelf(ctx, NK_TEXT_LEFT, "GUI Plugins Loaded: %zu", mPlugins.getCount());
         nk_labelf(ctx, NK_TEXT_LEFT, "Chunks Loaded: %zu", mCurrentWorld->getChunkCount());
         auto& dispatcher = chunkService.getTaskDispatcher();
         /*nk_labelf(ctx, NK_TEXT_LEFT, "Tasks: Next read %zu write %zu render %zu",

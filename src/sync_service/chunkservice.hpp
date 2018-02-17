@@ -38,7 +38,7 @@ public:
      *                    are authoritative.
      */
     ChunkService(bool isAuthority) noexcept
-        : mWorlds(context.plugins, context.blocks),
+        : mWorlds(context.blocks),
           mAuthority(isAuthority),
           mTaskDispatcher(getJsonValue<size_t>(getSettings()["nwcore"]["update_thread_number"], 2), *this) { }
 

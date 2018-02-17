@@ -31,7 +31,6 @@ NEWorld::NEWorld() {
     infostream << "Initializing...";
     Window& window = Window::getInstance("NEWorld", 852, 480);
     Texture::init();
-    context.plugins.initializePlugins(nwPluginTypeGUI);
 
     // Run
     const auto fps = getJsonValue<size_t>(getSettings()["gui"]["fps"], 60);

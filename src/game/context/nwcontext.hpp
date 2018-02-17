@@ -24,7 +24,6 @@
 
 struct GameContext {
     BlockManager blocks;
-    PluginManager plugins;
     RPC rpc;
 };
 

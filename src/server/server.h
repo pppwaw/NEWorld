@@ -24,6 +24,7 @@
 #include <engine/common.h>
 #include "engine/nwstdlib/nwratemeter.h"
 #include "sync_service/world/world.h"
+#include "game/plugin/pluginmanager.h"
 
 constexpr int UpdateInterval = 1000 / 60, GlobalUpdateInterval = 1000 / 60; // unit: ms
 
@@ -35,4 +36,5 @@ public:
     ~Server();
 protected:
     RateController mRateCounterScheduler{1};
+    PluginManager mPlugins;
 };

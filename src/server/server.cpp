@@ -19,16 +19,17 @@
 
 #include "server.h"
 #include "game/context/nwcontext.hpp"
+#include "sync_service/chunkservice.hpp"
 
 Server::Server() {
     using namespace std::chrono;
     auto startTime = steady_clock::now();
 
-    infostream << "Initializing plugins...";
-    context.plugins.initializePlugins(nwPluginTypeCLI);
+    infostream << "Initializing nwcore plugins...";
+    mPlugins.initializePlugins(nwPluginTypeCore);
 
-    // World
-    //mWorlds.addWorld("main_world");
+    // Register chunk update event
+    chunkService.getWorlds().addWorld("test world");
 
     // Done
     auto doneTime = steady_clock::now();

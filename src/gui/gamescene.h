@@ -25,6 +25,7 @@
 #include "window.h"
 #include "renderer/texture.h"
 #include "renderer/worldrenderer.h"
+#include "server/server.h"
 
 class GameScene {
 public:
@@ -36,8 +37,15 @@ public:
 
     void render();
 private:
+    size_t requestWorld();
+
     void keyboardUpdateTask();
 
+    // Local server
+    Server mServer;
+    // Client plugins
+    PluginManager mPlugins;
+    // Window
     const Window& mWindow;
     // Texture test
     Texture mTexture;

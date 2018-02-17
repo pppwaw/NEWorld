@@ -35,11 +35,11 @@ class PluginManager;
 
 class NWCOREAPI World final : public NonCopyable {
 public:
-    World(std::string name, const PluginManager& plugins, const BlockManager& blocks)
-        : mName(std::move(name)), mID(0), mPlugins(plugins), mBlocks(blocks), mDaylightBrightness(15), mChunks(1024) { }
+    World(std::string name, const BlockManager& blocks)
+        : mName(std::move(name)), mID(0), mBlocks(blocks), mDaylightBrightness(15), mChunks(1024) { }
 
     World(World&& rhs) noexcept
-        : mName(std::move(rhs.mName)), mID(rhs.mID), mPlugins(rhs.mPlugins), mBlocks(rhs.mBlocks),
+        : mName(std::move(rhs.mName)), mID(rhs.mID), mBlocks(rhs.mBlocks),
           mDaylightBrightness(rhs.mDaylightBrightness), mChunks(std::move(rhs.mChunks)) { }
 
     ~World() = default;
@@ -117,8 +117,6 @@ protected:
     // World ID
     size_t mID;
     static size_t IDCount;
-    // Loaded plugins
-    const PluginManager& mPlugins;
     // Loaded blocks
     const BlockManager& mBlocks;
     // All Chunks (Chunk array)
@@ -129,15 +127,14 @@ protected:
 
 class WorldManager {
 public:
-    WorldManager(PluginManager& plugins, BlockManager& blocks) :
-        mPlugins(plugins), mBlocks(blocks) { }
+    WorldManager(BlockManager& blocks) : mBlocks(blocks) { }
 
     ~WorldManager() { mWorlds.clear(); }
 
     void clear() { mWorlds.clear(); }
 
     World* addWorld(const std::string& name) {
-        mWorlds.emplace_back(new World(name, mPlugins, mBlocks));
+        mWorlds.emplace_back(new World(name, mBlocks));
         return mWorlds[mWorlds.size() - 1].get();
     }
 
@@ -174,7 +171,6 @@ public:
 
 private:
     std::vector<std::unique_ptr<World>> mWorlds;
-    PluginManager& mPlugins;
     BlockManager& mBlocks;
 };
 
