@@ -47,6 +47,7 @@ private:
     void update(const World& world) override {
         move(world);
         rotationMove();
+        accelerate(Vec3d(0.0, -0.1, 0.0)); // Gravity
     }
 
     void move(const World& world);
