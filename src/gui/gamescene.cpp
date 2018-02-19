@@ -32,8 +32,6 @@ public:
     void task(const ChunkService& cs) override {
 
         constexpr double speed = 0.1;
-        static const double mouseSensitivity =
-            getJsonValue<double>(getSettings()["gui"]["mouse_sensitivity"], 0.8);
 
         // TODO: Read keys from the configuration file
         auto state = Window::getKeyBoardState();
@@ -64,9 +62,6 @@ public:
 #endif
             mPlayer.accelerate(Vec3d(0.0, -2 * speed, 0.0));
 
-
-        MouseState mouse = Window::getInstance().getMouseMotion();
-        mPlayer.accelerateRotation(Vec3d(-mouse.y * mouseSensitivity, -mouse.x * mouseSensitivity, 0.0));
 
         //    mGUIWidgets.update();
     }
@@ -181,7 +176,11 @@ GameScene::~GameScene() {}
 void GameScene::render() {
     chunkService.getTaskDispatcher().processRenderTasks();
 
-    mFpsCounter++;
+    // Camera control by mouse
+    static const double mouseSensitivity =
+        getJsonValue<double>(getSettings()["gui"]["mouse_sensitivity"], 0.2);
+    MouseState mouse = Window::getInstance().getMouseMotion();
+    mPlayer.accelerateRotation(Vec3d(-mouse.y * mouseSensitivity, -mouse.x * mouseSensitivity, 0.0));
 
     glClearColor(0.6f, 0.9f, 1.0f, 1.0f);
     glClearDepth(1.0f);
@@ -212,4 +211,6 @@ void GameScene::render() {
     glDisable(GL_DEPTH_TEST);
 
     mGUIWidgets.render();
+
+    mFpsCounter++;
 }
