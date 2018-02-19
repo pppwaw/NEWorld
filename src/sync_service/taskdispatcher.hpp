@@ -73,12 +73,11 @@ public:
     }
     
     ~TaskDispatcher() {
-        mShouldExit = true;
-        for (auto& thread : mThreads) thread.join();
-        infostream << "Update threads exited.";
+        if (!mShouldExit) stop();
     }
 
     void start() {
+        mShouldExit = false;
         mNumberOfUnfinishedThreads = mThreadNumber;
         for (size_t i = 0; i < mThreadNumber; ++i)
             mThreads.emplace_back([this, i]() { worker(i); });
@@ -128,6 +127,12 @@ public:
     }
 
     const std::vector<double>& getTimeUsed() const noexcept { return mTimeUsed; }
+    
+    void stop() {
+        mShouldExit = true;
+        for (auto& thread : mThreads) thread.join();
+        infostream << "Update threads exited.";
+    }
 
 private:
     void worker(size_t threadID);

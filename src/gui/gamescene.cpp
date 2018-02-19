@@ -170,7 +170,9 @@ GameScene::GameScene(const std::string& name, const Window& window):
     infostream << "Game initialized!";
 }
 
-GameScene::~GameScene() {}
+GameScene::~GameScene() {
+    chunkService.getTaskDispatcher().stop();
+}
 
 void GameScene::render() {
     chunkService.getTaskDispatcher().processRenderTasks();
