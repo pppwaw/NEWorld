@@ -62,6 +62,7 @@ public:
 #endif
             mPlayer.accelerate(Vec3d(0.0, -2 * speed, 0.0));
 
+        mPlayer.accelerate(Vec3d(0.0, -0.1, 0.0)); // Gravity
         //    mGUIWidgets.update();
     }
 
