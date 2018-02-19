@@ -25,13 +25,15 @@
 #include "renderer/blockrenderer.h"
 #include <GL/glew.h>
 
-class KeyboardUpdateTask : public ReadOnlyTask {
+class PlayerControllerTask : public ReadOnlyTask {
 public:
-    KeyboardUpdateTask(Player& player) : mPlayer(player) {}
+    PlayerControllerTask(Player& player) : mPlayer(player) {}
 
     void task(const ChunkService& cs) override {
 
         constexpr double speed = 0.1;
+        static const double mouseSensitivity =
+            getJsonValue<double>(getSettings()["gui"]["mouse_sensitivity"], 0.8);
 
         // TODO: Read keys from the configuration file
         auto state = Window::getKeyBoardState();
@@ -62,10 +64,14 @@ public:
 #endif
             mPlayer.accelerate(Vec3d(0.0, -2 * speed, 0.0));
 
+
+        MouseState mouse = Window::getInstance().getMouseMotion();
+        mPlayer.accelerateRotation(Vec3d(-mouse.y * mouseSensitivity, -mouse.x * mouseSensitivity, 0.0));
+
         //    mGUIWidgets.update();
     }
 
-    std::unique_ptr<ReadOnlyTask> clone() override { return std::make_unique<KeyboardUpdateTask>(*this); }
+    std::unique_ptr<ReadOnlyTask> clone() override { return std::make_unique<PlayerControllerTask>(*this); }
 
 private:
     Player& mPlayer;
@@ -100,7 +106,7 @@ GameScene::GameScene(const std::string& name, const Window& window):
     mWorldRenderer(*mCurrentWorld, getJsonValue<size_t>(getSettings()["gui"]["render_distance"], 3)) {
     mPlayer.setPosition(Vec3d(-16.0, 48.0, 32.0));
     mPlayer.setRotation(Vec3d(-45.0, -22.5, 0.0));
-    
+    Window::lockCursor();
     // Initialize server
     mServer.run(getJsonValue<unsigned short>(getSettings()["server"]["port"], 31111),
         getJsonValue<size_t>(getSettings()["server"]["rpc_thread_number"], 1));
@@ -113,7 +119,7 @@ GameScene::GameScene(const std::string& name, const Window& window):
     mCurrentWorld->registerChunkTasks(chunkService, mPlayer);
     mWorldRenderer.registerTask(chunkService, mPlayer);
     chunkService.getTaskDispatcher().addRegularReadOnlyTask(
-        std::make_unique<KeyboardUpdateTask>(mPlayer));
+        std::make_unique<PlayerControllerTask>(mPlayer));
     chunkService.getTaskDispatcher().addRegularReadOnlyTask(
         std::make_unique<UpsCounter>(mUpsCounter));
 

@@ -24,6 +24,11 @@
 #include <SDL2/SDL.h>
 #include "nuklear_helper.h"
 
+struct MouseState {
+    int x, y;
+    bool left, mid, right, relative = true;
+};
+
 class Window {
 public:
     Window(const Window&) = delete;
@@ -50,10 +55,24 @@ public:
 
     nk_context* getNkContext() const noexcept { return mNuklearContext; }
 
+    /**
+     * \brief Get the relative motion of mouse
+     * \return The relative motion of mouse
+     */
+    MouseState getMouseMotion() const noexcept {
+        MouseState res = mMouse;
+        res.x -= mPrevMouse.x;
+        res.y -= mPrevMouse.y;
+        return res;
+    }
+    static void lockCursor() { SDL_SetRelativeMouseMode(SDL_TRUE); }
+    static void unlockCursor() { SDL_SetRelativeMouseMode(SDL_FALSE); }
+
 private:
     SDL_Window* mWindow = nullptr;
     std::string mTitle;
     int mWidth, mHeight;
+    MouseState mMouse, mPrevMouse;
     bool mShouldQuit = false;
 
     Window(const std::string& title, int width, int height);
