@@ -25,9 +25,9 @@
 #include "renderer/blockrenderer.h"
 #include <GL/glew.h>
 
-class PlayerControllerTask : public ReadOnlyTask {
+class PlayerUpdateTask : public ReadOnlyTask {
 public:
-    PlayerControllerTask(Player& player) : mPlayer(player) {}
+    PlayerUpdateTask(Player& player) : mPlayer(player) {}
 
     void task(const ChunkService& cs) override {
 
@@ -62,11 +62,10 @@ public:
 #endif
             mPlayer.accelerate(Vec3d(0.0, -2 * speed, 0.0));
 
-
         //    mGUIWidgets.update();
     }
 
-    std::unique_ptr<ReadOnlyTask> clone() override { return std::make_unique<PlayerControllerTask>(*this); }
+    std::unique_ptr<ReadOnlyTask> clone() override { return std::make_unique<PlayerUpdateTask>(*this); }
 
 private:
     Player& mPlayer;
@@ -114,7 +113,7 @@ GameScene::GameScene(const std::string& name, const Window& window):
     mCurrentWorld->registerChunkTasks(chunkService, mPlayer);
     mWorldRenderer.registerTask(chunkService, mPlayer);
     chunkService.getTaskDispatcher().addRegularReadOnlyTask(
-        std::make_unique<PlayerControllerTask>(mPlayer));
+        std::make_unique<PlayerUpdateTask>(mPlayer));
     chunkService.getTaskDispatcher().addRegularReadOnlyTask(
         std::make_unique<UpsCounter>(mUpsCounter));
 
@@ -178,7 +177,7 @@ void GameScene::render() {
 
     // Camera control by mouse
     static const double mouseSensitivity =
-        getJsonValue<double>(getSettings()["gui"]["mouse_sensitivity"], 0.2);
+        getJsonValue<double>(getSettings()["gui"]["mouse_sensitivity"], 0.3);
     MouseState mouse = Window::getInstance().getMouseMotion();
     mPlayer.accelerateRotation(Vec3d(-mouse.y * mouseSensitivity, -mouse.x * mouseSensitivity, 0.0));
 

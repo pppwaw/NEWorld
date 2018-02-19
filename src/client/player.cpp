@@ -61,13 +61,16 @@ void Player::move(const World& world) {
 }
 
 void Player::rotationMove() {
+    static bool rotationInteria = getJsonValue<bool>(getSettings()["gui"]["rotation_interia"], false);
+
     if (mRotation.x + mRotationSpeed.x > 90.0)
         mRotationSpeed.x = 90.0 - mRotation.x;
     if (mRotation.x + mRotationSpeed.x < -90.0)
         mRotationSpeed.x = -90.0 - mRotation.x;
     mRotation += mRotationSpeed;
     mRotationDelta = mRotationSpeed;
-    mRotationSpeed *= 0.6;
+    if(rotationInteria) mRotationSpeed *= 0.6;
+    else mRotationSpeed = 0;
 }
 
 Player::Player(size_t worldID) : PlayerObject(worldID) {
