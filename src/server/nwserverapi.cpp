@@ -16,7 +16,6 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
-
 #include <engine/common.h>
 #include "game/context/nwcontext.hpp"
 #include "sync_service/world/nwblock.h"
@@ -43,13 +42,13 @@ namespace PluginAPI {
 extern "C" {
     using namespace PluginAPI;
 
-    NWAPIEXPORT size_t NWAPICALL nwRegisterBlock(const NWblocktype* block) {
+    NWAPI size_t NWAPICALL nwRegisterBlock(const NWblocktype* block) {
         return context.blocks.registerBlock(convertBlockType(*block));
     }
 
-    NWAPIEXPORT void NWAPICALL nwLog(char* str) { }
+    NWAPI void NWAPICALL nwLog(char* str) { }
 
-    NWAPIEXPORT size_t NWAPICALL nwRegisterChunkGenerator(NWchunkgenerator* const generator) {
+    NWAPI size_t NWAPICALL nwRegisterChunkGenerator(NWchunkgenerator* const generator) {
         if (Chunk::ChunkGeneratorLoaded) {
             warningstream << "Ignoring multiple chunk generators!";
             return 1;

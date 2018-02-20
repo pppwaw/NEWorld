@@ -23,15 +23,15 @@
 #include <api/nwapigui.hpp>
 
 extern "C" {
-    NWAPIEXPORT void NWAPICALL nwSetBlockRenderFunc(size_t, NWblockrenderfunc) { }
+    NWAPI void NWAPICALL nwSetBlockRenderFunc(size_t, NWblockrenderfunc) { }
 
-    NWAPIEXPORT void NWAPICALL nwUseDefaultBlockRenderFunc(size_t id, void* data) {
+    NWAPI void NWAPICALL nwUseDefaultBlockRenderFunc(size_t id, void* data) {
         NWblocktexture* ptr = reinterpret_cast<NWblocktexture*>(data);
         size_t array[] = {ptr->right, ptr->left, ptr->top, ptr->bottom, ptr->front, ptr->back};
         BlockRendererManager::setBlockRenderer(id, std::make_shared<DefaultBlockRenderer>(array));
     }
 
-    NWAPIEXPORT NWtextureid NWAPICALL nwRegisterTexture(const char* filename) {
+    NWAPI NWtextureid NWAPICALL nwRegisterTexture(const char* filename) {
         return BlockTextureBuilder::addTexture(filename);
     }
 }

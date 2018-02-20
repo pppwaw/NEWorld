@@ -69,12 +69,12 @@
 #define NWAPIENTRY __declspec(dllimport)
 #define NWAPIEXPORT __declspec(dllexport)
 #else
-        #define NWAPIENTRY __attribute__((dllimport))
-        #define NWAPIEXPORT __attribute__((dllexport))
+#define NWAPIENTRY __attribute__((dllimport))
+#define NWAPIEXPORT __attribute__((dllexport))
 #endif
 #else
-    #define NWAPIENTRY __attribute__((visibility("default")))
-    #define NWAPIEXPORT __attribute__((visibility("default")))
+#define NWAPIENTRY __attribute__((visibility("default")))
+#define NWAPIEXPORT __attribute__((visibility("default")))
 #endif
 
 constexpr const char* NEWorldVersionName = "Beta 0.1";

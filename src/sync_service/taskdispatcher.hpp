@@ -126,7 +126,7 @@ public:
         std::swap(mRenderTasks, mNextRenderTasks);
     }
 
-    const std::vector<double>& getTimeUsed() const noexcept { return mTimeUsed; }
+    const std::vector<int64_t>& getTimeUsed() const noexcept { return mTimeUsed; }
     
     void stop() {
         mShouldExit = true;
@@ -151,5 +151,5 @@ private:
 
     ChunkService& mChunkService;
 
-    std::vector<double> mTimeUsed; // For statistical purpose only
+    std::vector<int64_t> mTimeUsed; // For statistical purpose only
 };

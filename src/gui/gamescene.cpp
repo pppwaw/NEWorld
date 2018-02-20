@@ -152,7 +152,7 @@ GameScene::GameScene(const std::string& name, const Window& window):
             dispatcher.getNextRenderTaskCount());*/
         nk_labelf(ctx, NK_TEXT_LEFT, "Update threads workload:");
         for(size_t i = 0; i<dispatcher.getTimeUsed().size();++i) {
-            auto time = std::max(dispatcher.getTimeUsed()[i], 0.0);
+            auto time = std::max(dispatcher.getTimeUsed()[i], 0ll);
             nk_labelf(ctx, NK_TEXT_LEFT, "Thread %zu: %.3f ms (%.1f)%", i, time, time / 33.3333);
         }
         nk_labelf(ctx, NK_TEXT_LEFT, "Regular Tasks: read %zu write %zu",

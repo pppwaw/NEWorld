@@ -20,7 +20,6 @@
 #include "cli.hpp"
 #include "engine/nwjson/nwjson.h"
 #include "server/server.h"
-#include <api/nwapi_internal.hpp>
 
 int NWAPIEXPORT main(int argc, char* argv[]) {
     ServerCommandLine cli;

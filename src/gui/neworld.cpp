@@ -35,7 +35,7 @@ NEWorld::NEWorld() {
     // Run
     const auto fps = getJsonValue<size_t>(getSettings()["gui"]["fps"], 60);
     const auto shouldLimitFps = getJsonValue<bool>(getSettings()["gui"]["limit"], false);
-    const auto delayPerFrame = 1000 / fps - 0.5;
+    const auto delayPerFrame = static_cast<uint32_t>(1000 / fps - 0.5);
     GameScene game("TestWorld", window);
     while (!window.shouldQuit()) {
         // Update

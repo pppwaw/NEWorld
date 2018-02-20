@@ -50,11 +50,15 @@ static std::string convert(int arg) {
 
 static std::string getTimeString(char dateSplit, char midSplit, char timeSplit) {
     time_t timer = time(nullptr);
-    tm* currtime = localtime(&timer); // DO NOT `delete` THIS POINTER!
-    return convert<4u>(currtime->tm_year + 1900) + dateSplit + convert<2u>(currtime->tm_mon) + dateSplit + convert<2u>(
-            currtime->tm_mday)
-        + midSplit + convert<2u>(currtime->tm_hour) + timeSplit + convert<2u>(currtime->tm_min) + timeSplit + convert<2u
-        >(currtime->tm_sec);
+    tm currtime;
+    #ifdef NEWORLD_COMPILER_MSVC
+        localtime_s(&currtime, &timer); // MSVC
+    #else
+        localtime_r(&timer, &currtime); // POSIX
+    #endif
+    return convert<4u>(currtime.tm_year + 1900) + dateSplit + convert<2u>(currtime.tm_mon)
+            + dateSplit + convert<2u>(currtime.tm_mday) + midSplit + convert<2u>(currtime.tm_hour)
+            + timeSplit + convert<2u>(currtime.tm_min) + timeSplit + convert<2u>(currtime.tm_sec);
 }
 
 void Logger::addFileSink(const std::string& path, const std::string& prefix) {

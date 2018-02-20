@@ -19,7 +19,6 @@
 
 #ifndef PLUGIN_H_
 #define PLUGIN_H_
-
 #include <string>
 #include <utility>
 #include <engine/common.h>

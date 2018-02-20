@@ -18,5 +18,5 @@
 // 
 
 #pragma once
-#include <api/nwapi_internal.hpp>
+#include "engine/nwstdlib/nwstddef.h"
 int NWAPIEXPORT main(int argc, char* argv[]);

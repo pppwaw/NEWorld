@@ -29,8 +29,7 @@ int Plugin::init(NWplugintype type) {
         try {
             init = mLib.get<InitFunction>("init");
             auto mode = static_cast<NWplugintype>(type & (~mLoadStat));
-            if (init)
-                init(mode);
+            if (init) init(mode);
             else { warningstream << "Lack of init func!"; }
         }
         catch (std::exception& e) { warningstream << "Failed: unhandled exception: " << e.what(); }

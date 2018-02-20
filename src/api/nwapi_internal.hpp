@@ -43,4 +43,10 @@
 #endif
 #endif
 
+#ifdef NWAPIEXPORTS
+#define NWAPI NWAPIEXPORT
+#else
+#define NWAPI NWAPIENTRY
+#endif
+
 #endif // !NWAPI_INTERNAL_HPP_

@@ -68,15 +68,15 @@ extern "C" {
     typedef void* NWworld;
 
     // NEWorld APIs
-    NWAPIENTRY NWchunk NWAPICALL nwCreateChunk(NWworld, const NWvec3i*);
-    NWAPIENTRY NWblockdata* NWAPICALL nwGetBlocksInChunk(NWchunk);
-    NWAPIENTRY void NWAPICALL nwDeleteChunk(NWchunk);
+    NWAPI NWchunk NWAPICALL nwCreateChunk(NWworld, const NWvec3i*);
+    NWAPI NWblockdata* NWAPICALL nwGetBlocksInChunk(NWchunk);
+    NWAPI void NWAPICALL nwDeleteChunk(NWchunk);
 
-    NWAPIENTRY size_t NWAPICALL nwRegisterBlock(const NWblocktype*);
-    NWAPIENTRY void NWAPICALL nwLog(char* str);
+    NWAPI size_t NWAPICALL nwRegisterBlock(const NWblocktype*);
+    NWAPI void NWAPICALL nwLog(char* str);
 
     typedef void NWAPICALL NWchunkgenerator(const NWvec3i*, NWblockdata*, int32_t);
-    NWAPIENTRY size_t NWAPICALL nwRegisterChunkGenerator(NWchunkgenerator* const generator);
+    NWAPI size_t NWAPICALL nwRegisterChunkGenerator(NWchunkgenerator* const generator);
 
 }
 
