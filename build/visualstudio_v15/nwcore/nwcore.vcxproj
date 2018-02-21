@@ -30,6 +30,7 @@
     <ClCompile Include="..\..\..\src\client\player.cpp" />
     <ClCompile Include="..\..\..\src\engine\concurrency\nwconcurrency.cpp" />
     <ClCompile Include="..\..\..\src\engine\maintenance\nwlogger.cpp" />
+    <ClCompile Include="..\..\..\src\engine\nweventbus.cpp" />
     <ClCompile Include="..\..\..\src\game\context\nwcontext.cpp" />
     <ClCompile Include="..\..\..\src\game\plugin\plugin.cpp" />
     <ClCompile Include="..\..\..\src\game\plugin\pluginmanager.cpp" />
@@ -49,6 +50,7 @@
     <ClInclude Include="..\..\..\src\engine\maintenance\nwdebug.h" />
     <ClInclude Include="..\..\..\src\engine\maintenance\nwexception.hpp" />
     <ClInclude Include="..\..\..\src\engine\maintenance\nwlogger.hpp" />
+    <ClInclude Include="..\..\..\src\engine\nweventbus.hpp" />
     <ClInclude Include="..\..\..\src\engine\nwjson\json.hpp" />
     <ClInclude Include="..\..\..\src\engine\nwjson\nwjson.h" />
     <ClInclude Include="..\..\..\src\engine\nwmath\nwmatrix.h" />

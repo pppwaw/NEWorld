@@ -91,6 +91,9 @@
     <ClCompile Include="..\..\..\src\sync_service\taskdispatcher.cpp">
       <Filter>Source\Sync Service</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\nweventbus.cpp">
+      <Filter>Source\Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\engine\concurrency\nwconcurrency.hpp">
@@ -191,6 +194,9 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\engine\nwstdlib\nworderedlist.hpp">
       <Filter>Source\Engine\nwstdlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\nweventbus.hpp">
+      <Filter>Source\Engine</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
