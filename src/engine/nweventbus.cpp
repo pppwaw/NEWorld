@@ -18,4 +18,4 @@
 // 
 
 #include "nweventbus.hpp"
-EventBus eventBus;
+NWCOREAPI EventBus eventBus;

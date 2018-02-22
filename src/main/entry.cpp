@@ -19,8 +19,9 @@
 
 #include "worldgen.h"
 #include "api/nwapigui.hpp"
+#include "engine/nweventbus.hpp"
 
-int32_t GrassID, RockID, DirtID, SandID, WaterID;
+int32_t GrassID = 0, RockID, DirtID, SandID, WaterID;
 
 int32_t registerBlock(const char* name, bool solid, bool translucent, bool opaque,
                       int explodepower, int hardness) {
@@ -41,39 +42,40 @@ extern "C" {
         plugin->pluginName = "NEWorld";
         plugin->authorName = "INFINIDEAS";
         plugin->internalName = "infinideas.neworld.main";
-        plugin->pluginType = nwPluginTypeCore;
+        plugin->pluginType = nwPluginTypeCore | nwPluginTypeGUI;
         return plugin;
     }
 
     // Main function
     NWAPIEXPORT void NWAPICALL init(NWplugintype type) {
-        if (type & nwPluginTypeGUI) {
-            NWtextureid id[] =
-            {
-                nwRegisterTexture("./res/blocks/grass_top.png"),
-                nwRegisterTexture("./res/blocks/grass_round.png"),
-                nwRegisterTexture("./res/blocks/dirt.png"),
-                nwRegisterTexture("./res/blocks/rock.png"),
-                nwRegisterTexture("./res/blocks/sand.png"),
-                nwRegisterTexture("./res/blocks/water.png")
-            };
-            NWblocktexture grass{id[1], id[1], id[0], id[2], id[1], id[1]};
-            NWblocktexture rock{id[3], id[3], id[3], id[3], id[3], id[3]};
-            NWblocktexture dirt{id[2], id[2], id[2], id[2], id[2], id[2]};
-            NWblocktexture sand{id[4], id[4], id[4], id[4], id[4], id[4]};
-            NWblocktexture water{id[5], id[5], id[5], id[5], id[5], id[5]};
-            nwUseDefaultBlockRenderFunc(GrassID, &grass);
-            nwUseDefaultBlockRenderFunc(RockID, &rock);
-            nwUseDefaultBlockRenderFunc(DirtID, &dirt);
-            nwUseDefaultBlockRenderFunc(SandID, &sand);
-            nwUseDefaultBlockRenderFunc(WaterID, &water);
-        } else {
+        if (type & nwPluginTypeCore && GrassID == 0) {
             nwRegisterChunkGenerator(generator);
             GrassID = registerBlock("Grass", true, false, true, 0, 2);
             RockID = registerBlock("Rock", true, false, true, 0, 2);
             DirtID = registerBlock("Dirt", true, false, true, 0, 2);
             SandID = registerBlock("Sand", true, false, true, 0, 2);
             WaterID = registerBlock("Water", false, true, false, 0, 2);
+        }
+        if (type & nwPluginTypeGUI) {
+            NWtextureid id[] =
+            {
+                CALL_AUTO(nwRegisterTexture, "./res/blocks/grass_top.png"),
+                CALL_AUTO(nwRegisterTexture, "./res/blocks/grass_round.png"),
+                CALL_AUTO(nwRegisterTexture, "./res/blocks/dirt.png"),
+                CALL_AUTO(nwRegisterTexture, "./res/blocks/rock.png"),
+                CALL_AUTO(nwRegisterTexture, "./res/blocks/sand.png"),
+                CALL_AUTO(nwRegisterTexture, "./res/blocks/water.png")
+            };
+            NWblocktexture grass{id[1], id[1], id[0], id[2], id[1], id[1]};
+            NWblocktexture rock{id[3], id[3], id[3], id[3], id[3], id[3]};
+            NWblocktexture dirt{id[2], id[2], id[2], id[2], id[2], id[2]};
+            NWblocktexture sand{id[4], id[4], id[4], id[4], id[4], id[4]};
+            NWblocktexture water{id[5], id[5], id[5], id[5], id[5], id[5]};
+            CALL_AUTO(nwUseDefaultBlockRenderFunc, GrassID, &grass);
+            CALL_AUTO(nwUseDefaultBlockRenderFunc, RockID, &rock);
+            CALL_AUTO(nwUseDefaultBlockRenderFunc, DirtID, &dirt);
+            CALL_AUTO(nwUseDefaultBlockRenderFunc, SandID, &sand);
+            CALL_AUTO(nwUseDefaultBlockRenderFunc, WaterID, &water);
         }
     }
 

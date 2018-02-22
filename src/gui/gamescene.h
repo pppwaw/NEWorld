@@ -43,8 +43,6 @@ private:
 
     // Local server
     Server mServer;
-    // Client plugins
-    PluginManager mPlugins;
     // Window
     const Window& mWindow;
     // Texture test

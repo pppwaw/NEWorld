@@ -36,5 +36,4 @@ public:
     ~Server();
 protected:
     RateController mRateCounterScheduler{1};
-    PluginManager mPlugins;
 };

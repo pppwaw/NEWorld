@@ -26,7 +26,7 @@ Server::Server() {
     auto startTime = steady_clock::now();
 
     infostream << "Initializing nwcore plugins...";
-    mPlugins.initializePlugins(nwPluginTypeCore);
+    context.plugins.initializePlugins(nwPluginTypeCore);
 
     // Register chunk update event
     chunkService.getWorlds().addWorld("test world");

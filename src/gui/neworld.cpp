@@ -31,6 +31,8 @@ NEWorld::NEWorld() {
     infostream << "Initializing...";
     Window& window = Window::getInstance("NEWorld", 852, 480);
     Texture::init();
+    void registerGUIAPI();
+    registerGUIAPI();
 
     // Run
     const auto fps = getJsonValue<size_t>(getSettings()["gui"]["fps"], 60);

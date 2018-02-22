@@ -21,6 +21,7 @@
 #include <string>
 #include "renderer/blockrenderer.h"
 #include <api/nwapigui.hpp>
+#include <engine/nweventbus.hpp>
 
 extern "C" {
     NWAPI void NWAPICALL nwSetBlockRenderFunc(size_t, NWblockrenderfunc) { }
@@ -34,4 +35,11 @@ extern "C" {
     NWAPI NWtextureid NWAPICALL nwRegisterTexture(const char* filename) {
         return BlockTextureBuilder::addTexture(filename);
     }
+}
+
+void registerGUIAPI() {
+    REGISTER_AUTO(nwSetBlockRenderFunc);
+    REGISTER_AUTO(nwUseDefaultBlockRenderFunc);
+    REGISTER_AUTO(nwRegisterTexture);
+    debugstream << "GUI API functions registered!";
 }
