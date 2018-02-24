@@ -94,6 +94,15 @@
     <ClCompile Include="..\..\..\src\engine\nweventbus.cpp">
       <Filter>Source\Engine</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\nwstdlib\Console.cpp">
+      <Filter>Source\Engine\nwstdlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\nwstdlib\Dylib.cpp">
+      <Filter>Source\Engine\nwstdlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\nwjson\JsonHelper.cpp">
+      <Filter>Source\Engine\nwjson</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\engine\concurrency\nwconcurrency.hpp">
@@ -111,9 +120,6 @@
     <ClInclude Include="..\..\..\src\engine\nwjson\json.hpp">
       <Filter>Source\Engine\nwjson</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\nwjson\nwjson.h">
-      <Filter>Source\Engine\nwjson</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\engine\nwmath\nwmatrix.h">
       <Filter>Source\Engine\nwmath</Filter>
     </ClInclude>
@@ -122,18 +128,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\engine\nwphysics\nwaabb.h">
       <Filter>Source\Engine\nwphysics</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\nwstdlib\nwconsole.hpp">
-      <Filter>Source\Engine\nwstdlib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\nwstdlib\nwfilesys.h">
-      <Filter>Source\Engine\nwstdlib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\nwstdlib\nwlibrary.h">
-      <Filter>Source\Engine\nwstdlib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\nwstdlib\nwratemeter.h">
-      <Filter>Source\Engine\nwstdlib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\engine\nwstdlib\nwstddef.h">
       <Filter>Source\Engine\nwstdlib</Filter>
@@ -192,11 +186,26 @@
     <ClInclude Include="..\..\..\src\sync_service\taskdispatcher.hpp">
       <Filter>Source\Sync Service</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\nwstdlib\nworderedlist.hpp">
-      <Filter>Source\Engine\nwstdlib</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\engine\nweventbus.hpp">
       <Filter>Source\Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\nwstdlib\RateController.h">
+      <Filter>Source\Engine\nwstdlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\nwstdlib\Filesystem.h">
+      <Filter>Source\Engine\nwstdlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\nwstdlib\Console.h">
+      <Filter>Source\Engine\nwstdlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\nwstdlib\Dylib.h">
+      <Filter>Source\Engine\nwstdlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\nwstdlib\OrderedList.h">
+      <Filter>Source\Engine\nwstdlib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\nwjson\JsonHelper.h">
+      <Filter>Source\Engine\nwjson</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

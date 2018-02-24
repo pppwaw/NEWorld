@@ -1,5 +1,5 @@
 // 
-// NEWorld: client.cpp
+// nwcore: JsonHelper.h
 // NEWorld: A Free Game with Similar Rules to Minecraft.
 // Copyright (C) 2015-2018 NEWorld Team
 // 
@@ -17,27 +17,28 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#include <iostream>
-#include <string>
-#include <climits>
-#include "engine/nwstdlib/Dylib.h"
-#include "engine/nwjson/JsonHelper.h"
-#include <engine/common.h>
+#pragma once
 
-typedef void NWAPICALL MainFunction(int, char**);
+#include "json.hpp"
+#include "engine/nwstdlib/nwstddef.h"
 
-#if defined(NEWORLD_TARGET_WINDOWS)
-constexpr const char* GUIDllName = "GUI.dll";
-#elif defined(NEWORLD_TARGET_MACOSX)
-    constexpr const char* GUIDllName = "libGUI.dylib";
-#elif defined(NEWORLD_TARGET_LINUX)
-    constexpr const char* GUIDllName = "libGUI.so";
-#endif
+using Json = nlohmann::json;
 
-int main(int argc, char** argv) {
-    getSettings();
-    Logger::addFileSink("./log/", "launcher");
-    std::string file = argc == 1 ? GUIDllName : argv[1];
-    debugstream << "Load:" << file;
-    Library(file).get<MainFunction>("cmain")(argc, argv);
+const std::string SettingsFilename = "./settings";
+
+NWCOREAPI Json readJsonFromFile(std::string filename);
+
+NWCOREAPI void writeJsonToFile(std::string filename, Json& json);
+
+NWCOREAPI Json& getSettings();
+
+// get a json value. If it does not exist, return the default value and write it to the json
+template <class T>
+T getJsonValue(Json& json, T defaultValue = T()) {
+    if (json.is_null()) {
+        json = defaultValue;
+        return defaultValue;
+    }
+    return json;
 }
+

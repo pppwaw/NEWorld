@@ -1,5 +1,5 @@
 // 
-// nwcore: nwjson.h
+// nwcore: JsonHelper.cpp
 // NEWorld: A Free Game with Similar Rules to Minecraft.
 // Copyright (C) 2015-2018 NEWorld Team
 // 
@@ -17,16 +17,27 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#pragma once
-
-#include "json.hpp"
+#include "JsonHelper.h"
+#include "engine/maintenance/nwlogger.hpp"
 #include <fstream>
 
-using Json = nlohmann::json;
+namespace {
+    class JsonSaveHelper {
+    public:
+        JsonSaveHelper(Json& json, std::string filename) :
+            mJson(json), mFilename(std::move(filename)) {}
 
-const std::string SettingsFilename = "./settings";
+        JsonSaveHelper(const JsonSaveHelper&) = delete;
+        JsonSaveHelper& operator=(const JsonSaveHelper&) = delete;
+        ~JsonSaveHelper() { writeJsonToFile(mFilename, mJson); }
+    private:
+        Json& mJson;
+        std::string mFilename;
+    };
 
-inline Json readJsonFromFile(std::string filename) {
+}
+
+Json readJsonFromFile(std::string filename) {
     std::ifstream file(filename);
     if (file) {
         std::string content = std::string(std::istreambuf_iterator<char>(file),
@@ -41,36 +52,13 @@ inline Json readJsonFromFile(std::string filename) {
     return Json();
 }
 
-inline void writeJsonToFile(std::string filename, Json& json) {
+void writeJsonToFile(std::string filename, Json& json) {
     const std::string& dump = json.dump();
     if (!json.is_null())
         std::ofstream(filename).write(dump.c_str(), dump.length());
 }
 
-// get a json value. If it does not exist, return the default value and write it to the json
-template <class T>
-T getJsonValue(Json& json, T defaultValue = T()) {
-    if (json.is_null()) {
-        json = defaultValue;
-        return defaultValue;
-    }
-    return json;
-}
-
-class JsonSaveHelper {
-public:
-    JsonSaveHelper(Json& json, std::string filename) :
-        mJson(json), mFilename(std::move(filename)) {}
-
-    JsonSaveHelper(const JsonSaveHelper&) = delete;
-    JsonSaveHelper& operator=(const JsonSaveHelper&) = delete;
-    ~JsonSaveHelper() { writeJsonToFile(mFilename, mJson); }
-private:
-    Json& mJson;
-    std::string mFilename;
-};
-
-inline Json& getSettings() {
+Json& getSettings() {
     static Json settings = readJsonFromFile(SettingsFilename + ".json");
     static JsonSaveHelper helper(settings, SettingsFilename + ".json");
     return settings;

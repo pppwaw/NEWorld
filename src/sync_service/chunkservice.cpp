@@ -18,6 +18,12 @@
 // 
 
 #include "chunkservice.hpp"
+#include "engine/nwjson/JsonHelper.h"
 
 // TODO: set this according to the mode.
 NWCOREAPI ChunkService chunkService(true);
+
+ChunkService::ChunkService(bool isAuthority) noexcept
+    : mWorlds(context.blocks),
+      mTaskDispatcher(getJsonValue<size_t>(getSettings()["nwcore"]["update_thread_number"], 2), *this),
+      mAuthority(isAuthority) {}

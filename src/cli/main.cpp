@@ -18,7 +18,7 @@
 // 
 
 #include "cli.hpp"
-#include "engine/nwjson/nwjson.h"
+#include "engine/nwjson/JsonHelper.h"
 #include "server/server.h"
 
 int NWAPIEXPORT main(int argc, char* argv[]) {

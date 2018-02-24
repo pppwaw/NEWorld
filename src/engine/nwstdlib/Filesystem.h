@@ -1,5 +1,5 @@
 // 
-// NEWorld: client.cpp
+// nwcore: Filesystem.h
 // NEWorld: A Free Game with Similar Rules to Minecraft.
 // Copyright (C) 2015-2018 NEWorld Team
 // 
@@ -17,27 +17,15 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#include <iostream>
-#include <string>
-#include <climits>
-#include "engine/nwstdlib/Dylib.h"
-#include "engine/nwjson/JsonHelper.h"
-#include <engine/common.h>
+#pragma once
 
-typedef void NWAPICALL MainFunction(int, char**);
-
-#if defined(NEWORLD_TARGET_WINDOWS)
-constexpr const char* GUIDllName = "GUI.dll";
-#elif defined(NEWORLD_TARGET_MACOSX)
-    constexpr const char* GUIDllName = "libGUI.dylib";
-#elif defined(NEWORLD_TARGET_LINUX)
-    constexpr const char* GUIDllName = "libGUI.so";
+#ifdef _MSC_VER
+#include <filesystem>
+namespace filesystem = std::experimental::filesystem;
+#elif defined(__APPLE__)
+#include <boost/filesystem>
+namespace filesystem = boost::filesystem;
+#else
+#include <filesystem>
+namespace filesystem = std::filesystem;
 #endif
-
-int main(int argc, char** argv) {
-    getSettings();
-    Logger::addFileSink("./log/", "launcher");
-    std::string file = argc == 1 ? GUIDllName : argv[1];
-    debugstream << "Load:" << file;
-    Library(file).get<MainFunction>("cmain")(argc, argv);
-}

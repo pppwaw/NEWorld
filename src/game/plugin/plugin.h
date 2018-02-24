@@ -17,11 +17,12 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#ifndef PLUGIN_H_
-#define PLUGIN_H_
+#pragma once 
+
 #include <string>
 #include <utility>
 #include <engine/common.h>
+#include "engine/nwstdlib/Dylib.h"
 #include <api/nwapicore.hpp>
 
 // Single plugin
@@ -63,5 +64,3 @@ private:
     int mStatus = -1;
     NWplugintype mLoadStat = nwPluginTypeNone;
 };
-
-#endif // !PLUGIN_H_

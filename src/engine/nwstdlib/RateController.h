@@ -1,5 +1,5 @@
 // 
-// nwcore: nwratemeter.h
+// nwcore: RateController.h
 // NEWorld: A Free Game with Similar Rules to Minecraft.
 // Copyright (C) 2015-2018 NEWorld Team
 // 
@@ -23,7 +23,7 @@
 #include <thread>
 
 /**
- * \brief Rate Contrll Helper. Used to controll task execution rate
+ * \brief Rate Control Helper. Used to controll task execution rate
  */
 class RateController {
     using Clock = std::chrono::high_resolution_clock;
@@ -54,7 +54,7 @@ public:
     bool isDue() const noexcept { return mRate ? Clock::now() >= mDue : true; }
 
     /**
-     * \brief Increase the internal timer by one tick
+     * \brief Increase the internal timer by one tick. Sets the current due time as the starting time of the next tick
      */
     void increaseTimer() noexcept {
         if (mRate) {

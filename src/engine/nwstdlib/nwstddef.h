@@ -42,13 +42,6 @@
 #define NEWORLD_DEBUG // Main debug flag
 #endif
 
-#ifdef NEWORLD_USE_WINAPI
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h> // Windows API
-#else
-//#    include <pthread.h> // Or <thread> <mutex>
-#endif
-
 #if (-1)>>1 == -1
 #define NEWORLD_COMPILER_RSHIFT_ARITH // Arithmetic shift right
 #endif
@@ -88,9 +81,9 @@ For details see "LICENSE".
 )";
 
 #if defined(NEWORLD_TARGET_WINDOWS)
-constexpr const char* LibSuffix = "dll";
+constexpr const char* LibSuffix = ".dll";
 #else
-    constexpr const char* LibSuffix = "so";
+    constexpr const char* LibSuffix = ".so";
 #endif
 
 #ifdef NWCOREEXPORTS

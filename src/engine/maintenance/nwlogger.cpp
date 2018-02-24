@@ -20,7 +20,10 @@
 #include <map>
 #include <ctime>
 #include <fstream>
-#include "../common.h"
+#include <iostream>
+#include "nwlogger.hpp"
+#include "engine/nwstdlib/Filesystem.h"
+#include "engine/nwstdlib/Console.h"
 
 std::mutex Logger::mutex;
 std::vector<std::ofstream> Logger::fsink;
@@ -62,9 +65,7 @@ static std::string getTimeString(char dateSplit, char midSplit, char timeSplit) 
 }
 
 void Logger::addFileSink(const std::string& path, const std::string& prefix) {
-    using namespace FileSystem;
-    if (!exists(path))
-        createDirectory(path);
+    filesystem::create_directory(path);
     fsink.emplace_back(path + prefix + "_" + getTimeString('-', '_', '-') + ".log");
 }
 
@@ -105,7 +106,7 @@ Logger::Logger(const char* fileName, const char* funcName, int lineNumber, Level
 void Logger::writeOstream(std::ostream& ostream, bool noColor) const {
     using namespace LColorFunc;
     constexpr static char stylechar = '&';
-    static std::map<char, colorfunc> cmap =
+    static std::map<char, ColorFunc> cmap =
     {
         {'0', black}, {'1', red}, {'2', yellow}, {'3', green},
         {'4', cyan}, {'5', blue}, {'6', magenta}, {'7', white},
@@ -123,7 +124,7 @@ void Logger::writeOstream(std::ostream& ostream, bool noColor) const {
         if (pos2 < str.size()) {
             char ch = str[pos2 + 1];
             if (!noColor) {
-                colorfunc cf = cmap[(ch >= 'A' && ch <= 'F') ? ch - 'A' + 'a' : ch];
+                ColorFunc cf = cmap[(ch >= 'A' && ch <= 'F') ? ch - 'A' + 'a' : ch];
                 if (cf)
                     ostream << cf;
                 else {

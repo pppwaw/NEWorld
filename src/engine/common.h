@@ -49,13 +49,8 @@
 #include "maintenance/nwdebug.h"
 #include "maintenance/nwlogger.hpp"
 #include "maintenance/nwexception.hpp"
-// Json Library
-#include "nwjson/nwjson.h"
 // NEWorld Standard Library
 #include "nwstdlib/nwconcepts.hpp"
 #include "nwstdlib/nwstrings.h"
-#include "nwstdlib/nwconsole.hpp"
-#include "nwstdlib/nwfilesys.h"
-#include "nwstdlib/nwlibrary.h"
 // Concurrency Library
 #include "concurrency/nwconcurrency.hpp"

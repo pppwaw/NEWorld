@@ -20,7 +20,7 @@
 #include "taskdispatcher.hpp"
 #include "chunkservice.hpp"
 #include <chrono>
-#include "engine/nwstdlib/nwratemeter.h"
+#include "engine/nwstdlib/RateController.h"
 
 void TaskDispatcher::worker(size_t threadID) {
     debugstream << "Worker thread " << threadID << " initialized.";

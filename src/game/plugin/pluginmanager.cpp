@@ -19,21 +19,22 @@
 
 #include <engine/common.h>
 #include "pluginmanager.h"
+#include "engine/nwstdlib/Filesystem.h"
 
 PluginManager::PluginManager() {
     infostream << "Start to load plugins...";
-    using namespace FileSystem;
     size_t counter = 0;
-    std::string path = "./plugins/";
-    if (exists(path)) {
-        forInDirectory(path, [&, this](std::string filename) {
-            std::string suffix = filename.substr(filename.size() - std::string(LibSuffix).size());
+    const filesystem::path path = "./plugins/";
+    if (filesystem::exists(path)) {
+        for (auto&& file : filesystem::directory_iterator(path)) {
+            auto suffix = file.path().extension().string();
             strtolower(suffix);
-            if (suffix != LibSuffix) return;
-            debugstream << "Loading:" << filename;
-            if (loadPlugin(filename))
-                counter++;
-        });
+            if (suffix == LibSuffix) {
+                debugstream << "Loading:" << file.path().string();
+                if (loadPlugin(file.path().string()))
+                    counter++;
+            }
+        };
     }
     infostream << counter << " plugin(s) loaded";
 }
@@ -46,7 +47,7 @@ void PluginManager::initializePlugins(NWplugintype flag) {
 }
 
 bool PluginManager::loadPlugin(const std::string& filename) {
-    mPlugins.push_back(std::move(Plugin(filename)));
+    mPlugins.emplace_back(filename);
     Plugin& plugin = mPlugins[mPlugins.size() - 1];
 
     if (!plugin.isLoaded()) {

@@ -23,6 +23,7 @@
 #include "window.h"
 #include <engine/common.h>
 #include "renderer/blockrenderer.h"
+#include "engine/nwjson/JsonHelper.h"
 #include <GL/glew.h>
 
 class PlayerControlTask : public ReadOnlyTask {

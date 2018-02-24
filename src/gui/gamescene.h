@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "engine/nwstdlib/nwratemeter.h"
+#include "engine/nwstdlib/RateController.h"
 #include "client/player.h"
 #include "widgetmanager.h"
 #include "window.h"

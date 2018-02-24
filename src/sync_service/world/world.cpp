@@ -19,7 +19,8 @@
 
 #include "world.h"
 #include "gui/gamescene.h"
-#include "engine/nwstdlib/nworderedlist.hpp"
+#include "engine/nwjson/JsonHelper.h"
+#include "engine/nwstdlib/OrderedList.h"
 
 constexpr int MaxChunkLoadCount = 64, MaxChunkUnloadCount = 64;
 
@@ -37,7 +38,7 @@ std::vector<AABB> World::getHitboxes(const AABB& range) const {
                 if (getBlock(curr).getID() == 0)
                     continue;
                 Vec3d currd = curr;
-                res.push_back(AABB(currd, currd + Vec3d(1.0, 1.0, 1.0)));
+                res.emplace_back(currd, currd + Vec3d(1.0, 1.0, 1.0));
             }
     return res;
 }
@@ -67,8 +68,8 @@ static constexpr Vec3i middleOffset() noexcept {
 */
 static void generateLoadUnloadList(
     const World& world, const Vec3i& centerPos, int loadRange,
-    PODOrderedList<int, Vec3i, MaxChunkLoadCount>& loadList,
-    PODOrderedList<int, Chunk*, MaxChunkUnloadCount, std::greater>& unloadList) {
+    PodOrderedList<int, Vec3i, MaxChunkLoadCount>& loadList,
+    PodOrderedList<int, Chunk*, MaxChunkUnloadCount, std::greater>& unloadList) {
     // centerPos to chunk coords
     Vec3i centerCPos = World::getChunkPos(centerPos);
 
@@ -92,7 +93,6 @@ class AddToWorldTask : public ReadWriteTask {
 public:
     /**
      * \brief Add a constructed chunk into world.
-     * \param cs The chunk service
      * \param worldID the target world's id
      * \param chunk the target chunk
      */
@@ -101,7 +101,7 @@ public:
 
     void task(ChunkService& cs) override {
         auto world = chunkService.getWorlds().getWorld(mWorldId);
-        auto chunkPos = mChunk->getPosition();
+        const auto chunkPos = mChunk->getPosition();
         world->insertChunk(chunkPos, std::move(mChunk));
         constexpr std::array<Vec3i, 6> delta
         {
@@ -176,8 +176,8 @@ public:
     LoadUnloadDetectorTask(World& world, const Player& player): mPlayer(player), mWorld(world) { }
 
     void task(const ChunkService& cs) override {
-        PODOrderedList<int, Vec3i, MaxChunkLoadCount> loadList;
-        PODOrderedList<int, Chunk*, MaxChunkUnloadCount, std::greater> unloadList;
+        PodOrderedList<int, Vec3i, MaxChunkLoadCount> loadList;
+        PodOrderedList<int, Chunk*, MaxChunkUnloadCount, std::greater> unloadList;
 
         generateLoadUnloadList(mWorld, mPlayer.getPosition(),
                                getJsonValue<size_t>(getSettings()["server"]["load_distance"], 4),
@@ -216,3 +216,4 @@ void World::registerChunkTasks(ChunkService& chunkService, Player& player) {
         std::make_unique<LoadUnloadDetectorTask>(*this, player)
     );
 }
+

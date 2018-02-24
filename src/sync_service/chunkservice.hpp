@@ -37,10 +37,7 @@ public:
      *                    and in the server-side of the multiplayer mode
      *                    are authoritative.
      */
-    ChunkService(bool isAuthority) noexcept
-        : mWorlds(context.blocks),
-          mAuthority(isAuthority),
-          mTaskDispatcher(getJsonValue<size_t>(getSettings()["nwcore"]["update_thread_number"], 2), *this) { }
+    ChunkService(bool isAuthority) noexcept;
 
     friend class TaskDispatcher;
 

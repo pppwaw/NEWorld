@@ -23,6 +23,7 @@
 #include "gamescene.h"
 #include "renderer/renderer.h"
 #include "renderer/texture.h"
+#include "engine/nwjson/JsonHelper.h"
 #include "game/context/nwcontext.hpp"
 
 NEWorld::NEWorld() {

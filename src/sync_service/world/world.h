@@ -36,11 +36,11 @@ class PluginManager;
 class NWCOREAPI World final : public NonCopyable {
 public:
     World(std::string name, const BlockManager& blocks)
-        : mName(std::move(name)), mID(0), mBlocks(blocks), mDaylightBrightness(15), mChunks(1024) { }
+        : mName(std::move(name)), mID(0), mBlocks(blocks), mChunks(1024), mDaylightBrightness(15) { }
 
     World(World&& rhs) noexcept
         : mName(std::move(rhs.mName)), mID(rhs.mID), mBlocks(rhs.mBlocks),
-          mDaylightBrightness(rhs.mDaylightBrightness), mChunks(std::move(rhs.mChunks)) { }
+          mChunks(std::move(rhs.mChunks)), mDaylightBrightness(rhs.mDaylightBrightness) { }
 
     ~World() = default;
 
@@ -82,7 +82,7 @@ public:
     Chunk* addChunk(const Vec3i& chunkPos,
                     ChunkOnReleaseBehavior::Behavior behv = ChunkOnReleaseBehavior::Behavior::Release) {
         return insertChunk(
-                   chunkPos, std::move(ChunkManager::data_t(new Chunk(chunkPos, *this), ChunkOnReleaseBehavior(behv))))
+                   chunkPos, ChunkManager::data_t(new Chunk(chunkPos, *this), ChunkOnReleaseBehavior(behv)))
                ->second.get();
     }
 

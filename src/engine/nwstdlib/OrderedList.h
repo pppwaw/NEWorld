@@ -1,5 +1,5 @@
 // 
-// nwcore: nworderedlist.hpp
+// nwcore: OrderedList.h
 // NEWorld: A Free Game with Similar Rules to Minecraft.
 // Copyright (C) 2015-2018 NEWorld Team
 // 
@@ -22,9 +22,9 @@
 
 // POD ONLY!
 template <class Tk, class Td, int size, template<class>class Compare = std::less>
-class PODOrderedList {
+class PodOrderedList {
 public:
-    PODOrderedList() noexcept : mComp(), mSize(0) {}
+    PodOrderedList() noexcept : mSize(0), mComp() {}
     using ArrayType = std::array<std::pair<Tk, Td>, size>;
     using Iterator = typename ArrayType::iterator;
     using ConstIterator = typename ArrayType::const_iterator;

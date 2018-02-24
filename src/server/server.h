@@ -22,7 +22,7 @@
 #include <memory>
 #include <thread>
 #include <engine/common.h>
-#include "engine/nwstdlib/nwratemeter.h"
+#include "engine/nwstdlib/RateController.h"
 #include "sync_service/world/world.h"
 #include "game/plugin/pluginmanager.h"
 
