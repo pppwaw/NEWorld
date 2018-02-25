@@ -21,11 +21,13 @@
 #include "./../plugin/pluginmanager.h"
 #include "sync_service/world/nwblock.h"
 #include "engine/nwrpc/nwrpc.hpp"
+#include <argagg.hpp>
 
 struct GameContext {
     BlockManager blocks;
     PluginManager plugins;
     RPC rpc;
+    argagg::parser_results args;
 };
 
 NWCOREAPI extern GameContext context;

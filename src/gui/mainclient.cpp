@@ -19,10 +19,31 @@
 
 #include "neworld.h"
 #include <engine/common.h>
+#include <argagg.hpp>
+#include "game/context/nwcontext.hpp"
 
 extern "C" NWAPIEXPORT int NWAPICALL cmain(int, char**);
 
-int NWAPICALL cmain(int, char**) {
+int NWAPICALL cmain(int argc, char** argv) {
+    argagg::parser argparser{ {
+        { "help",{ "-h", "--help" },
+        "shows this help message", 0 },
+        { "multiplayer-client",{ "-c", "--client" },
+        "Start the game as a client of multiplayer session", 0 }
+        } };
+    try {
+        context.args = argparser.parse(argc, argv);
+    }
+    catch (const std::exception& e) {
+        std::cerr << e.what() << std::endl;
+        return -1;
+    }
+    if (context.args["help"]) {
+        argagg::fmt_ostream fmt(std::cerr);
+        fmt << "Usage:" << std::endl
+            << argparser;
+        return 0;
+    }
     NEWorld neworld;
     return 0;
 }

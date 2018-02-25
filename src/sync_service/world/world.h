@@ -71,6 +71,19 @@ public:
     BlockData getBlock(const Vec3i& pos) const { return mChunks.getBlock(pos); }
     void setBlock(const Vec3i& pos, BlockData block) { mChunks.setBlock(pos, block); }
     auto insertChunk(const Vec3i& pos, ChunkManager::data_t&& ptr) { return mChunks.insert(pos, std::move(ptr)); }
+    auto insertChunkAndUpdate(const Vec3i& pos, ChunkManager::data_t&& ptr) {
+        const auto chunkPosition = ptr->getPosition();
+        const auto ret = insertChunk(pos, std::move(ptr));
+        constexpr std::array<Vec3i, 6> delta
+        {
+            Vec3i(1, 0, 0), Vec3i(-1, 0, 0),
+            Vec3i(0, 1, 0), Vec3i(0, -1, 0),
+            Vec3i(0, 0, 1), Vec3i(0, 0, -1)
+        };
+        for (auto&& p : delta)
+            doIfChunkLoaded(chunkPosition + p, [](Chunk& chk) { chk.setUpdated(true); });
+        return ret;
+    }
     auto resetChunk(const Vec3i& pos, Chunk* ptr) { return mChunks.reset(pos, ptr); }
 
     template <typename... ArgType, typename Func>
@@ -139,11 +152,10 @@ public:
     }
 
     std::vector<std::unique_ptr<World>>::iterator begin() { return mWorlds.begin(); }
-
     std::vector<std::unique_ptr<World>>::iterator end() { return mWorlds.end(); }
     std::vector<std::unique_ptr<World>>::const_iterator begin() const { return mWorlds.cbegin(); }
-
     std::vector<std::unique_ptr<World>>::const_iterator end() const { return mWorlds.cend(); }
+    size_t size() const noexcept { return mWorlds.size(); }
 
     World* getWorld(const std::string& name) {
         for (auto&& world : *this)

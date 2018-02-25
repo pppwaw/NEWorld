@@ -20,15 +20,69 @@
 #include "server.h"
 #include "game/context/nwcontext.hpp"
 #include "sync_service/chunkservice.hpp"
+#include "rpc/this_handler.h"
 
-Server::Server() {
+std::vector<uint32_t> serverGetChunk(size_t worldID, Vec3i position) {
+    // TODO: empty chunk optimization
+    auto world = chunkService.getWorlds().getWorld(worldID);
+    if (world == nullptr)
+        rpc::this_handler().respond_error("The world requested does not exist!");
+    Chunk* chunkPtr = nullptr;
+    try {
+        chunkPtr = &world->getChunk(position);
+    }
+    catch (std::out_of_range&) {
+        auto chunk = ChunkManager::data_t(new Chunk(position, *world),
+            ChunkOnReleaseBehavior::Behavior::Release);
+        chunkPtr = world->insertChunkAndUpdate(position, std::move(chunk))->second.get();
+    }
+    std::vector<uint32_t> chunkData;
+    chunkData.resize(32768);
+    // It's undefined behavior to use memcpy.
+//    std::memcpy(chunkData.data(), chunkPtr->getBlocks(), sizeof(BlockData) * 32768);
+    for (size_t i = 0; i < 32768; ++i)
+        chunkData.data()[i] = chunkPtr->getBlocks()[i].getData();
+    return chunkData;
+}
+
+void registerRPCFunctions() {
+    // std::vector<uint32_t> getChunk(size_t worldID, Vec3i position):
+    //          Request a chunk from the server.
+    //          The chunk will be built or loaded if does not exist.
+    context.rpc.getServer().bind("getChunk", &serverGetChunk);
+
+    // std::vector<uint32_t> getAvailableWorldId():
+    //          Get all avaliable world ids.
+    context.rpc.getServer().bind("getAvailableWorldId",
+        []() -> std::vector<uint32_t> {return { 0 }; });
+
+    // std::unordered_map<string, string> getWorldInfo(uint32_t world):
+    //          Get world info by id.
+    //          "name" : name of the world
+    context.rpc.getServer().bind("getWorldInfo",
+        [](uint32_t worldID)
+    {
+        std::unordered_map<std::string, std::string> ret;
+        World* world = chunkService.getWorlds().getWorld(worldID);
+        if (world == nullptr)
+            rpc::this_handler().respond_error("The world requested does not exist!");
+        ret["name"] = world->getWorldName();
+        return ret;
+    });
+}
+
+Server::Server(uint16_t port) {
     using namespace std::chrono;
     auto startTime = steady_clock::now();
 
     infostream << "Initializing nwcore plugins...";
     context.plugins.initializePlugins(nwPluginTypeCore);
 
-    // Register chunk update event
+    infostream << "Initializing server RPC at port " << port << "...";
+    context.rpc.enableServer(port);
+    registerRPCFunctions();
+
+    infostream << "Initializing map...";
     chunkService.getWorlds().addWorld("test world");
 
     // Done
@@ -37,9 +91,8 @@ Server::Server() {
 }
 
 // This function won't block the thread
-void Server::run(uint16_t port, size_t threadNumber) {
+void Server::run(size_t threadNumber) {
     // Network
-    context.rpc.enableServer(port);
     context.rpc.getServer().async_run(threadNumber);
     infostream << "Server RPC started. Thread number: " << threadNumber;
 }

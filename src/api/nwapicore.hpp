@@ -40,6 +40,7 @@ extern "C" {
         nwPluginTypeCore = 1 << 1,
         nwPluginTypeGUI = 1 << 2,
         nwPluginTypeCLI = 1 << 3,
+        nwPluginTypeCoreGUI = nwPluginTypeCore | nwPluginTypeGUI
     };
 
     struct NWplugindata {

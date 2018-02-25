@@ -83,9 +83,12 @@ void ServerCommandLine::initBuiltinCommands() noexcept {
     mCommands.registerCommand("chunks.count",
                               {"internal", "Show how many chunks are loaded"},
                               [this](Command cmd)-> CommandExecuteStat {
+                                  std::string ret = "Chunks loaded: ";
                                   size_t sum = 0;
-                                  for (auto&& world : chunkService.getWorlds())
+                                  for (auto&& world : chunkService.getWorlds()){
+                                      ret += "\n" + std::to_string(world->getWorldID()) + " " + world->getWorldName() + ":\t" + std::to_string(world->getChunkCount());
                                       sum += world->getChunkCount();
-                                  return {true, "Chunks loaded: " + std::to_string(sum)};
+                                  }
+                                  return {true, ret+"\nTotal: " + std::to_string(chunkService.getWorlds().size()) +" worlds loaded, "+ std::to_string(sum) +" chunks loaded"};
                               });
 }

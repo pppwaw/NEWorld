@@ -83,9 +83,30 @@ private:
     size_t& mUpdateCounter;
 };
 
+static bool isClient() {
+    return context.args["multiplayer-client"];
+}
+
 size_t GameScene::requestWorld()
 {
     // TODO: change this
+    
+    if (isClient()) {
+        auto& client = context.rpc.getClient();
+        debugstream << "Connecting the server for world information...";
+        auto worldIds = client.call("getAvailableWorldId").as<std::vector<uint32_t>>();
+        if (worldIds.empty()) {
+            errorstream << "The server didn't response with any valid worlds.";
+            assert(false);
+        }
+        debugstream << "Worlds ids fetched from the server: " << worldIds;
+        auto worldInfo = client.call("getWorldInfo", worldIds[0])
+                        .as<std::unordered_map<std::string, std::string>>();
+        debugstream << "World info fetched from the server: "
+                       "name: " << worldInfo["name"];
+        chunkService.getWorlds().addWorld(worldInfo["name"]);
+    }
+    
     // It's a simple wait-until-we-have-a-world procedure now.
     // But it should be changed into get player information
     // and get the world id from it.
@@ -93,25 +114,38 @@ size_t GameScene::requestWorld()
         std::this_thread::yield();
     return 0;
 }
-
 GameScene::GameScene(const std::string& name, const Window& window):
-    mWindow(window), mPlayer(0), mGUIWidgets(mWindow.getNkContext()),
-    mCurrentWorld(chunkService.getWorlds().getWorld(requestWorld())),
-    mWorldRenderer(*mCurrentWorld, getJsonValue<size_t>(getSettings()["gui"]["render_distance"], 3)) {
+    mWindow(window), mPlayer(0), mGUIWidgets(mWindow.getNkContext()) {
+
     mPlayer.setPosition(Vec3d(-16.0, 48.0, 32.0));
     mPlayer.setRotation(Vec3d(-45.0, -22.5, 0.0));
     Window::lockCursor();
-    // Initialize server
-    mServer.run(getJsonValue<unsigned short>(getSettings()["server"]["port"], 31111),
-        getJsonValue<size_t>(getSettings()["server"]["rpc_thread_number"], 1));
-    
+
+    if (isClient()) {
+        debugstream << "Game is running as the client of a multiplayer session.";
+        chunkService.setAuthority(false);
+    }
+    else {
+        // Initialize server
+        mServer = std::make_unique<Server>(getJsonValue<unsigned short>(getSettings()["server"]["port"], 31111));
+        mServer->run(getJsonValue<size_t>(getSettings()["server"]["rpc_thread_number"], 1));
+    }
+
+    // Initialize connection
+    context.rpc.enableClient(
+        getJsonValue<std::string>(getSettings()["server"]["ip"], "127.0.0.1"),
+        getJsonValue<unsigned short>(getSettings()["server"]["port"], 31111));
+
+    mCurrentWorld = chunkService.getWorlds().getWorld(requestWorld());
+    mWorldRenderer = std::make_unique<WorldRenderer>(*mCurrentWorld, getJsonValue<size_t>(getSettings()["gui"]["render_distance"], 3));
+
     // Initialize plugins
     infostream << "Initializing GUI plugins...";
-    context.plugins.initializePlugins(nwPluginTypeGUI);
+    context.plugins.initializePlugins(nwPluginTypeCoreGUI);
 
     // Initialize update events
     mCurrentWorld->registerChunkTasks(chunkService, mPlayer);
-    mWorldRenderer.registerTask(chunkService, mPlayer);
+    mWorldRenderer->registerTask(chunkService, mPlayer);
     chunkService.getTaskDispatcher().addRegularReadOnlyTask(
         std::make_unique<PlayerControlTask>(mPlayer));
     chunkService.getTaskDispatcher().addRegularReadOnlyTask(
@@ -159,12 +193,6 @@ GameScene::GameScene(const std::string& name, const Window& window):
             dispatcher.getRegularReadOnlyTaskCount(),
             dispatcher.getRegularReadWriteTaskCount());
     }));
-    
-
-    // Initialize connection
-    context.rpc.enableClient(
-        getJsonValue<std::string>(getSettings()["server"]["ip"], "127.0.0.1"),
-        getJsonValue<unsigned short>(getSettings()["server"]["port"], 31111));
 
     chunkService.getTaskDispatcher().start();
     infostream << "Game initialized!";
@@ -206,7 +234,7 @@ void GameScene::render() {
 
     // Render
 
-    mWorldRenderer.render(Vec3i(mPlayer.getPosition()));
+    mWorldRenderer->render(Vec3i(mPlayer.getPosition()));
     // mPlayer.render();
 
     glDisable(GL_DEPTH_TEST);

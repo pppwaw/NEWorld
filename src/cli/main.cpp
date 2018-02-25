@@ -23,8 +23,7 @@
 
 int NWAPIEXPORT main(int argc, char* argv[]) {
     ServerCommandLine cli;
-    Server server;
-    server.run(getJsonValue<unsigned short>(getSettings()["server"]["port"], 31111),
-               getJsonValue<size_t>(getSettings()["server"]["rpc_thread_number"], 1));
+    Server server(getJsonValue<unsigned short>(getSettings()["server"]["port"], 31111));
+    server.run(getJsonValue<size_t>(getSettings()["server"]["rpc_thread_number"], 1));
     cli.start();
 }
