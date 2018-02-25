@@ -42,7 +42,7 @@ private:
     void keyboardUpdateTask();
 
     // Local server
-    Server mServer;
+    std::unique_ptr<Server> mServer = nullptr;
     // Window
     const Window& mWindow;
     // Texture test
@@ -58,7 +58,7 @@ private:
     // Current world
     World* mCurrentWorld;
     // World renderer
-    WorldRenderer mWorldRenderer;
+    std::unique_ptr<WorldRenderer> mWorldRenderer;
 
     RateController mRateCounterScheduler{1};
 };

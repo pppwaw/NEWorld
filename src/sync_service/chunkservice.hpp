@@ -47,7 +47,7 @@ public:
     const WorldManager& getWorlds() const noexcept { return mWorlds; }
 
     bool isAuthority() const noexcept { return mAuthority; }
-
+    void setAuthority(bool isAuthority) noexcept { mAuthority = isAuthority; }
 private:
     WorldManager mWorlds;
     TaskDispatcher mTaskDispatcher;

@@ -35,10 +35,12 @@ public:
     // Chunk size
     static bool ChunkGeneratorLoaded;
     static ChunkGenerator* ChunkGen;
+    static constexpr int BlocksSize = 0b1000000000000000;
     static constexpr int SizeLog2() { return 5; }
     static constexpr int Size() { return 0b100000; };
 
     explicit Chunk(const Vec3i& position, const class World& world);
+    explicit Chunk(const Vec3i& position, const class World& world, const std::vector<uint32_t>& data);
     ~Chunk() {}
 
     // Get chunk position
@@ -99,7 +101,7 @@ public:
 private:
     std::mutex mMutex;
     Vec3i mPosition;
-    BlockData mBlocks[0b1000000000000000];
+    BlockData mBlocks[BlocksSize];
     // TODO: somehow avoid it! not safe.
     mutable bool mUpdated = false;
     bool mModified = false;

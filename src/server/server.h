@@ -30,8 +30,8 @@ constexpr int UpdateInterval = 1000 / 60, GlobalUpdateInterval = 1000 / 60; // u
 
 class NWAPIEXPORT Server {
 public:
-    Server();
-    void run(uint16_t port, size_t threadNumber);
+    Server(uint16_t port);
+    void run(size_t threadNumber);
     void stop();
     ~Server();
 protected:

@@ -48,6 +48,12 @@ public:
         return *this;
     }
 
+    template <typename U>
+    Logger& operator<<(const std::vector<U>& rhs) {
+        for (auto& item : rhs)
+            mContent << item << " ";
+        return *this;
+    }
     static void addFileSink(const std::string& path, const std::string& prefix);
 private:
     Level mLevel;

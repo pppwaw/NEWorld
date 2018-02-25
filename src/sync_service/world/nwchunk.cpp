@@ -34,7 +34,14 @@ ChunkGenerator* Chunk::ChunkGen = &DefaultChunkGen;
 
 Chunk::Chunk(const Vec3i& position, const class World& world)
     : mPosition(position), mWorld(&world) { build(mWorld->getDaylightBrightness()); }
-
+Chunk::Chunk(const Vec3i& position, const class World& world, const std::vector<uint32_t>& data)
+    : mPosition(position), mWorld(&world) {
+    assert(data.size() == Chunk::BlockSize);
+    // It's undefined behavior to use memcpy.
+//  std::memcpy(mBlocks, data.data(), sizeof(BlockData) * 32768);
+    for (size_t i = 0; i < 32768; ++i)
+        mBlocks[i] = BlockData(data.data()[i]);
+}
 void Chunk::build(int daylightBrightness) {
     (*ChunkGen)(&getPosition(), getBlocks(), daylightBrightness);
     setUpdated(true);

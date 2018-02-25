@@ -101,16 +101,7 @@ public:
 
     void task(ChunkService& cs) override {
         auto world = chunkService.getWorlds().getWorld(mWorldId);
-        const auto chunkPos = mChunk->getPosition();
-        world->insertChunk(chunkPos, std::move(mChunk));
-        constexpr std::array<Vec3i, 6> delta
-        {
-            Vec3i(1, 0, 0), Vec3i(-1, 0, 0),
-            Vec3i(0, 1, 0), Vec3i(0, -1, 0),
-            Vec3i(0, 0, 1), Vec3i(0, 0, -1)
-        };
-        for (auto&& p : delta)
-            world->doIfChunkLoaded(chunkPos + p, [](Chunk& chk) { chk.setUpdated(true); });
+        world->insertChunkAndUpdate(mChunk->getPosition(), std::move(mChunk));
     }
 
 private:
@@ -171,6 +162,34 @@ private:
     Vec3i mChunkPosition;
 };
 
+class RPCGetChunkTask : public ReadOnlyTask {
+public:
+    /**
+    * \brief Given a chunk, it will try to use RPC to load it
+    * \param world the target world
+    * \param chunkPosition the position of the chunk
+    * \note It will be used when the chunk service is not the authority.
+    *       Usually when it's the client of a multiplayer session.
+    */
+    RPCGetChunkTask(const World& world, Vec3i chunkPosition)
+        : mWorld(world), mChunkPosition(chunkPosition) { }
+
+    void task(const ChunkService& cs) override {
+        auto data = context.rpc.getClient()
+                                .call("getChunk", mWorld.getWorldID(), mChunkPosition)
+                                .as<std::vector<uint32_t>>();
+        ChunkManager::data_t chunk(new Chunk(mChunkPosition, mWorld, data));
+        // Add addToWorldTask
+        chunkService.getTaskDispatcher().addReadWriteTask(
+            std::make_unique<AddToWorldTask>(mWorld.getWorldID(), std::move(chunk))
+        );
+    }
+
+private:
+    const World& mWorld;
+    Vec3i mChunkPosition;
+};
+
 class LoadUnloadDetectorTask : public ReadOnlyTask {
 public:
     LoadUnloadDetectorTask(World& world, const Player& player): mPlayer(player), mWorld(world) { }
@@ -185,13 +204,14 @@ public:
 
         for (auto& loadPos : loadList) {
             if (chunkService.isAuthority()) {
-                // add BuildOrLoadChunkTask
                 chunkService.getTaskDispatcher().addReadOnlyTask(
                     std::make_unique<BuildOrLoadChunkTask>(mWorld, loadPos.second)
                 );
             }
             else {
-                // TODO: Get chunk via RPC
+                chunkService.getTaskDispatcher().addReadOnlyTask(
+                    std::make_unique<RPCGetChunkTask>(mWorld, loadPos.second)
+                );
             }
         }
         for (auto& unloadChunk : unloadList) {
