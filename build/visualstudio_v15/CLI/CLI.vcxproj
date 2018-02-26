@@ -28,7 +28,7 @@
     <ClCompile Include="..\..\..\src\cli\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\nwcore\nwcore.vcxproj">
+    <ProjectReference Include="..\Core\Core.vcxproj">
       <Project>{f282b14e-b2e5-4c63-840c-cc653c6f5fa3}</Project>
     </ProjectReference>
   </ItemGroup>

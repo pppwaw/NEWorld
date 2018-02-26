@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -83,9 +83,9 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{F282B14E-B2E5-4C63-840C-CC653C6F5FA3}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>nwcore</RootNamespace>
+    <RootNamespace>Core</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
-    <ProjectName>nwcore</ProjectName>
+    <ProjectName>Core</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -206,7 +206,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>NWAPIEXPORTS;NOMINMAX;NWCOREEXPORTS;NWCompartmentLoggerPrefix="nwcore";WIN32;_DEBUG;_WINDOWS;_USRDLL;NWCORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NWAPIEXPORTS;NOMINMAX;CoreEXPORTS;NWCompartmentLoggerPrefix="Core";WIN32;_DEBUG;_WINDOWS;_USRDLL;Core_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -226,7 +226,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>NWAPIEXPORTS;NOMINMAX;NWCOREEXPORTS;NWCompartmentLoggerPrefix="nwcore";_DEBUG;_WINDOWS;_USRDLL;NWCORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NWAPIEXPORTS;NOMINMAX;CoreEXPORTS;NWCompartmentLoggerPrefix="Core";_DEBUG;_WINDOWS;_USRDLL;Core_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -248,7 +248,7 @@
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NWAPIEXPORTS;NOMINMAX;NWCOREEXPORTS;NWCompartmentLoggerPrefix="nwcore";WIN32;NDEBUG;_WINDOWS;_USRDLL;NWCORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NWAPIEXPORTS;NOMINMAX;CoreEXPORTS;NWCompartmentLoggerPrefix="Core";WIN32;NDEBUG;_WINDOWS;_USRDLL;Core_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
@@ -276,7 +276,7 @@
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NWAPIEXPORTS;NOMINMAX;NWCOREEXPORTS;NWCompartmentLoggerPrefix="nwcore";WIN32;NDEBUG;_WINDOWS;_USRDLL;NWCORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NWAPIEXPORTS;NOMINMAX;CoreEXPORTS;NWCompartmentLoggerPrefix="Core";WIN32;NDEBUG;_WINDOWS;_USRDLL;Core_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
@@ -301,7 +301,7 @@
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NWAPIEXPORTS;NOMINMAX;NWCOREEXPORTS;NWCompartmentLoggerPrefix="nwcore";NDEBUG;_WINDOWS;_USRDLL;NWCORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NWAPIEXPORTS;NOMINMAX;CoreEXPORTS;NWCompartmentLoggerPrefix="Core";NDEBUG;_WINDOWS;_USRDLL;Core_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
@@ -329,7 +329,7 @@
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NWAPIEXPORTS;NOMINMAX;NWCOREEXPORTS;NWCompartmentLoggerPrefix="nwcore";NDEBUG;_WINDOWS;_USRDLL;NWCORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NWAPIEXPORTS;NOMINMAX;NWCOREEXPORTS;NWCompartmentLoggerPrefix="Core";NDEBUG;_WINDOWS;_USRDLL;NWCORE_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
