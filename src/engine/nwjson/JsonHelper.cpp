@@ -37,7 +37,7 @@ namespace {
 
 }
 
-Json readJsonFromFile(std::string filename) {
+NWCOREAPI Json readJsonFromFile(std::string filename) {
     std::ifstream file(filename);
     if (file) {
         std::string content = std::string(std::istreambuf_iterator<char>(file),
@@ -52,13 +52,13 @@ Json readJsonFromFile(std::string filename) {
     return Json();
 }
 
-void writeJsonToFile(std::string filename, Json& json) {
+NWCOREAPI void writeJsonToFile(std::string filename, Json& json) {
     const std::string& dump = json.dump();
     if (!json.is_null())
         std::ofstream(filename).write(dump.c_str(), dump.length());
 }
 
-Json& getSettings() {
+NWCOREAPI Json& getSettings() {
     static Json settings = readJsonFromFile(SettingsFilename + ".json");
     static JsonSaveHelper helper(settings, SettingsFilename + ".json");
     return settings;

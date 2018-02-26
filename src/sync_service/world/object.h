@@ -53,6 +53,8 @@ public:
 
     void moveHitbox(const Vec3d& delta) { mHitbox.move(delta); }
 
+    size_t getWorldID() const noexcept { return mWorldID; }
+
     virtual void render() = 0;
     virtual void update(const World& world) = 0;
 

@@ -25,6 +25,22 @@
 #include "engine/nwjson/JsonHelper.h"
 #include "engine/maintenance/Logger.h"
 
+class PutBlockTask : public ReadWriteTask {
+public:
+    PutBlockTask(size_t worldID, const Vec3i& blockPosition, size_t blockID)
+        : mWorldID(worldID), mBlockPosition(blockPosition), mBlockID(blockID) {}
+
+    void task(ChunkService& cs) override {
+        // TODO: let the server handle this.
+        cs.getWorlds().getWorld(mWorldID)->setBlock(mBlockPosition, mBlockID);
+    }
+
+private:
+    size_t mWorldID;
+    Vec3i mBlockPosition;
+    size_t mBlockID;
+};
+
 class PlayerControlTask : public ReadOnlyTask {
 public:
     PlayerControlTask(Player& player) : mPlayer(player) {}
@@ -32,6 +48,8 @@ public:
     void task(const ChunkService& cs) override {
 
         constexpr double speed = 0.1;
+        constexpr double SelectDistance = 5.0;
+        constexpr double SelectPrecision = 200.0;
 
         // TODO: Read keys from the configuration file
         auto state = Window::getKeyBoardState();
@@ -61,6 +79,28 @@ public:
         if (state[SDL_SCANCODE_LCTRL] || state[SDL_SCANCODE_RCTRL])
 #endif
             mPlayer.accelerate(Vec3d(0.0, -2 * speed, 0.0));
+
+        // Handle left-click events
+        if (Window::getInstance().getMouseMotion().left) {
+            // Selection
+            const World* world = cs.getWorlds().getWorld(mPlayer.getWorldID());
+            Mat4f trans(1.0f);
+            const auto& position = mPlayer.getPosition();
+            const auto& rotation = mPlayer.getRotation();
+            trans *= Mat4f::rotation(float(rotation.y), Vec3f(0.0f, 1.0f, 0.0f));
+            trans *= Mat4f::rotation(float(rotation.x), Vec3f(1.0f, 0.0f, 0.0f));
+            trans *= Mat4f::rotation(float(rotation.z), Vec3f(0.0f, 0.0f, 1.0f));
+            Vec3d dir = trans.transformVec3(Vec3f(0.0f, 0.0f, -1.0f));
+            for (double i = 0.0; i < SelectDistance; i += 1.0 / SelectPrecision) {
+                Vec3d pos = rotation + dir * i;
+                Vec3i blockPos = Vec3i(int(std::floor(pos.x)), int(std::floor(pos.y)), int(std::floor(pos.z)));
+                if (world->getBlock(blockPos).getID() != 0) {
+                    chunkService.getTaskDispatcher().addReadWriteTask(
+                        std::make_unique<PutBlockTask>(mPlayer.getWorldID(), blockPos, 0));
+                    break;
+                }
+            }
+        }
 
         //    mGUIWidgets.update();
     }

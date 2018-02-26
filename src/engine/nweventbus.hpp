@@ -49,10 +49,10 @@ public:
         auto& list = getSubscribers<T>(funcName);
         list.emplace_back(reinterpret_cast<FunctionPointer>(func));
         if (list.size() == 1)
-            debugstream << "Function " << funcName << " with type " << typeid(T).name() << " registered.";
+            debugstream << "Function " << funcName << " with type " << typeid(T).name() << " (hash: " << typeid(T).hash_code() << ") registered.";
         else
             warningstream << "Multiple(" << list.size() << ") functions with name"
-            << funcName << " and type " << typeid(T).name() << " registered.";
+            << funcName << " and type " << typeid(T).name() << " (hash: " << typeid(T).hash_code() << ") registered.";
     }
 
     /**
@@ -68,7 +68,7 @@ public:
     template<typename T>
     void subscribe(const std::string& funcName, T func) {
         getSubscribers<T>(funcName).emplace_back(reinterpret_cast<FunctionPointer>(func));
-        debugstream << "Subscribed to " << funcName << " with type " << typeid(T).name();
+        debugstream << "Subscribed to " << funcName << " with " << typeid(T).name() << " (hash: " << typeid(T).hash_code() << ")";
     }
 
     /**
@@ -92,10 +92,11 @@ public:
         auto& list = getSubscribers<T>(funcName);
         if (list.size() == 0){
             warningstream << "Failed to call function " << funcName
-            << " with type " << typeid(T).name() << ": "
+            << " with type " << typeid(T).name() << " (hash: " << typeid(T).hash_code() << "): "
             << (list.empty() ? "No such function registered" :
                 "Multiple(" + std::to_string(list.size()) + ") functions registered.");
-            throw std::runtime_error(funcName + " with type " + typeid(T).name() + " does not exist");
+            throw std::runtime_error(funcName + " with type " + typeid(T).name()
+                + " (hash: " + std::to_string(typeid(T).hash_code()) + ") does not exist");
         }
         return reinterpret_cast<T>(list[0])(std::forward<Args>(args)...);
     }
