@@ -18,6 +18,7 @@
 // 
 
 #include "nwblock.h"
+#include "engine/maintenance/Logger.h"
 
 BlockManager::BlockManager()
     : mBlocks{BlockType("Air", false, false, false, 0, 0)} {}

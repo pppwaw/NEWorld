@@ -1,5 +1,5 @@
 // 
-// nwcore: nwdebug.h
+// nwcore: Debug.h
 // NEWorld: A Free Game with Similar Rules to Minecraft.
 // Copyright (C) 2015-2018 NEWorld Team
 // 
@@ -19,26 +19,17 @@
 
 #pragma once
 
-#include "nwlogger.hpp"
-#include <stdexcept>
+#include "engine/nwstdlib/nwstddef.h"
 
 #define NEWORLD_DEBUG
 // Assertion uses C++ exception
-inline void AssertFunc(bool expr, const char* file, const char* fname, int line) {
-    if (!expr) {
-        fatalstream << "Assertion failed!\nAt line " << line
-            << " in \"" << file << "\", function " << fname;
-        throw std::runtime_error("Assertion failed!");
-    }
-}
+NWCOREAPI void AssertFunc(bool expr, const char* file, const char* fname, int line);
 
 #ifdef NEWORLD_DEBUG
-#define Assert(expr) AssertFunc((expr) != 0, __FILE__, __FUNCTION__, __LINE__)
+#    define Assert(expr) AssertFunc((expr) != 0, __FILE__, __FUNCTION__, __LINE__)
 #else
-    #define Assert(expr) nullptr
+#    define Assert(expr) nullptr
 #endif
 
-// A notice that would cause compilation error 2333
 #undef assert
-#define assert(expr)\
-    static_assert(false, "Do not #include <cassert> or #include <assert.h>! Use Assert(expression) instead."); (void)(expr);
+#define assert(expr) Assert(expr)

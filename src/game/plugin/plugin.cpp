@@ -18,6 +18,7 @@
 // 
 
 #include "plugin.h"
+#include "engine/maintenance/Logger.h"
 
 typedef NWplugindata* NWAPICALL GetInfoFunction();
 typedef void NWAPICALL InitFunction(NWplugintype);

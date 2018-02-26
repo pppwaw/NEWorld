@@ -17,9 +17,10 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#include <engine/common.h>
 #include "pluginmanager.h"
+#include "engine/nwstdlib/StringUtils.h"
 #include "engine/nwstdlib/Filesystem.h"
+#include "engine/maintenance/Logger.h"
 
 PluginManager::PluginManager() {
     infostream << "Start to load plugins...";

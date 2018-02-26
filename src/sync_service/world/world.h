@@ -17,9 +17,9 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#ifndef WORLD_H_
-#define WORLD_H_
+#pragma once
 
+#include <array>
 #include <string>
 #include <memory>
 #include <utility>
@@ -27,7 +27,7 @@
 #include <cstdlib>
 #include <algorithm>
 #include "nwchunk.h"
-#include <engine/common.h>
+#include "engine/nwphysics/AABB.h"
 
 class Player;
 class ChunkService;
@@ -185,5 +185,3 @@ private:
     std::vector<std::unique_ptr<World>> mWorlds;
     BlockManager& mBlocks;
 };
-
-#endif // !WORLD_H_

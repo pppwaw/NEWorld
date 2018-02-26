@@ -17,13 +17,14 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#ifndef VERTEXARRAY_H_
-#define VERTEXARRAY_H_
+#pragma once
 
 #include <cstring>
 #include <initializer_list>
 #include "opengl.h"
-#include <engine/common.h>
+#include "engine/maintenance/Debug.h"
+#include "engine/maintenance/Logger.h"
+#include "engine/nwstdlib/nwconcepts.hpp"
 
 class VertexFormat {
 public:
@@ -66,18 +67,18 @@ public:
     VertexArray(const VertexArray&) = delete;
     VertexArray& operator=(const VertexArray&) = delete;
 
-    VertexArray(VertexArray&& other):
-        mVertexes(std::move(other.mVertexes)),
-        mMaxVertexes(std::move(other.mMaxVertexes)),
+    VertexArray(VertexArray&& other) noexcept:
+        mMaxVertexes(other.mMaxVertexes),
+        mVertexes(other.mVertexes),
+        mFormat(other.mFormat),
         mData(other.mData),
-        mVertexAttributes(other.mVertexAttributes),
-        mFormat(std::move(other.mFormat)) {
+        mVertexAttributes(other.mVertexAttributes) {
         if (this == &other) return;
         other.mData = nullptr;
         other.mVertexAttributes = nullptr;
     }
 
-    VertexArray& operator=(VertexArray&& other) {
+    VertexArray& operator=(VertexArray&& other) noexcept {
         if (this == &other) return *this;
         mVertexes = other.mVertexes;
         mMaxVertexes = other.mMaxVertexes;
@@ -217,4 +218,3 @@ private:
     VertexFormat format;
 
 };
-#endif // !VERTEXARRAY_H_

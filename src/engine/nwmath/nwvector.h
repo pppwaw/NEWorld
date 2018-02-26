@@ -17,8 +17,7 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#ifndef VEC3_H_
-#define VEC3_H_
+#pragma once
 
 #include <cmath>
 #include <type_traits>
@@ -360,4 +359,4 @@ namespace std {
         }
     };
 }
-#endif // !VEC3_H_
+

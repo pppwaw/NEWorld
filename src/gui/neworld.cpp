@@ -18,13 +18,13 @@
 // 
 
 #include "neworld.h"
-#include <engine/common.h>
 #include "window.h"
 #include "gamescene.h"
 #include "renderer/renderer.h"
 #include "renderer/texture.h"
 #include "engine/nwjson/JsonHelper.h"
 #include "game/context/nwcontext.hpp"
+#include "engine/maintenance/Logger.h"
 
 NEWorld::NEWorld() {
     // Initialize

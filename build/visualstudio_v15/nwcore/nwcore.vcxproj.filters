@@ -41,9 +41,6 @@
     <Filter Include="Source\Engine\nwstdlib">
       <UniqueIdentifier>{71d5a55c-eb8f-4006-84a5-3e8dfb007730}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Engine\concurrency">
-      <UniqueIdentifier>{4ed57a2f-da7d-4561-84bd-53c8c59c6dae}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\Game\plugin">
       <UniqueIdentifier>{865196c1-df40-4f7a-a4fc-7c8c6abcf8a1}</UniqueIdentifier>
     </Filter>
@@ -52,12 +49,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\engine\concurrency\nwconcurrency.cpp">
-      <Filter>Source\Engine\concurrency</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\engine\maintenance\nwlogger.cpp">
-      <Filter>Source\Engine\maintenance</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\game\context\nwcontext.cpp">
       <Filter>Source\Game\context</Filter>
     </ClCompile>
@@ -103,20 +94,17 @@
     <ClCompile Include="..\..\..\src\engine\nwjson\JsonHelper.cpp">
       <Filter>Source\Engine\nwjson</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\maintenance\Debug.cpp">
+      <Filter>Source\Engine\maintenance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\maintenance\Logger.cpp">
+      <Filter>Source\Engine\maintenance</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\engine\nwstdlib\StringUtils.cpp">
+      <Filter>Source\Engine\nwstdlib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\src\engine\concurrency\nwconcurrency.hpp">
-      <Filter>Source\Engine\concurrency</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\maintenance\nwexception.hpp">
-      <Filter>Source\Engine\maintenance</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\maintenance\nwlogger.hpp">
-      <Filter>Source\Engine\maintenance</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\maintenance\nwdebug.h">
-      <Filter>Source\Engine\maintenance</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\engine\nwjson\json.hpp">
       <Filter>Source\Engine\nwjson</Filter>
     </ClInclude>
@@ -126,20 +114,11 @@
     <ClInclude Include="..\..\..\src\engine\nwmath\nwvector.h">
       <Filter>Source\Engine\nwmath</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\nwphysics\nwaabb.h">
-      <Filter>Source\Engine\nwphysics</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\engine\nwstdlib\nwstddef.h">
-      <Filter>Source\Engine\nwstdlib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\nwstdlib\nwstrings.h">
       <Filter>Source\Engine\nwstdlib</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\engine\nwstdlib\nwconcepts.hpp">
       <Filter>Source\Engine\nwstdlib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\common.h">
-      <Filter>Source\Engine</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\game\context\nwcontext.hpp">
       <Filter>Source\Game\context</Filter>
@@ -206,6 +185,21 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\engine\nwjson\JsonHelper.h">
       <Filter>Source\Engine\nwjson</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\maintenance\Debug.h">
+      <Filter>Source\Engine\maintenance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\nwphysics\AABB.h">
+      <Filter>Source\Engine\nwphysics</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\maintenance\Logger.h">
+      <Filter>Source\Engine\maintenance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\maintenance\Exception.h">
+      <Filter>Source\Engine\maintenance</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\engine\nwstdlib\StringUtils.h">
+      <Filter>Source\Engine\nwstdlib</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

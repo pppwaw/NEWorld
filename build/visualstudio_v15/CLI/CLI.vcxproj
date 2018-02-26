@@ -27,6 +27,11 @@
     <ClCompile Include="..\..\..\src\cli\cli.cpp" />
     <ClCompile Include="..\..\..\src\cli\main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\nwcore\nwcore.vcxproj">
+      <Project>{f282b14e-b2e5-4c63-840c-cc653c6f5fa3}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{26A0D31E-F559-4570-93CA-7C6B84950548}</ProjectGuid>

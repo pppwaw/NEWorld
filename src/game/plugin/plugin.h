@@ -21,7 +21,7 @@
 
 #include <string>
 #include <utility>
-#include <engine/common.h>
+#include "engine/nwstdlib/nwconcepts.hpp"
 #include "engine/nwstdlib/Dylib.h"
 #include <api/nwapicore.hpp>
 

@@ -1,5 +1,5 @@
 // 
-// nwcore: nwstrings.h
+// nwcore: StringUtils.h
 // NEWorld: A Free Game with Similar Rules to Minecraft.
 // Copyright (C) 2015-2018 NEWorld Team
 // 
@@ -19,29 +19,12 @@
 
 #pragma once
 #include <vector>
-#include <algorithm>
 #include <string>
+#include "nwstddef.h"
 
 #define FUNCTION_ALIAS(A,B)\
     template <typename... Args> auto B(Args&&... args) -> decltype(A(std::forward<Args>(args)...)){return A(std::forward<Args>(args)...);}
 
-inline std::vector<std::string> split(const std::string& s, char delim) {
-    std::vector<std::string> elems;
-    std::stringstream ss;
-    ss.str(s);
-    std::string item;
-    while (std::getline(ss, item, delim))
-        elems.push_back(item);
-
-    return elems;
-};
-
-inline void trim(std::string& s) {
-    if (s.empty())
-        return;
-
-    s.erase(0, s.find_first_not_of(" "));
-    s.erase(s.find_last_not_of(" ") + 1);
-}
-
-inline void strtolower(std::string& s) { transform(s.begin(), s.end(), s.begin(), tolower); }
+NWCOREAPI std::vector<std::string> split(const std::string& s, char delim);
+NWCOREAPI void trim(std::string& s);
+NWCOREAPI void strtolower(std::string& s);

@@ -22,6 +22,7 @@
 #include "renderer/blockrenderer.h"
 #include <api/nwapigui.hpp>
 #include <engine/nweventbus.hpp>
+#include "engine/maintenance/Logger.h"
 
 extern "C" {
     NWAPI void NWAPICALL nwSetBlockRenderFunc(size_t, NWblockrenderfunc) { }

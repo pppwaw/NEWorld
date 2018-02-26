@@ -1,5 +1,5 @@
 // 
-// nwcore: nwaabb.h
+// nwcore: AABB.h
 // NEWorld: A Free Game with Similar Rules to Minecraft.
 // Copyright (C) 2015-2018 NEWorld Team
 // 
@@ -18,6 +18,9 @@
 // 
 
 #pragma once
+
+#include <algorithm>
+#include "engine/nwmath/nwvector.h"
 
 // Axis aligned bounding box
 class AABB {

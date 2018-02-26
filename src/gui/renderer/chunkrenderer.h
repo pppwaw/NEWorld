@@ -17,16 +17,17 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#ifndef CHUNKCLIENT_H_
-#define CHUNKCLIENT_H_
+#pragma once
 
 #include <atomic>
 #include <memory>
 #include "blockrenderer.h"
 #include "renderer.h"
+#include "engine/nwstdlib/nwconcepts.hpp"
 #include "sync_service/world/nwblock.h"
 #include "game/context/nwcontext.hpp"
 #include "sync_service/world/world.h"
+#include "vertexarray.h"
 
 /**
  * \brief It stores all the render data (VA) used to render a chunk.
@@ -108,4 +109,3 @@ private:
     // Vertex buffer object
     VertexBuffer mBuffer, mBufferTrans;
 };
-#endif // !CHUNKCLIENT_H_

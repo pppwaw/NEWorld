@@ -1,5 +1,5 @@
 // 
-// nwcore: nwlogger.hpp
+// nwcore: Logger.h
 // NEWorld: A Free Game with Similar Rules to Minecraft.
 // Copyright (C) 2015-2018 NEWorld Team
 // 
@@ -64,10 +64,10 @@ private:
     std::stringstream mContent;
     std::lock_guard<std::mutex> mLock;
 
-    static Logger::Level coutLevel;
-    static Logger::Level cerrLevel;
-    static Logger::Level fileLevel;
-    static Logger::Level lineLevel;
+    static Level coutLevel;
+    static Level cerrLevel;
+    static Level fileLevel;
+    static Level lineLevel;
     static std::mutex mutex;
     static std::vector<std::ofstream> fsink;
     static std::array<const char*, 6> levelTags;

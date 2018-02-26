@@ -21,10 +21,9 @@
 #include <chrono>
 #include "gamescene.h"
 #include "window.h"
-#include <engine/common.h>
 #include "renderer/blockrenderer.h"
 #include "engine/nwjson/JsonHelper.h"
-#include <GL/glew.h>
+#include "engine/maintenance/Logger.h"
 
 class PlayerControlTask : public ReadOnlyTask {
 public:

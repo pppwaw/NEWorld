@@ -28,12 +28,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\client\player.cpp" />
-    <ClCompile Include="..\..\..\src\engine\concurrency\nwconcurrency.cpp" />
-    <ClCompile Include="..\..\..\src\engine\maintenance\nwlogger.cpp" />
+    <ClCompile Include="..\..\..\src\engine\maintenance\Debug.cpp" />
+    <ClCompile Include="..\..\..\src\engine\maintenance\Logger.cpp" />
     <ClCompile Include="..\..\..\src\engine\nweventbus.cpp" />
     <ClCompile Include="..\..\..\src\engine\nwjson\JsonHelper.cpp" />
     <ClCompile Include="..\..\..\src\engine\nwstdlib\Console.cpp" />
     <ClCompile Include="..\..\..\src\engine\nwstdlib\Dylib.cpp" />
+    <ClCompile Include="..\..\..\src\engine\nwstdlib\StringUtils.cpp" />
     <ClCompile Include="..\..\..\src\game\context\nwcontext.cpp" />
     <ClCompile Include="..\..\..\src\game\plugin\plugin.cpp" />
     <ClCompile Include="..\..\..\src\game\plugin\pluginmanager.cpp" />
@@ -48,17 +49,15 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\src\api\nwapicore.hpp" />
     <ClInclude Include="..\..\..\src\client\player.h" />
-    <ClInclude Include="..\..\..\src\engine\common.h" />
-    <ClInclude Include="..\..\..\src\engine\concurrency\nwconcurrency.hpp" />
-    <ClInclude Include="..\..\..\src\engine\maintenance\nwdebug.h" />
-    <ClInclude Include="..\..\..\src\engine\maintenance\nwexception.hpp" />
-    <ClInclude Include="..\..\..\src\engine\maintenance\nwlogger.hpp" />
+    <ClInclude Include="..\..\..\src\engine\maintenance\Debug.h" />
+    <ClInclude Include="..\..\..\src\engine\maintenance\Exception.h" />
+    <ClInclude Include="..\..\..\src\engine\maintenance\Logger.h" />
     <ClInclude Include="..\..\..\src\engine\nweventbus.hpp" />
     <ClInclude Include="..\..\..\src\engine\nwjson\json.hpp" />
     <ClInclude Include="..\..\..\src\engine\nwjson\JsonHelper.h" />
     <ClInclude Include="..\..\..\src\engine\nwmath\nwmatrix.h" />
     <ClInclude Include="..\..\..\src\engine\nwmath\nwvector.h" />
-    <ClInclude Include="..\..\..\src\engine\nwphysics\nwaabb.h" />
+    <ClInclude Include="..\..\..\src\engine\nwphysics\AABB.h" />
     <ClInclude Include="..\..\..\src\engine\nwrpc\nwrpc.hpp" />
     <ClInclude Include="..\..\..\src\engine\nwstdlib\Dylib.h" />
     <ClInclude Include="..\..\..\src\engine\nwstdlib\nwconcepts.hpp" />
@@ -67,7 +66,7 @@
     <ClInclude Include="..\..\..\src\engine\nwstdlib\OrderedList.h" />
     <ClInclude Include="..\..\..\src\engine\nwstdlib\RateController.h" />
     <ClInclude Include="..\..\..\src\engine\nwstdlib\nwstddef.h" />
-    <ClInclude Include="..\..\..\src\engine\nwstdlib\nwstrings.h" />
+    <ClInclude Include="..\..\..\src\engine\nwstdlib\StringUtils.h" />
     <ClInclude Include="..\..\..\src\game\context\nwcontext.hpp" />
     <ClInclude Include="..\..\..\src\game\plugin\plugin.h" />
     <ClInclude Include="..\..\..\src\game\plugin\pluginmanager.h" />

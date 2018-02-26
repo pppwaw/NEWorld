@@ -17,8 +17,7 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#ifndef CHUNK_H_
-#define CHUNK_H_
+#pragma once
 
 #include <mutex>
 #include <atomic>
@@ -27,6 +26,9 @@
 #include <vector>
 #include <unordered_map>
 #include "nwblock.h"
+#include "engine/maintenance/Debug.h"
+#include "engine/nwmath/nwvector.h"
+#include "engine/nwstdlib/nwconcepts.hpp"
 
 using ChunkGenerator = void NWAPICALL(const Vec3i*, BlockData*, int);
 
@@ -41,7 +43,7 @@ public:
 
     explicit Chunk(const Vec3i& position, const class World& world);
     explicit Chunk(const Vec3i& position, const class World& world, const std::vector<uint32_t>& data);
-    ~Chunk() {}
+    ~Chunk() = default;
 
     // Get chunk position
     const Vec3i& getPosition() const noexcept { return mPosition; }
@@ -124,18 +126,19 @@ struct NWCOREAPI ChunkOnReleaseBehavior {
         DeReference
     } status;
 
-    void operator()(Chunk* target) {
+    void operator()(Chunk* target) const
+    {
         switch (status) {
-        case ChunkOnReleaseBehavior::Behavior::Release:
+        case Behavior::Release:
             delete target;
             break;
-        case ChunkOnReleaseBehavior::Behavior::DeReference:
+        case Behavior::DeReference:
             target->decreaseRef();
             break;
         }
     }
 
-    constexpr ChunkOnReleaseBehavior() : status(ChunkOnReleaseBehavior::Behavior::Release) {};
+    constexpr ChunkOnReleaseBehavior() : status(Behavior::Release) {};
     constexpr ChunkOnReleaseBehavior(Behavior b) : status(b) {}
 };
 
@@ -219,5 +222,3 @@ public:
 private:
     array_t mChunks;
 };
-
-#endif // !CHUNK_H_

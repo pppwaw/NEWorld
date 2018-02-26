@@ -21,8 +21,8 @@
 #include <string>
 #include <atomic>
 #include <iostream>
-#include "engine/maintenance/nwlogger.hpp"
-#include "engine/nwstdlib/nwstrings.h"
+#include "engine/maintenance/Logger.h"
+#include "engine/nwstdlib/StringUtils.h"
 #include <unordered_map>
 #include <thread>
 #include <functional>

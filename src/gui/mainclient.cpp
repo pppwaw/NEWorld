@@ -18,7 +18,6 @@
 // 
 
 #include "neworld.h"
-#include <engine/common.h>
 #include <argagg.hpp>
 #include "game/context/nwcontext.hpp"
 

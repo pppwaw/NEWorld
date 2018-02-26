@@ -17,26 +17,22 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#ifndef BLOCKDATA_H_
-#define BLOCKDATA_H_
+#pragma once
 
 #include <vector>
 #include <string>
 #include <cstdint>
-#include <engine/common.h>
+#include "engine/nwstdlib/nwstddef.h"
 
 class BlockData {
 public:
-    BlockData() : u{0} { }
+    BlockData() : u{{0}} { }
 
     BlockData(uint32_t id_, uint32_t brightness_, uint32_t state_)
         : u{id_, brightness_, state_} { }
 
     BlockData(uint32_t allData) { u.allData = allData; }
 
-    BlockData(const BlockData& rhs) : u(rhs.u) { }
-
-    bool operator==(const BlockData& rhs) const { return u.allData == rhs.u.allData; }
     uint32_t getData() const { return u.allData; }
     uint32_t getID() const { return u.data.id; }
 
@@ -106,5 +102,3 @@ public:
 private:
     std::vector<BlockType> mBlocks;
 };
-
-#endif // !BLOCKDATA_H_

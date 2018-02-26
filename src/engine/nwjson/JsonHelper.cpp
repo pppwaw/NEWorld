@@ -18,7 +18,7 @@
 // 
 
 #include "JsonHelper.h"
-#include "engine/maintenance/nwlogger.hpp"
+#include "engine/maintenance/Logger.h"
 #include <fstream>
 
 namespace {

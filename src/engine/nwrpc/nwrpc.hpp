@@ -20,7 +20,8 @@
 #include <iostream>
 #include <rpc/client.h>
 #include <rpc/server.h>
-#include "engine/maintenance/nwdebug.h"
+#include "engine/maintenance/Debug.h"
+#include "engine/maintenance/Logger.h"
 
 #define FUNCTION_RENAME(oldname, alias)\
     template<typename... Args>\

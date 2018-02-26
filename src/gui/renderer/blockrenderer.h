@@ -17,13 +17,12 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#ifndef BLOCKRENDERER_H_
-#define BLOCKRENDERER_H_
+#pragma once
 
 #include <vector>
 #include <memory>
-#include <engine/common.h>
 #include "texture.h"
+#include "engine/nwmath/nwvector.h"
 
 class VertexArray;
 
@@ -78,5 +77,3 @@ public:
 private:
     static std::vector<std::shared_ptr<BlockRenderer>> mBlockRenderers;
 };
-
-#endif // !BLOCKRENDERER_H_

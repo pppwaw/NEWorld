@@ -1,5 +1,5 @@
 // 
-// nwcore: nwlogger.cpp
+// nwcore: Logger.cpp
 // NEWorld: A Free Game with Similar Rules to Minecraft.
 // Copyright (C) 2015-2018 NEWorld Team
 // 
@@ -21,7 +21,7 @@
 #include <ctime>
 #include <fstream>
 #include <iostream>
-#include "nwlogger.hpp"
+#include "Logger.h"
 #include "engine/nwstdlib/Filesystem.h"
 #include "engine/nwstdlib/Console.h"
 
@@ -31,10 +31,10 @@ std::array<const char*, 6> Logger::levelTags
 {
     "[verbose]", "[debug]", "[info]", "[warning]", "[error]", "[fatal]"
 };
-Logger::Level Logger::coutLevel = Logger::Level::verbose;
-Logger::Level Logger::cerrLevel = Logger::Level::fatal;
-Logger::Level Logger::fileLevel = Logger::Level::info;
-Logger::Level Logger::lineLevel = Logger::Level::error;
+Logger::Level Logger::coutLevel = Level::verbose;
+Logger::Level Logger::cerrLevel = Level::fatal;
+Logger::Level Logger::fileLevel = Level::info;
+Logger::Level Logger::lineLevel = Level::error;
 
 template <size_t length>
 static std::string convert(int arg) {
@@ -79,22 +79,22 @@ Logger::Logger(const char* fileName, const char* funcName, int lineNumber, Level
     mContent << LColor::white << getTimeString('-', ' ', ':')
         << '[' << mgr << ']';
     switch (level) {
-    case Logger::Level::verbose:
+    case Level::verbose:
         mContent << LColor::white;
         break;
-    case Logger::Level::debug:
+    case Level::debug:
         mContent << LColor::white;
         break;
-    case Logger::Level::info:
+    case Level::info:
         mContent << LColor::lwhite;
         break;
-    case Logger::Level::warning:
+    case Level::warning:
         mContent << LColor::lyellow;
         break;
-    case Logger::Level::error:
+    case Level::error:
         mContent << LColor::lred;
         break;
-    case Logger::Level::fatal:
+    case Level::fatal:
         mContent << LColor::red;
         break;
     default:

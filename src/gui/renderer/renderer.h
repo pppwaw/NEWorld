@@ -17,12 +17,12 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#ifndef RENDERER_H_
-#define RENDERER_H_
+#pragma once
 
 #include "opengl.h"
-#include "vertexarray.h"
-#include <engine/common.h>
+#include "engine/nwmath/nwmatrix.h"
+#include "engine/maintenance/Logger.h"
+#include "engine/nwmath/nwvector.h"
 
 class Renderer {
 public:
@@ -93,5 +93,3 @@ private:
         matrixMode = GL_MODELVIEW;
     }
 };
-
-#endif // !RENDERER_H_

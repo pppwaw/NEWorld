@@ -17,10 +17,9 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#ifndef OBJECT_H_
-#define OBJECT_H_
+#pragma once
 
-#include <engine/common.h>
+#include "engine/nwphysics/AABB.h"
 
 class World;
 
@@ -62,5 +61,3 @@ protected:
     AABB mHitbox;
     size_t mWorldID;
 };
-
-#endif // OBJECT_H_

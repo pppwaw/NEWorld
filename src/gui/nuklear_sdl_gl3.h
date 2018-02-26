@@ -36,8 +36,8 @@ NK_API void                 nk_sdl_device_create(void);
  */
 #ifdef NK_SDL_GL3_IMPLEMENTATION
 
-#include "engine/maintenance/nwlogger.hpp"
-#include <string.h>
+#include "engine/maintenance/Logger.h"
+#include <cstring>
 #include <string>
 
 struct nk_sdl_device {

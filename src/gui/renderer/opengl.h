@@ -17,12 +17,8 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#ifndef OPENGL_H_
-#define OPENGL_H_
+#pragma once
 
-#include <engine/common.h>
 #include <GL/glew.h>
 
 using VertexBufferID = GLuint;
-
-#endif // !OPENGL_H_

@@ -1,5 +1,5 @@
 // 
-// NEWorld: client.cpp
+// nwcore: StringUtils.cpp
 // NEWorld: A Free Game with Similar Rules to Minecraft.
 // Copyright (C) 2015-2018 NEWorld Team
 // 
@@ -17,26 +17,27 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#include <iostream>
-#include <string>
-#include "engine/nwstdlib/Dylib.h"
-#include "engine/nwjson/JsonHelper.h"
-#include "engine/maintenance/Logger.h"
+#include <sstream>
+#include <algorithm>
+#include "StringUtils.h"
 
-typedef void NWAPICALL MainFunction(int, char**);
+std::vector<std::string> split(const std::string& s, char delim) {
+    std::vector<std::string> elems;
+    std::stringstream ss;
+    ss.str(s);
+    std::string item;
+    while (std::getline(ss, item, delim))
+        elems.push_back(item);
 
-#if defined(NEWORLD_TARGET_WINDOWS)
-constexpr const char* GUIDllName = "GUI.dll";
-#elif defined(NEWORLD_TARGET_MACOSX)
-    constexpr const char* GUIDllName = "libGUI.dylib";
-#elif defined(NEWORLD_TARGET_LINUX)
-    constexpr const char* GUIDllName = "libGUI.so";
-#endif
+    return elems;
+};
 
-int main(int argc, char** argv) {
-    getSettings();
-    Logger::addFileSink("./log/", "launcher");
-    const std::string file = argc == 1 ? GUIDllName : argv[1];
-    debugstream << "Load:" << file;
-    Library(file).get<MainFunction>("cmain")(argc, argv);
+void trim(std::string& s) {
+    if (s.empty())
+        return;
+
+    s.erase(0, s.find_first_not_of(" "));
+    s.erase(s.find_last_not_of(" ") + 1);
 }
+
+void strtolower(std::string& s) { transform(s.begin(), s.end(), s.begin(), tolower); }

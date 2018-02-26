@@ -19,10 +19,11 @@
 
 #pragma once
 
+#include "nwvector.h"
+
 #ifndef M_PI
 #define M_PI 3.141592653589793
 #endif // !M_PI
-
 
 template <typename T>
 class Mat4 {
