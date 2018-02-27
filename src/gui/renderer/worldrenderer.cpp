@@ -23,23 +23,23 @@
 #include <GL/glew.h>
 
 size_t WorldRenderer::render(const Vec3i& position) const {
-    // TODO: can be optimized by adding an array to store chunks need to be rendered
-    //       so that we can avoid calculate chebyshevDistance twice.
+    std::vector<std::pair<Vec3i, const ChunkRenderer*>> chunkPending;
+    chunkPending.reserve(512);
+
     Vec3i chunkpos = World::getChunkPos(position);
-    size_t renderedChunks = 0;
-    for (auto&& c : mChunkRenderers) {
+    for (auto& c : mChunkRenderers) {
         if (chunkpos.chebyshevDistance(c.first) <= mRenderDist) {
-            renderedChunks++;
             c.second.render(c.first);
+            chunkPending.emplace_back(c.first, &c.second);
         }
     }
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    for (auto&& c : mChunkRenderers) {
-        if (chunkpos.chebyshevDistance(c.first) <= mRenderDist) { c.second.renderTrans(c.first); }
+    for (auto& c : chunkPending) {
+        c.second->renderTrans(c.first);
     }
     glDisable(GL_BLEND);
-    return renderedChunks;
+    return chunkPending.size();
 }
 
 void WorldRenderer::registerTask(ChunkService& chunkService, Player& player) noexcept {

@@ -72,7 +72,7 @@ void RenderDetectorTask::task(const ChunkService& cs) {
                     std::make_unique<VBOGenerateTask>(*world, chunkPosition, std::move(crd),
                                                       mWorldRenderer.mChunkRenderers)
                 );
-                if (counter++ == 10) break;
+                if (counter++ == 3) break;
             }
         }
         else {
