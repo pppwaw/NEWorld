@@ -23,7 +23,7 @@
 #include <memory>
 #include "blockrenderer.h"
 #include "renderer.h"
-#include "engine/nwstdlib/nwconcepts.hpp"
+#include "Common/Utility.h"
 #include "sync_service/world/nwblock.h"
 #include "game/context/nwcontext.hpp"
 #include "sync_service/world/world.h"

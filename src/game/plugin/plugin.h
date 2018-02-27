@@ -21,8 +21,8 @@
 
 #include <string>
 #include <utility>
-#include "engine/nwstdlib/nwconcepts.hpp"
-#include "engine/nwstdlib/Dylib.h"
+#include "Common/Utility.h"
+#include "Common/Dylib.h"
 #include <api/nwapicore.hpp>
 
 // Single plugin

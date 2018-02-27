@@ -18,7 +18,7 @@
 // 
 
 #include <algorithm>
-#include "engine/nwmath/nwvector.h"
+#include "Common/Math/Vector.h"
 #include "nwblock.h"
 #include "nwchunk.h"
 #include "world.h"

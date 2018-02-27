@@ -20,7 +20,7 @@
 #pragma once
 #include "./../plugin/pluginmanager.h"
 #include "sync_service/world/nwblock.h"
-#include "engine/nwrpc/nwrpc.hpp"
+#include "Common/RPC/RPC.h"
 #include <argagg.hpp>
 
 struct GameContext {

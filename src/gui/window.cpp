@@ -18,7 +18,7 @@
 // 
 
 #include "window.h"
-#include "engine/maintenance/Debug.h"
+#include "Common/Debug.h"
 #include "renderer/renderer.h"
 
 void Window::pollEvents() {

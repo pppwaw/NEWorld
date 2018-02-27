@@ -21,7 +21,7 @@
 #include <thread>
 #include <vector>
 #include "sync_service/world/world.h"
-#include "engine/maintenance/Logger.h"
+#include "Common/Logger.h"
 
 class ChunkService;
 

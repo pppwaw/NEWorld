@@ -28,13 +28,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\client\player.cpp" />
-    <ClCompile Include="..\..\..\src\engine\maintenance\Debug.cpp" />
-    <ClCompile Include="..\..\..\src\engine\maintenance\Logger.cpp" />
-    <ClCompile Include="..\..\..\src\engine\nweventbus.cpp" />
-    <ClCompile Include="..\..\..\src\engine\nwjson\JsonHelper.cpp" />
-    <ClCompile Include="..\..\..\src\engine\nwstdlib\Console.cpp" />
-    <ClCompile Include="..\..\..\src\engine\nwstdlib\Dylib.cpp" />
-    <ClCompile Include="..\..\..\src\engine\nwstdlib\StringUtils.cpp" />
+    <ClCompile Include="..\..\..\src\Common\Console.cpp" />
+    <ClCompile Include="..\..\..\src\Common\Debug.cpp" />
+    <ClCompile Include="..\..\..\src\Common\Dylib.cpp" />
+    <ClCompile Include="..\..\..\src\Common\Json\JsonHelper.cpp" />
+    <ClCompile Include="..\..\..\src\Common\Logger.cpp" />
+    <ClCompile Include="..\..\..\src\Common\EventBus.cpp" />
+    <ClCompile Include="..\..\..\src\Common\StringUtils.cpp" />
     <ClCompile Include="..\..\..\src\game\context\nwcontext.cpp" />
     <ClCompile Include="..\..\..\src\game\plugin\plugin.cpp" />
     <ClCompile Include="..\..\..\src\game\plugin\pluginmanager.cpp" />
@@ -49,24 +49,24 @@
   <ItemGroup>
     <ClInclude Include="..\..\..\src\api\nwapicore.hpp" />
     <ClInclude Include="..\..\..\src\client\player.h" />
-    <ClInclude Include="..\..\..\src\engine\maintenance\Debug.h" />
-    <ClInclude Include="..\..\..\src\engine\maintenance\Exception.h" />
-    <ClInclude Include="..\..\..\src\engine\maintenance\Logger.h" />
-    <ClInclude Include="..\..\..\src\engine\nweventbus.hpp" />
-    <ClInclude Include="..\..\..\src\engine\nwjson\json.hpp" />
-    <ClInclude Include="..\..\..\src\engine\nwjson\JsonHelper.h" />
-    <ClInclude Include="..\..\..\src\engine\nwmath\nwmatrix.h" />
-    <ClInclude Include="..\..\..\src\engine\nwmath\nwvector.h" />
-    <ClInclude Include="..\..\..\src\engine\nwphysics\AABB.h" />
-    <ClInclude Include="..\..\..\src\engine\nwrpc\nwrpc.hpp" />
-    <ClInclude Include="..\..\..\src\engine\nwstdlib\Dylib.h" />
-    <ClInclude Include="..\..\..\src\engine\nwstdlib\nwconcepts.hpp" />
-    <ClInclude Include="..\..\..\src\engine\nwstdlib\Console.h" />
-    <ClInclude Include="..\..\..\src\engine\nwstdlib\Filesystem.h" />
-    <ClInclude Include="..\..\..\src\engine\nwstdlib\OrderedList.h" />
-    <ClInclude Include="..\..\..\src\engine\nwstdlib\RateController.h" />
-    <ClInclude Include="..\..\..\src\engine\nwstdlib\nwstddef.h" />
-    <ClInclude Include="..\..\..\src\engine\nwstdlib\StringUtils.h" />
+    <ClInclude Include="..\..\..\src\Common\Console.h" />
+    <ClInclude Include="..\..\..\src\Common\Debug.h" />
+    <ClInclude Include="..\..\..\src\Common\Dylib.h" />
+    <ClInclude Include="..\..\..\src\Common\Exception.h" />
+    <ClInclude Include="..\..\..\src\Common\Filesystem.h" />
+    <ClInclude Include="..\..\..\src\Common\Json\JsonHelper.h" />
+    <ClInclude Include="..\..\..\src\Common\Json\nlohmann.h" />
+    <ClInclude Include="..\..\..\src\Common\Logger.h" />
+    <ClInclude Include="..\..\..\src\Common\Math\Matrix.h" />
+    <ClInclude Include="..\..\..\src\Common\Math\Vector.h" />
+    <ClInclude Include="..\..\..\src\Common\Utility.h" />
+    <ClInclude Include="..\..\..\src\Common\EventBus.h" />
+    <ClInclude Include="..\..\..\src\Common\Config.h" />
+    <ClInclude Include="..\..\..\src\Common\OrderedList.h" />
+    <ClInclude Include="..\..\..\src\Common\Physics\AABB.h" />
+    <ClInclude Include="..\..\..\src\Common\RateController.h" />
+    <ClInclude Include="..\..\..\src\Common\RPC\RPC.h" />
+    <ClInclude Include="..\..\..\src\Common\StringUtils.h" />
     <ClInclude Include="..\..\..\src\game\context\nwcontext.hpp" />
     <ClInclude Include="..\..\..\src\game\plugin\plugin.h" />
     <ClInclude Include="..\..\..\src\game\plugin\pluginmanager.h" />
@@ -206,7 +206,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>NWCOREEXPORTS;NWAPIEXPORTS;NOMINMAX;CoreEXPORTS;NWCompartmentLoggerPrefix="Core";WIN32;_DEBUG;_WINDOWS;_USRDLL;Core_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NWAPIEXPORTS;NOMINMAX;NWCOREEXPORTS;NWCompartmentLoggerPrefix="Core";WIN32;_DEBUG;_WINDOWS;_USRDLL;Core_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -226,7 +226,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <PreprocessorDefinitions>NWCOREEXPORTS;NWAPIEXPORTS;NOMINMAX;CoreEXPORTS;NWCompartmentLoggerPrefix="Core";_DEBUG;_WINDOWS;_USRDLL;Core_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NWAPIEXPORTS;NOMINMAX;NWCOREEXPORTS;NWCompartmentLoggerPrefix="Core";_DEBUG;_WINDOWS;_USRDLL;Core_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <LanguageStandard>stdcpplatest</LanguageStandard>
@@ -248,7 +248,7 @@
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NWCOREEXPORTS;NWAPIEXPORTS;NOMINMAX;CoreEXPORTS;NWCompartmentLoggerPrefix="Core";WIN32;NDEBUG;_WINDOWS;_USRDLL;Core_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NWAPIEXPORTS;NOMINMAX;NWCOREEXPORTS;NWCompartmentLoggerPrefix="Core";WIN32;NDEBUG;_WINDOWS;_USRDLL;Core_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
@@ -276,7 +276,7 @@
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NWCOREEXPORTS;NWAPIEXPORTS;NOMINMAX;CoreEXPORTS;NWCompartmentLoggerPrefix="Core";WIN32;NDEBUG;_WINDOWS;_USRDLL;Core_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NWAPIEXPORTS;NOMINMAX;NWCOREEXPORTS;NWCompartmentLoggerPrefix="Core";WIN32;NDEBUG;_WINDOWS;_USRDLL;Core_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <EnableFiberSafeOptimizations>true</EnableFiberSafeOptimizations>
@@ -301,7 +301,7 @@
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>NWCOREEXPORTS;NWAPIEXPORTS;NOMINMAX;CoreEXPORTS;NWCompartmentLoggerPrefix="Core";NDEBUG;_WINDOWS;_USRDLL;Core_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NWAPIEXPORTS;NOMINMAX;NWCOREEXPORTS;NWCompartmentLoggerPrefix="Core";NDEBUG;_WINDOWS;_USRDLL;Core_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <DisableSpecificWarnings>4251</DisableSpecificWarnings>
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>

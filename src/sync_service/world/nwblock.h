@@ -22,7 +22,7 @@
 #include <vector>
 #include <string>
 #include <cstdint>
-#include "engine/nwstdlib/nwstddef.h"
+#include "Common/Config.h"
 
 class BlockData {
 public:

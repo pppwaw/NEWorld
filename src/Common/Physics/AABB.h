@@ -20,7 +20,7 @@
 #pragma once
 
 #include <algorithm>
-#include "engine/nwmath/nwvector.h"
+#include "Common/Math/Vector.h"
 
 // Axis aligned bounding box
 class AABB {

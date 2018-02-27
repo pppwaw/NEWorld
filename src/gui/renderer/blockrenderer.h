@@ -22,7 +22,7 @@
 #include <vector>
 #include <memory>
 #include "texture.h"
-#include "engine/nwmath/nwvector.h"
+#include "Common/Math/Vector.h"
 
 class VertexArray;
 

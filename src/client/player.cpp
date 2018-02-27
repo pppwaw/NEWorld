@@ -18,8 +18,8 @@
 // 
 
 #include "player.h"
-#include "engine/nwmath/nwmatrix.h"
-#include "engine/nwjson/JsonHelper.h"
+#include "Common/Math/Matrix.h"
+#include "Common/Json/JsonHelper.h"
 
 class PlayerUpdateTask : public ReadOnlyTask {
 public:

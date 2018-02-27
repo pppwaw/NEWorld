@@ -23,29 +23,23 @@
     <Filter Include="Source\Client">
       <UniqueIdentifier>{0b4c2b5f-a491-4fe7-8d4e-a5626f165bcd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Engine">
-      <UniqueIdentifier>{349061fe-9dc1-4643-9984-8734621a544f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Engine\maintenance">
-      <UniqueIdentifier>{2b2bd3f2-d30a-4d9e-8770-2cb4298ccefc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Engine\nwjson">
-      <UniqueIdentifier>{12a09c82-1c86-44f6-845c-fe4b84b20a14}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Engine\nwmath">
-      <UniqueIdentifier>{d2af2014-d74f-4399-b95e-6e25b61bcfe3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Engine\nwphysics">
-      <UniqueIdentifier>{79c88b64-1d9c-4b80-8330-37a008eb368a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source\Engine\nwstdlib">
-      <UniqueIdentifier>{71d5a55c-eb8f-4006-84a5-3e8dfb007730}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\Game\plugin">
       <UniqueIdentifier>{865196c1-df40-4f7a-a4fc-7c8c6abcf8a1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Engine\nwrpc">
-      <UniqueIdentifier>{1b5939b9-e484-4bf1-b44d-d454133ecd7c}</UniqueIdentifier>
+    <Filter Include="Source\Common">
+      <UniqueIdentifier>{349061fe-9dc1-4643-9984-8734621a544f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Common\Json">
+      <UniqueIdentifier>{a13831f9-ff74-4f88-8dfe-31e97d307491}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Common\Math">
+      <UniqueIdentifier>{db968c7f-f8f0-47f4-b82a-29eccbda2d9e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Common\Physics">
+      <UniqueIdentifier>{1c67bb7e-a840-4415-8fa7-d76c23379a2a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\Common\RPC">
+      <UniqueIdentifier>{a5f5f4f7-8160-4db1-9f2e-4eaf912a1cd0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -82,44 +76,29 @@
     <ClCompile Include="..\..\..\src\sync_service\taskdispatcher.cpp">
       <Filter>Source\Sync Service</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\engine\nweventbus.cpp">
-      <Filter>Source\Engine</Filter>
+    <ClCompile Include="..\..\..\src\Common\StringUtils.cpp">
+      <Filter>Source\Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\engine\nwstdlib\Console.cpp">
-      <Filter>Source\Engine\nwstdlib</Filter>
+    <ClCompile Include="..\..\..\src\Common\Console.cpp">
+      <Filter>Source\Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\engine\nwstdlib\Dylib.cpp">
-      <Filter>Source\Engine\nwstdlib</Filter>
+    <ClCompile Include="..\..\..\src\Common\Debug.cpp">
+      <Filter>Source\Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\engine\nwjson\JsonHelper.cpp">
-      <Filter>Source\Engine\nwjson</Filter>
+    <ClCompile Include="..\..\..\src\Common\Dylib.cpp">
+      <Filter>Source\Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\engine\maintenance\Debug.cpp">
-      <Filter>Source\Engine\maintenance</Filter>
+    <ClCompile Include="..\..\..\src\Common\Logger.cpp">
+      <Filter>Source\Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\engine\maintenance\Logger.cpp">
-      <Filter>Source\Engine\maintenance</Filter>
+    <ClCompile Include="..\..\..\src\Common\Json\JsonHelper.cpp">
+      <Filter>Source\Common\Json</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\engine\nwstdlib\StringUtils.cpp">
-      <Filter>Source\Engine\nwstdlib</Filter>
+    <ClCompile Include="..\..\..\src\Common\EventBus.cpp">
+      <Filter>Source\Common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\src\engine\nwjson\json.hpp">
-      <Filter>Source\Engine\nwjson</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\nwmath\nwmatrix.h">
-      <Filter>Source\Engine\nwmath</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\nwmath\nwvector.h">
-      <Filter>Source\Engine\nwmath</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\nwstdlib\nwstddef.h">
-      <Filter>Source\Engine\nwstdlib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\nwstdlib\nwconcepts.hpp">
-      <Filter>Source\Engine\nwstdlib</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\game\context\nwcontext.hpp">
       <Filter>Source\Game\context</Filter>
     </ClInclude>
@@ -156,50 +135,65 @@
     <ClInclude Include="..\..\..\src\api\nwapicore.hpp">
       <Filter>Source</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\nwrpc\nwrpc.hpp">
-      <Filter>Source\Engine\nwrpc</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\sync_service\chunkservice.hpp">
       <Filter>Source\Sync Service</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\sync_service\taskdispatcher.hpp">
       <Filter>Source\Sync Service</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\nweventbus.hpp">
-      <Filter>Source\Engine</Filter>
+    <ClInclude Include="..\..\..\src\Common\OrderedList.h">
+      <Filter>Source\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\nwstdlib\RateController.h">
-      <Filter>Source\Engine\nwstdlib</Filter>
+    <ClInclude Include="..\..\..\src\Common\RateController.h">
+      <Filter>Source\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\nwstdlib\Filesystem.h">
-      <Filter>Source\Engine\nwstdlib</Filter>
+    <ClInclude Include="..\..\..\src\Common\StringUtils.h">
+      <Filter>Source\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\nwstdlib\Console.h">
-      <Filter>Source\Engine\nwstdlib</Filter>
+    <ClInclude Include="..\..\..\src\Common\Console.h">
+      <Filter>Source\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\nwstdlib\Dylib.h">
-      <Filter>Source\Engine\nwstdlib</Filter>
+    <ClInclude Include="..\..\..\src\Common\Debug.h">
+      <Filter>Source\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\nwstdlib\OrderedList.h">
-      <Filter>Source\Engine\nwstdlib</Filter>
+    <ClInclude Include="..\..\..\src\Common\Dylib.h">
+      <Filter>Source\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\nwjson\JsonHelper.h">
-      <Filter>Source\Engine\nwjson</Filter>
+    <ClInclude Include="..\..\..\src\Common\Exception.h">
+      <Filter>Source\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\maintenance\Debug.h">
-      <Filter>Source\Engine\maintenance</Filter>
+    <ClInclude Include="..\..\..\src\Common\Filesystem.h">
+      <Filter>Source\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\nwphysics\AABB.h">
-      <Filter>Source\Engine\nwphysics</Filter>
+    <ClInclude Include="..\..\..\src\Common\Logger.h">
+      <Filter>Source\Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\maintenance\Logger.h">
-      <Filter>Source\Engine\maintenance</Filter>
+    <ClInclude Include="..\..\..\src\Common\Json\JsonHelper.h">
+      <Filter>Source\Common\Json</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\maintenance\Exception.h">
-      <Filter>Source\Engine\maintenance</Filter>
+    <ClInclude Include="..\..\..\src\Common\Physics\AABB.h">
+      <Filter>Source\Common\Physics</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\engine\nwstdlib\StringUtils.h">
-      <Filter>Source\Engine\nwstdlib</Filter>
+    <ClInclude Include="..\..\..\src\Common\Config.h">
+      <Filter>Source\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Common\RPC\RPC.h">
+      <Filter>Source\Common\RPC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Common\Json\nlohmann.h">
+      <Filter>Source\Common\Json</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Common\EventBus.h">
+      <Filter>Source\Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Common\Math\Matrix.h">
+      <Filter>Source\Common\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Common\Math\Vector.h">
+      <Filter>Source\Common\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\Common\Utility.h">
+      <Filter>Source\Common</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

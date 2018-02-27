@@ -18,5 +18,5 @@
 // 
 
 #pragma once
-#include "engine/nwstdlib/nwstddef.h"
+#include "Common/Config.h"
 int NWAPIEXPORT main(int argc, char* argv[]);

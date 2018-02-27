@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "../nwstdlib/nwstddef.h"
+#include "Config.h"
 #include <sstream>
 #include <mutex>
 #include <vector>

@@ -22,9 +22,9 @@
 #include <type_traits>
 #include <unordered_map>
 #include <vector>
-#include "engine/maintenance/Debug.h"
+#include "Common/Debug.h"
 #include <api/nwapi_internal.hpp>
-#include "maintenance/Logger.h"
+#include "Logger.h"
 
 class NWAPI EventBus {
 public:

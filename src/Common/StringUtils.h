@@ -20,7 +20,7 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "nwstddef.h"
+#include "Config.h"
 
 #define FUNCTION_ALIAS(A,B)\
     template <typename... Args> auto B(Args&&... args) -> decltype(A(std::forward<Args>(args)...)){return A(std::forward<Args>(args)...);}

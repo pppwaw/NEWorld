@@ -19,8 +19,8 @@
 
 #include "world.h"
 #include "gui/gamescene.h"
-#include "engine/nwjson/JsonHelper.h"
-#include "engine/nwstdlib/OrderedList.h"
+#include "Common/Json/JsonHelper.h"
+#include "Common/OrderedList.h"
 
 constexpr int MaxChunkLoadCount = 64, MaxChunkUnloadCount = 64;
 

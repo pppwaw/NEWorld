@@ -20,7 +20,7 @@
 #pragma once
 
 #include <ostream>
-#include "nwstddef.h"
+#include "Config.h"
 
 namespace LColorFunc
 {

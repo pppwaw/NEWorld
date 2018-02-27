@@ -18,7 +18,6 @@
 // 
 
 #include "Console.h"
-#include "engine/nwstdlib/nwstddef.h"
 
 #ifdef NEWORLD_TARGET_WINDOWS
 

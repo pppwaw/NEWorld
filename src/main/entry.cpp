@@ -19,7 +19,7 @@
 
 #include "worldgen.h"
 #include "api/nwapigui.hpp"
-#include "engine/nweventbus.hpp"
+#include "Common/EventBus.h"
 
 int32_t GrassID = 0, RockID, DirtID, SandID, WaterID;
 

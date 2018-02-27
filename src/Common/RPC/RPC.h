@@ -1,5 +1,5 @@
 // 
-// nwcore: nwrpc.hpp
+// nwcore: RPC.h
 // NEWorld: A Free Game with Similar Rules to Minecraft.
 // Copyright (C) 2015-2018 NEWorld Team
 // 
@@ -20,8 +20,8 @@
 #include <iostream>
 #include <rpc/client.h>
 #include <rpc/server.h>
-#include "engine/maintenance/Debug.h"
-#include "engine/maintenance/Logger.h"
+#include "Common/Debug.h"
+#include "Common/Logger.h"
 
 #define FUNCTION_RENAME(oldname, alias)\
     template<typename... Args>\

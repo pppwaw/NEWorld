@@ -1,5 +1,5 @@
 // 
-// nwcore: JsonHelper.h
+// nwcore: common.h
 // NEWorld: A Free Game with Similar Rules to Minecraft.
 // Copyright (C) 2015-2018 NEWorld Team
 // 
@@ -17,28 +17,5 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#pragma once
-
-#include "json.hpp"
-#include "engine/nwstdlib/nwstddef.h"
-
-using Json = nlohmann::json;
-
-const std::string SettingsFilename = "./settings";
-
-NWCOREAPI Json readJsonFromFile(std::string filename);
-
-NWCOREAPI void writeJsonToFile(std::string filename, Json& json);
-
-NWCOREAPI Json& getSettings();
-
-// get a json value. If it does not exist, return the default value and write it to the json
-template <class T>
-T getJsonValue(Json& json, T defaultValue = T()) {
-    if (json.is_null()) {
-        json = defaultValue;
-        return defaultValue;
-    }
-    return json;
-}
-
+#include "EventBus.h"
+NWCOREAPI EventBus eventBus;

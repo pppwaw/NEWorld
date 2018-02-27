@@ -19,9 +19,8 @@
 
 #pragma once
 
-#include "engine/nwstdlib/nwstddef.h"
+#include "Config.h"
 
-#define NEWORLD_DEBUG
 // Assertion uses C++ exception
 NWCOREAPI void AssertFunc(bool expr, const char* file, const char* fname, int line);
 

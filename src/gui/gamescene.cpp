@@ -22,8 +22,8 @@
 #include "gamescene.h"
 #include "window.h"
 #include "renderer/blockrenderer.h"
-#include "engine/nwjson/JsonHelper.h"
-#include "engine/maintenance/Logger.h"
+#include "Common/Json/JsonHelper.h"
+#include "Common/Logger.h"
 
 class PutBlockTask : public ReadWriteTask {
 public:

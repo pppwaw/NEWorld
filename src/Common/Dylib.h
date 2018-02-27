@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "nwstddef.h"
+#include "Config.h"
 #include <string>
 
 class NWCOREAPI Library {

@@ -1,5 +1,5 @@
 // 
-// nwcore: nwmatrix.h
+// nwcore: Matrix.h
 // NEWorld: A Free Game with Similar Rules to Minecraft.
 // Copyright (C) 2015-2018 NEWorld Team
 // 
@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "nwvector.h"
+#include "Vector.h"
 
 #ifndef M_PI
 #define M_PI 3.141592653589793

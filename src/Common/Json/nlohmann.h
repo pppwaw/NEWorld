@@ -1,5 +1,5 @@
 // 
-// nwcore: json.hpp
+// nwcore: Nlohmann.h
 // NEWorld: A Free Game with Similar Rules to Minecraft.
 // Copyright (C) 2015-2018 NEWorld Team
 // 
@@ -17,8 +17,7 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#ifndef NLOHMANN_JSON_HPP
-#define NLOHMANN_JSON_HPP
+#pragma once
 
 #define NLOHMANN_JSON_VERSION_MAJOR 3
 #define NLOHMANN_JSON_VERSION_MINOR 1
@@ -105,7 +104,7 @@ namespace nlohmann {
 
 
 // This file contains all internal macro definitions
-// You MUST include macro_unscope.hpp at the end of json.hpp to undef all of them
+// You MUST include macro_unscope.hpp at the end of Nlohmann.h to undef all of them
 
 // exclude unsupported compilers
 #if defined(__clang__)
@@ -15381,6 +15380,3 @@ inline nlohmann::json::json_pointer operator "" _json_pointer(const char* s, std
 #undef NLOHMANN_BASIC_JSON_TPL_DECLARATION
 #undef NLOHMANN_BASIC_JSON_TPL
 #undef NLOHMANN_JSON_HAS_HELPER
-
-
-#endif

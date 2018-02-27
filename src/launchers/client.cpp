@@ -19,9 +19,9 @@
 
 #include <iostream>
 #include <string>
-#include "engine/nwstdlib/Dylib.h"
-#include "engine/nwjson/JsonHelper.h"
-#include "engine/maintenance/Logger.h"
+#include "Common/Dylib.h"
+#include "Common/Json/JsonHelper.h"
+#include "Common/Logger.h"
 
 typedef void NWAPICALL MainFunction(int, char**);
 

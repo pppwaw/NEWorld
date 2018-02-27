@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "engine/nwstdlib/RateController.h"
+#include "Common/RateController.h"
 #include "sync_service/world/world.h"
 #include "game/plugin/pluginmanager.h"
 

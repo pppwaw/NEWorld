@@ -22,7 +22,7 @@
 #include <functional>
 #include "nuklear_helper.h"
 #include <string>
-#include "engine/nwmath/nwvector.h"
+#include "Common/Math/Vector.h"
 
 // widget base class
 class Widget {

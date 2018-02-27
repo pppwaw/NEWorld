@@ -27,7 +27,7 @@
 #include <cstdlib>
 #include <algorithm>
 #include "nwchunk.h"
-#include "engine/nwphysics/AABB.h"
+#include "Common/Physics/AABB.h"
 
 class Player;
 class ChunkService;

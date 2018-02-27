@@ -18,9 +18,9 @@
 // 
 
 #include "pluginmanager.h"
-#include "engine/nwstdlib/StringUtils.h"
-#include "engine/nwstdlib/Filesystem.h"
-#include "engine/maintenance/Logger.h"
+#include "Common/StringUtils.h"
+#include "Common/Filesystem.h"
+#include "Common/Logger.h"
 
 PluginManager::PluginManager() {
     infostream << "Start to load plugins...";

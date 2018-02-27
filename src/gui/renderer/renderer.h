@@ -20,9 +20,9 @@
 #pragma once
 
 #include "opengl.h"
-#include "engine/nwmath/nwmatrix.h"
-#include "engine/maintenance/Logger.h"
-#include "engine/nwmath/nwvector.h"
+#include "Common/Math/Matrix.h"
+#include "Common/Logger.h"
+#include "Common/Math/Vector.h"
 
 class Renderer {
 public:
