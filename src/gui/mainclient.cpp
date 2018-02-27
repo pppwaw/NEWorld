@@ -20,6 +20,7 @@
 #include "neworld.h"
 #include <argagg.hpp>
 #include "game/context/nwcontext.hpp"
+#include <iostream>
 
 extern "C" NWAPIEXPORT int NWAPICALL cmain(int, char**);
 

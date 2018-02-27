@@ -40,4 +40,4 @@ void trim(std::string& s) {
     s.erase(s.find_last_not_of(" ") + 1);
 }
 
-void strtolower(std::string& s) { transform(s.begin(), s.end(), s.begin(), tolower); }
+void strToLower(std::string& s) { transform(s.begin(), s.end(), s.begin(), tolower); }

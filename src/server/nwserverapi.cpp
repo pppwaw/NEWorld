@@ -18,7 +18,7 @@
 // 
 #include "game/context/nwcontext.hpp"
 #include "sync_service/world/nwblock.h"
-#include "api/nwapicore.hpp"
+#include "api/ApiCore.h"
 #include "sync_service/world/nwchunk.h"
 
 namespace PluginAPI {

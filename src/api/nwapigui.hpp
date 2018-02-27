@@ -20,7 +20,7 @@
 #ifndef NWAPIGUI_H_
 #define NWAPIGUI_H_
 
-#include "nwapicore.hpp"
+#include "ApiCore.h"
 
 extern "C" {
 

@@ -23,7 +23,7 @@
 #include <utility>
 #include "Common/Utility.h"
 #include "Common/Dylib.h"
-#include <api/nwapicore.hpp>
+#include <api/ApiCore.h>
 
 // Single plugin
 class Plugin : public NonCopyable {

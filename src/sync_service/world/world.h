@@ -24,7 +24,6 @@
 #include <memory>
 #include <utility>
 #include <vector>
-#include <cstdlib>
 #include <algorithm>
 #include "nwchunk.h"
 #include "Common/Physics/AABB.h"

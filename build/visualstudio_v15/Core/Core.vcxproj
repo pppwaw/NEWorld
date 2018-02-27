@@ -47,7 +47,7 @@
     <ClCompile Include="..\..\..\src\sync_service\world\world.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\src\api\nwapicore.hpp" />
+    <ClInclude Include="..\..\..\src\api\ApiCore.h" />
     <ClInclude Include="..\..\..\src\client\player.h" />
     <ClInclude Include="..\..\..\src\Common\Console.h" />
     <ClInclude Include="..\..\..\src\Common\Debug.h" />

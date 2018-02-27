@@ -29,7 +29,7 @@ PluginManager::PluginManager() {
     if (filesystem::exists(path)) {
         for (auto&& file : filesystem::directory_iterator(path)) {
             auto suffix = file.path().extension().string();
-            strtolower(suffix);
+            strToLower(suffix);
             if (suffix == LibSuffix) {
                 debugstream << "Loading:" << file.path().string();
                 if (loadPlugin(file.path().string()))

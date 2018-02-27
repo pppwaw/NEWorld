@@ -17,7 +17,6 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#include <algorithm>
 #include "Common/Math/Vector.h"
 #include "nwblock.h"
 #include "nwchunk.h"

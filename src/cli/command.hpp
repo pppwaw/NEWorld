@@ -102,7 +102,7 @@ public:
 
 private:
     CommandExecuteStat handleCommand(Command cmd) {
-        strtolower(cmd.name);
+        strToLower(cmd.name);
         auto result = mCommandMap.find(cmd.name);
         if (result != mCommandMap.end())
             return (*result).second.second(cmd);

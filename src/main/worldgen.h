@@ -20,8 +20,7 @@
 #ifndef WORLDGEN_H_
 #define WORLDGEN_H_
 
-#include "api/nwapicore.hpp"
-#include <cmath>
+#include "api/ApiCore.h"
 
 // Perlin Noise 2D
 namespace WorldGen {

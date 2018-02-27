@@ -19,10 +19,9 @@
 
 #pragma once
 #include <string>
+#include <vector>
 #include <type_traits>
 #include <unordered_map>
-#include <vector>
-#include "Common/Debug.h"
 #include <api/nwapi_internal.hpp>
 #include "Logger.h"
 

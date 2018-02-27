@@ -19,7 +19,6 @@
 
 #include "taskdispatcher.hpp"
 #include "chunkservice.hpp"
-#include <chrono>
 #include "Common/RateController.h"
 
 void TaskDispatcher::worker(size_t threadID) {

@@ -18,7 +18,6 @@
 // 
 
 #include <memory>
-#include <string>
 #include "renderer/blockrenderer.h"
 #include <api/nwapigui.hpp>
 #include <Common/EventBus.h>

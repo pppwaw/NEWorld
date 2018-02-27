@@ -1,5 +1,5 @@
 // 
-// nwcore: nwapicore.hpp
+// nwcore: ApiCore.h
 // NEWorld: A Free Game with Similar Rules to Minecraft.
 // Copyright (C) 2015-2018 NEWorld Team
 // 
@@ -17,8 +17,7 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#ifndef NWAPICORE_H_
-#define NWAPICORE_H_
+#pragma once
 
 #include "nwapi_internal.hpp"
 
@@ -80,5 +79,3 @@ extern "C" {
     NWAPI size_t NWAPICALL nwRegisterChunkGenerator(NWchunkgenerator* const generator);
 
 }
-
-#endif // !NWAPICORE_H_

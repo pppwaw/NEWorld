@@ -22,7 +22,6 @@
 #include <functional>
 #include "nuklear_helper.h"
 #include <string>
-#include "Common/Math/Vector.h"
 
 // widget base class
 class Widget {

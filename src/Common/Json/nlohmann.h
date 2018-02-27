@@ -220,7 +220,6 @@ contains a `mapped_type`, whereas `std::vector` fails the test.
 // #include <nlohmann/detail/meta.hpp>
 
 
-#include <ciso646> // not
 #include <cstddef> // size_t
 #include <limits> // numeric_limits
 #include <type_traits> // conditional, enable_if, false_type, integral_constant, is_constructible, is_integral, is_same, remove_cv, remove_reference, true_type
@@ -795,7 +794,6 @@ namespace nlohmann {
 
 
 #include <array> // array
-#include <ciso646> // and
 #include <cstddef> // size_t
 #include <cstdint> // uint8_t
 
@@ -879,7 +877,6 @@ namespace nlohmann {
 
 #include <algorithm> // transform
 #include <array> // array
-#include <ciso646> // and, not
 #include <forward_list> // forward_list
 #include <iterator> // inserter, front_inserter, end
 #include <string> // string
@@ -1149,7 +1146,6 @@ namespace nlohmann {
 // #include <nlohmann/detail/conversions/to_json.hpp>
 
 
-#include <ciso646> // or, and, not
 #include <iterator> // begin, end
 #include <tuple> // tuple, get
 #include <type_traits> // is_same, is_constructible, is_floating_point, is_enum, underlying_type
@@ -3402,7 +3398,6 @@ namespace nlohmann {
 // #include <nlohmann/detail/iterators/iter_impl.hpp>
 
 
-#include <ciso646> // not
 #include <iterator> // iterator, random_access_iterator_tag, bidirectional_iterator_tag, advance, next
 #include <type_traits> // conditional, is_const, remove_const
 
@@ -6210,7 +6205,6 @@ namespace nlohmann {
 #include <algorithm> // reverse, remove, fill, find, none_of
 #include <array> // array
 #include <cassert> // assert
-#include <ciso646> // and, or
 #include <clocale> // localeconv, lconv
 #include <cmath> // labs, isfinite, isnan, signbit
 #include <cstddef> // size_t, ptrdiff_t
@@ -6229,7 +6223,6 @@ namespace nlohmann {
 
 
 #include <cassert> // assert
-#include <ciso646> // or, and, not
 #include <cmath>   // signbit, isfinite
 #include <cstdint> // intN_t, uintN_t
 #include <cstring> // memcpy, memmove

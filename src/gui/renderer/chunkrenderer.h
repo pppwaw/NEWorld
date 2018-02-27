@@ -19,8 +19,6 @@
 
 #pragma once
 
-#include <atomic>
-#include <memory>
 #include "blockrenderer.h"
 #include "renderer.h"
 #include "Common/Utility.h"

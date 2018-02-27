@@ -17,7 +17,6 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#include <iostream>
 #include <rpc/client.h>
 #include <rpc/server.h>
 #include "Common/Debug.h"
