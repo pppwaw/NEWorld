@@ -34,7 +34,13 @@ public:
         catch (std::out_of_range&) {
             return; // chunk is unloaded
         }
-        mChunkRenderers.insert(std::make_pair(mPosition, ChunkRenderer(mChunkRenderData)));
+        auto it = mChunkRenderers.find(mPosition);
+        if (it != mChunkRenderers.end()) {
+            it->second = ChunkRenderer(mChunkRenderData);
+        }
+        else {
+            mChunkRenderers.insert({ mPosition, ChunkRenderer(mChunkRenderData) });
+        }
     }
 
 private:

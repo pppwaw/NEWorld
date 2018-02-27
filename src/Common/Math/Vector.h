@@ -177,12 +177,7 @@ public:
     T manhattanDistance(const Vec3& rhs) const noexcept { return abs(x - rhs.x) + abs(y - rhs.y) + abs(z - rhs.z); }
 
     // Normalize vector
-    void normalize() noexcept {
-        double l = length();
-        x /= l;
-        y /= l;
-        z /= l;
-    }
+    Vec3 normalize() { return (*this) / length(); }
 
     bool operator<(const Vec3& rhs) const noexcept {
         if (x != rhs.x)

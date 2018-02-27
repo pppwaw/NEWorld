@@ -37,7 +37,7 @@ private:
 void Player::move(const World& world) {
     //mSpeed.normalize();
     //m.speed *= PlayerSpeed;
-    mPositionDelta = Mat4d::rotation(mRotation.y, Vec3d(0.0, 1.0, 0.0)).transformVec3(mSpeed);
+    mPositionDelta = Mat4d::rotation(mRotation.y, Vec3d(0.0, 1.0, 0.0)).transform(mSpeed, 0.0).first;
     Vec3d originalDelta = mPositionDelta;
     std::vector<AABB> hitboxes = world.getHitboxes(getHitbox().expand(mPositionDelta));
 

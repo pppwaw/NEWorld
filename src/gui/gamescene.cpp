@@ -90,13 +90,19 @@ public:
             trans *= Mat4f::rotation(float(rotation.y), Vec3f(0.0f, 1.0f, 0.0f));
             trans *= Mat4f::rotation(float(rotation.x), Vec3f(1.0f, 0.0f, 0.0f));
             trans *= Mat4f::rotation(float(rotation.z), Vec3f(0.0f, 0.0f, 1.0f));
-            Vec3d dir = trans.transformVec3(Vec3f(0.0f, 0.0f, -1.0f));
+            Vec3d dir = trans.transform(Vec3f(0.0f, 0.0f, -1.0f), 0.0f).first.normalize();
+
             for (double i = 0.0; i < SelectDistance; i += 1.0 / SelectPrecision) {
-                Vec3d pos = rotation + dir * i;
+                Vec3d pos = position + dir * i;
                 Vec3i blockPos = Vec3i(int(std::floor(pos.x)), int(std::floor(pos.y)), int(std::floor(pos.z)));
-                if (world->getBlock(blockPos).getID() != 0) {
-                    chunkService.getTaskDispatcher().addReadWriteTask(
-                        std::make_unique<PutBlockTask>(mPlayer.getWorldID(), blockPos, 0));
+                try {
+                    if (world->getBlock(blockPos).getID() != 0) {
+                        chunkService.getTaskDispatcher().addReadWriteTask(
+                            std::make_unique<PutBlockTask>(mPlayer.getWorldID(), blockPos, 0));
+                        break;
+                    }
+                }
+                catch (std::out_of_range&) {
                     break;
                 }
             }
@@ -154,6 +160,7 @@ size_t GameScene::requestWorld()
         std::this_thread::yield();
     return 0;
 }
+
 GameScene::GameScene(const std::string& name, const Window& window):
     mWindow(window), mPlayer(0), mGUIWidgets(mWindow.getNkContext()) {
 
@@ -255,6 +262,8 @@ void GameScene::render() {
     glClearDepth(1.0f);
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
 
     double timeDelta = mUpdateScheduler.getDeltaTimeMs() / 1000.0 * UpdateFrequency;
     if (timeDelta > 1.0) timeDelta = 1.0;
