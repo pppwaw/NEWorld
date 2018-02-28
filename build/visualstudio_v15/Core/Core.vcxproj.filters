@@ -177,9 +177,6 @@
     <ClInclude Include="..\..\..\src\Common\RPC\RPC.h">
       <Filter>Source\Common\RPC</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\Common\Json\nlohmann.h">
-      <Filter>Source\Common\Json</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\Common\EventBus.h">
       <Filter>Source\Common</Filter>
     </ClInclude>

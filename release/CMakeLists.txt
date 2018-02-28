@@ -1,58 +1,44 @@
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.9)
 
 set(CMAKE_MACOSX_RPATH ON)
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(SOURCE_DIR ./../src)
-
-if(EXTRA_INCDIR)
-    include_directories(BEFORE ${EXTRA_INCDIR})
-endif()
-
-if(EXTRA_LIBDIR)
-    link_directories(${EXTRA_LIBDIR})
-endif()
 
 if(UNIX)
     link_libraries(dl)
 endif()
 
-if(MS_VC)
-    add_definitions(-DNOMINMAX)
-endif()
-
-if(CMAKE_SYSTEM_NAME MATCHES "Linux")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
-endif()
-
 list(APPEND CMAKE_MODULE_PATH ../cmake)
 
 project(NEWorld)
-add_definitions()
+
+# Set Build Output Path
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/SDK/Lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Product)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/Product)
 
 # For the whole project
 include_directories(${SOURCE_DIR})
+find_package(Threads REQUIRED)
 
-# Target: nwcore
-file(GLOB_RECURSE SRC_NWCORE ${SOURCE_DIR}/client/*.cpp
-                             ${SOURCE_DIR}/engine/*.cpp
+# Target: Core
+file(GLOB_RECURSE SRC_CORE ${SOURCE_DIR}/client/*.cpp
+                             ${SOURCE_DIR}/Common/*.cpp
                              ${SOURCE_DIR}/game/*.cpp
                              ${SOURCE_DIR}/server/*.cpp
                              ${SOURCE_DIR}/sync_service/*.cpp)
 
-add_library(nwcore SHARED ${SRC_NWCORE})
-
-SET_TARGET_PROPERTIES(nwcore PROPERTIES PREFIX "")
-SET_TARGET_PROPERTIES(nwcore PROPERTIES SUFFIX "")
-target_compile_definitions(nwcore
+add_library(Core SHARED ${SRC_CORE})
+target_compile_definitions(Core
     PRIVATE -DSDL_MAIN_HANDLED
     PRIVATE -DNWCOREEXPORTS
-    PRIVATE -DNWCompartmentLoggerPrefix="nwcore")
+    PRIVATE -DNWCompartmentLoggerPrefix="Core")
 
-# Link libraries for nwcore
+# Link libraries for Core
 find_package(rpclib REQUIRED)
-target_include_directories(nwcore PUBLIC ${RPCLIB_INCLUDE_DIR})
-target_link_libraries(nwcore pthread ${RPCLIB_LIBS})
-target_compile_definitions(nwcore PUBLIC ${RPCLIB_COMPILE_DEFINITIONS})
+target_include_directories(Core PUBLIC ${RPCLIB_INCLUDE_DIR})
+target_link_libraries(Core Threads::Threads ${RPCLIB_LIBS})
+target_compile_definitions(Core PUBLIC ${RPCLIB_COMPILE_DEFINITIONS})
 
 # Target: GUI
 file(GLOB_RECURSE SRC_GUI ${SOURCE_DIR}/gui/*.cpp)
@@ -60,27 +46,29 @@ add_library(GUI SHARED ${SRC_GUI})
 target_compile_definitions(GUI PRIVATE -DNWCompartmentLoggerPrefix="GUI")
 
 # Link libraries for GUI
-target_link_libraries(GUI nwcore pthread freetype SDL2 SDL2_image GLEW)
-if(CMAKE_SYSTEM_NAME MATCHES Darwin)
-    target_link_libraries(GUI "-framework OpenGL")
-endif()
+find_package(OpenGL REQUIRED)
+find_package(SDL2 REQUIRED)
+find_package(SDL2_image REQUIRED)
+target_include_directories(GUI ${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS})
+target_link_libraries(GUI Core Threads::Threads
+    ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${GLEW_LIBRARY} ${OPENGL_LIBRARIES})
 
 # Target: CLI
 file(GLOB_RECURSE SRC_CLI ${SOURCE_DIR}/cli/*.cpp)
 add_library(CLI SHARED ${SRC_CLI})
-target_link_libraries(CLI nwcore)
+target_link_libraries(CLI Core)
 target_compile_definitions(CLI PRIVATE -DNWCompartmentLoggerPrefix="CLI")
 
 # Target: NEWorld
 project(NEWorld)
 add_executable(NEWorld ${SOURCE_DIR}/launchers/client.cpp)
-target_link_libraries(NEWorld GUI nwcore)
+target_link_libraries(NEWorld GUI Core)
 target_compile_definitions(NEWorld PRIVATE -DNWCompartmentLoggerPrefix="NEWorld")
 
-# Target: NEWorld_Shell
-project(NEWorld_Shell)
-add_executable(NEWorld_Shell ${SOURCE_DIR}/launchers/shell.cpp)
-target_link_libraries(NEWorld_Shell CLI nwcore)
-target_compile_definitions(NEWorld_Shell PRIVATE -DNWCompartmentLoggerPrefix="NEWorld_Shell")
+# Target: NEWorldShell
+project(NEWorldShell)
+add_executable(NEWorldShell ${SOURCE_DIR}/launchers/shell.cpp)
+target_link_libraries(NEWorldShell CLI Core)
+target_compile_definitions(NEWorldShell PRIVATE -DNWCompartmentLoggerPrefix="NEWorldShell")
 
 add_subdirectory(./plugins)

@@ -17,11 +17,10 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#include <iostream>
 #include <string>
 #include "Common/Dylib.h"
-#include "Common/Json/JsonHelper.h"
 #include "Common/Logger.h"
+#include "Common/Json/JsonHelper.h"
 
 typedef void NWAPICALL MainFunction(int, char**);
 

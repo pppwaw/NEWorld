@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "nlohmann.h"
+#include "nlohmann/json.hpp"
 #include "Common/Config.h"
 
 using Json = nlohmann::json;
