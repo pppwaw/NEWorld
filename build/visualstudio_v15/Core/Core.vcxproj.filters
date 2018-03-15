@@ -23,9 +23,6 @@
     <Filter Include="Source\Client">
       <UniqueIdentifier>{0b4c2b5f-a491-4fe7-8d4e-a5626f165bcd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source\Game\plugin">
-      <UniqueIdentifier>{865196c1-df40-4f7a-a4fc-7c8c6abcf8a1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source\Common">
       <UniqueIdentifier>{349061fe-9dc1-4643-9984-8734621a544f}</UniqueIdentifier>
     </Filter>
@@ -41,13 +38,13 @@
     <Filter Include="Source\Common\RPC">
       <UniqueIdentifier>{a5f5f4f7-8160-4db1-9f2e-4eaf912a1cd0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source\Common\Internals">
+      <UniqueIdentifier>{fc21259e-374d-4f38-9339-e0e38d08255c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\game\context\nwcontext.cpp">
       <Filter>Source\Game\context</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\game\plugin\pluginmanager.cpp">
-      <Filter>Source\Game\plugin</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\server\server.cpp">
       <Filter>Source\Server</Filter>
@@ -60,9 +57,6 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\sync_service\world\nwchunk.cpp">
       <Filter>Source\Sync Service\world</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\game\plugin\plugin.cpp">
-      <Filter>Source\Game\plugin</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\client\player.cpp">
       <Filter>Source\Client</Filter>
@@ -97,13 +91,16 @@
     <ClCompile Include="..\..\..\src\Common\EventBus.cpp">
       <Filter>Source\Common</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\src\Common\Filesystem.cpp">
+      <Filter>Source\Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\Common\Modules.cpp">
+      <Filter>Source\Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\game\context\nwcontext.hpp">
       <Filter>Source\Game\context</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\game\plugin\pluginmanager.h">
-      <Filter>Source\Game\plugin</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\server\server.h">
       <Filter>Source\Server</Filter>
@@ -125,9 +122,6 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\sync_service\world\object.h">
       <Filter>Source\Sync Service\world</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\game\plugin\plugin.h">
-      <Filter>Source\Game\plugin</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\client\player.h">
       <Filter>Source\Client</Filter>
@@ -192,5 +186,13 @@
     <ClInclude Include="..\..\..\src\api\ApiCore.h">
       <Filter>Source</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\src\Common\Modules.h">
+      <Filter>Source\Common</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\src\Common\Internals\Windows.hpp">
+      <Filter>Source\Common\Internals</Filter>
+    </None>
   </ItemGroup>
 </Project>

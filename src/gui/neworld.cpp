@@ -18,7 +18,6 @@
 // 
 
 #include "neworld.h"
-#include "window.h"
 #include "gamescene.h"
 #include "renderer/renderer.h"
 #include "renderer/texture.h"
@@ -30,15 +29,18 @@ NEWorld::NEWorld() {
     // Initialize
     getSettings();
     infostream << "Initializing...";
-    Window& window = Window::getInstance("NEWorld", 852, 480);
+    Window::getInstance("NEWorld", 852, 480);
     Texture::init();
     void registerGUIAPI();
     registerGUIAPI();
+}
 
+void NEWorld::run() {
     // Run
     const auto fps = getJsonValue<size_t>(getSettings()["gui"]["fps"], 60);
     const auto shouldLimitFps = getJsonValue<bool>(getSettings()["gui"]["limit"], false);
     const auto delayPerFrame = static_cast<uint32_t>(1000 / fps - 0.5);
+    auto& window = Window::getInstance("NEWorld", 852, 480);
     GameScene game("TestWorld", window);
     while (!window.shouldQuit()) {
         // Update
@@ -49,7 +51,9 @@ NEWorld::NEWorld() {
         window.swapBuffers();
         if (shouldLimitFps) SDL_Delay(delayPerFrame);
     }
+}
 
+NEWorld::~NEWorld() {
     // Terminate
     infostream << "Terminating...";
     Texture::free();

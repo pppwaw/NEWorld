@@ -1,5 +1,5 @@
 // 
-// nwcore: Utility.h
+// Core: Utility.h
 // NEWorld: A Free Game with Similar Rules to Minecraft.
 // Copyright (C) 2015-2018 NEWorld Team
 // 
@@ -21,6 +21,8 @@
 class NonCopyable {
 public:
     NonCopyable() = default;
+    NonCopyable(NonCopyable&&) = default;
+    NonCopyable& operator =(NonCopyable&&) = default;
     NonCopyable(const NonCopyable&) = delete;
     NonCopyable& operator =(const NonCopyable&) = delete;
 };

@@ -1,5 +1,5 @@
 // 
-// NWShared: Dylib.cpp
+// Core: Dylib.cpp
 // NEWorld: A Free Game with Similar Rules to Minecraft.
 // Copyright (C) 2015-2018 NEWorld Team
 // 
@@ -19,28 +19,28 @@
 
 #include "Dylib.h"
 #include <cassert>
+#include <sstream>
 
-#ifdef NEWORLD_TARGET_WINDOWS
+#if (BOOST_OS_CYGWIN || BOOST_OS_WINDOWS)
 
-#define NOSERVICE
-#define NOMCX
-#define NOIME
-#define WIN32_LEAN_AND_MEAN
-#include <Windows.h>
+#include "Internals/Windows.hpp"
 
 namespace {
     Library::HandleType loadLibrary(const std::string& filename, bool& success) {
         const auto handle = LoadLibraryA(filename.c_str());
         success = handle != nullptr;
-        /*if (!success)
-            warningstream << "Failed to load " << filename << ". Error code:" << GetLastError();*/
+        if (!success) {
+            std::stringstream ss;
+            ss << "Failed to load " << filename << ". Error code:" << GetLastError();
+            throw std::runtime_error(ss.str());
+        }
         return handle;
     }
 
     void freeLibrary(Library::HandleType handle) { FreeLibrary(reinterpret_cast<HMODULE>(handle)); }
 }
 
-Library::FcnProcAddr Library::getFuncImpl(HandleType handle, const std::string& name) {
+Library::FcnProcAddr Library::getFuncImpl(Library::HandleType handle, const std::string& name) {
     assert(handle != nullptr);
     return reinterpret_cast<FcnProcAddr>(GetProcAddress(reinterpret_cast<HMODULE>(handle), name.c_str()));
 }
@@ -51,19 +51,19 @@ Library::FcnProcAddr Library::getFuncImpl(HandleType handle, const std::string& 
 
 namespace {
     Library::HandleType loadLibrary(const std::string& filename, bool& success) {
-        const auto handle = dlopen(filename.c_str(), RTLD_LAZY);
-        /*if (handle == nullptr)
-            fatalstream << dlerror();*/
+        const auto handle = dlopen(filename.c_str(), RTLD_NOW);
+        if (handle == nullptr)
+            throw std::runtime_error(dlerror());
         success = handle != nullptr;
         return handle;
     }
 
-    void freeLibrary(HandleType handle) {
+    void freeLibrary(Library::HandleType handle) {
         dlclose(handle);
     }
 }
 
-Library::FcnProcAddr Library::getFuncImpl(HandleType handle, const std::string& name) {
+Library::FcnProcAddr Library::getFuncImpl(Library::HandleType handle, const std::string& name) {
     assert(handle != nullptr);
     return reinterpret_cast<FcnProcAddr>(dlsym(handle, name.c_str()));
 }

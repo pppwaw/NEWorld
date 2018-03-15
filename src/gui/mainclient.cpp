@@ -21,29 +21,59 @@
 #include <argagg.hpp>
 #include "game/context/nwcontext.hpp"
 #include <iostream>
+#include "Common/EventBus.h"
 
-extern "C" NWAPIEXPORT int NWAPICALL cmain(int, char**);
+namespace {
+    NEWorld* instance;
 
-int NWAPICALL cmain(int argc, char** argv) {
-    argagg::parser argparser{ {
-        { "help",{ "-h", "--help" },
-        "shows this help message", 0 },
-        { "multiplayer-client",{ "-c", "--client" },
-        "Start the game as a client of multiplayer session", 0 }
-        } };
-    try {
-        context.args = argparser.parse(argc, argv);
-    }
-    catch (const std::exception& e) {
-        std::cerr << e.what() << std::endl;
-        return -1;
-    }
-    if (context.args["help"]) {
-        argagg::fmt_ostream fmt(std::cerr);
-        fmt << "Usage:" << std::endl
-            << argparser;
+    int guiMain(int argc, char** argv) {
+        argagg::parser argparser{
+            {
+                {
+                    "help", {"-h", "--help"},
+                    "shows this help message", 0
+                },
+                {
+                    "multiplayer-client", {"-c", "--client"},
+                    "Start the game as a client of multiplayer session", 0
+                }
+            }
+        };
+        try { context.args = argparser.parse(argc, argv); }
+        catch (const std::exception& e) {
+            std::cerr << e.what() << std::endl;
+            return -1;
+        }
+        if (context.args["help"]) {
+            argagg::fmt_ostream fmt(std::cerr);
+            fmt << "Usage:" << std::endl
+                << argparser;
+            return 0;
+        }
+        instance->run();
         return 0;
     }
-    NEWorld neworld;
-    return 0;
+
+}
+
+extern "C" {
+    NWAPIEXPORT const char* NWAPICALL nwModuleGetInfo() {
+        return
+            R"(
+{
+    "name" : "GUI",
+    "author" : "INFINIDEAS",
+    "uri" : "infinideas.neworld.gui",
+    "version" : [0, 0, 1, 0],
+    "type" : "CPP"
+}
+)";
+    }
+
+    // Main function
+    NWAPIEXPORT ModuleObject* NWAPICALL nwModuleGetObject() {
+        instance = new NEWorld();
+        REGISTER_AUTO(guiMain);
+        return instance;
+    }
 }

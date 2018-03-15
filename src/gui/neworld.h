@@ -17,13 +17,13 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#ifndef NEWORLD_H_
-#define NEWORLD_H_
+#pragma once
 
-class NEWorld {
+#include "Common/Modules.h"
+
+class NEWorld : public ModuleObject {
 public:
     NEWorld();
+    ~NEWorld();
+    void run();
 };
-
-
-#endif // !NEWORLD_H_

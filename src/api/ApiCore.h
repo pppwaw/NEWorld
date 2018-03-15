@@ -1,5 +1,5 @@
 // 
-// nwcore: ApiCore.h
+// Core: ApiCore.h
 // NEWorld: A Free Game with Similar Rules to Minecraft.
 // Copyright (C) 2015-2018 NEWorld Team
 // 
@@ -32,21 +32,6 @@ extern "C" {
 
     struct NWvec3i {
         int32_t x, y, z;
-    };
-
-    enum NWplugintype {
-        nwPluginTypeNone = 0,
-        nwPluginTypeCore = 1 << 1,
-        nwPluginTypeGUI = 1 << 2,
-        nwPluginTypeCLI = 1 << 3,
-        nwPluginTypeCoreGUI = nwPluginTypeCore | nwPluginTypeGUI
-    };
-
-    struct NWplugindata {
-        const char* pluginName;
-        const char* authorName;
-        const char* internalName;
-        int32_t pluginType;
     };
 
     struct NWblockdata {

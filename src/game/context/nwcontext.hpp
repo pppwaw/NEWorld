@@ -1,5 +1,5 @@
 // 
-// nwcore: nwcontext.hpp
+// Core: nwcontext.hpp
 // NEWorld: A Free Game with Similar Rules to Minecraft.
 // Copyright (C) 2015-2018 NEWorld Team
 // 
@@ -18,14 +18,12 @@
 // 
 
 #pragma once
-#include "./../plugin/pluginmanager.h"
 #include "sync_service/world/nwblock.h"
 #include "Common/RPC/RPC.h"
 #include <argagg.hpp>
 
 struct GameContext {
     BlockManager blocks;
-    PluginManager plugins;
     RPC rpc;
     argagg::parser_results args;
 };
