@@ -19,7 +19,6 @@
 
 #include "Debug.h"
 #include "Logger.h"
-#include <stdexcept>
 
 // Assertion uses C++ exception
 void AssertFunc(bool expr, const char* file, const char* fname, int line) {

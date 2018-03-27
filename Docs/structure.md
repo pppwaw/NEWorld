@@ -30,7 +30,7 @@
 | -                  | pluginapi.h        | *待补充*                    |                             |                                       |       |
 | PluginManager      | pluginmanager.h    | 用于管理所有插件。                |                             |                                       | Y     |
 | BlockData          | blockdata.h        | 单个方块。                    |                             |                                       |       |
-| BlockManager       | blockmanager.h     | 管理所有方块**种类**。            | BlockType(s)                |                                       |       |
+| Blocks       | blockmanager.h     | 管理所有方块**种类**。            | BlockType(s)                |                                       |       |
 | BlockType          | blocktype.h        | 方块类型，记录方块的属性。            |                             |                                       |       |
 | Chunk              | chunk.h            | 地图区块。                    |                             |                                       |       |
 | ChunkPointerArray  | chunkpointerarray  | 记录玩家周围区块的指针，用于加速查找区块的速度。 |                             | 优化用。有时可能会被缩写成CPA。和World是一对一的。         |       |
@@ -43,7 +43,7 @@
 
 | 类             | 文件              | 作用                   | 内含                              | 备注                            | 单例   |
 | ------------- | --------------- | -------------------- | ------------------------------- | ----------------------------- | ---- |
-| Application   | NEWorld.h       | 客户端程序的开始，管理整个程序。     | BlockManager, PluginManager     |                               | Y    |
+| Application   | NEWorld.h       | 客户端程序的开始，管理整个程序。     | Blocks, PluginManager     |                               | Y    |
 | ChunkRenderer | chunkrenderer.h | 用于渲染单个chunk。         | VertexBuffer和static VertexArray | 和Chunk是一对一的。                  |      |
 | Mat4          | Mat4.h          | 矩阵类。用来处理矩阵运算。        |                                 |                               |      |
 | -             | opengl.h        | 用于引入OpenGL。          |                                 | 所有用到OpenGL的文件都应该#include这个文件。 |      |
@@ -67,5 +67,5 @@
 | -                 | settings.h          | 读写服务器特有设置。      |                                          |                          |      |
 | ChunkLoader       | chunkloader.h       | 用于加载单个指定区块。     |                                          | 生成或加载区块。与Chunk一对一。       |      |
 | WorldLoader       | worldloader.h       | 用于加载指定世界。       |                                          | 与World一对一，会调用ChunkLoader |      |
-| Server            | server.h            | 管理整个NEWorld服务器。 | io_service, Session(s), WorldManager, BlockManager, PluginManager, WorldLoader(s), CommandController |                          | Y    |
+| Server            | server.h            | 管理整个NEWorld服务器。 | io_service, Session(s), WorldManager, Blocks, PluginManager, WorldLoader(s), CommandController |                          | Y    |
 | -                 | main.cpp            | 调用Server类启动服务器。 |                                          | main函数所在文件。              |      |

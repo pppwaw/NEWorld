@@ -17,26 +17,27 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#include "nwblock.h"
+#include "Blocks.h"
 #include "Common/Logger.h"
 
-BlockManager::BlockManager()
-    : mBlocks{BlockType("Air", false, false, false, 0, 0)} {}
+Blocks::Blocks()
+    : mBlocks{BlockType("Air", false, false, false, 0)} {}
 
-size_t BlockManager::registerBlock(const BlockType& block) {
+size_t Blocks::registerBlock(const BlockType& block) {
     mBlocks.push_back(block);
-    debugstream << "Registered block:";
-    showInfo(mBlocks.size() - 1);
-    return mBlocks.size() - 1;
+    auto id = mBlocks.size() - 1;
+    BlockType type = mBlocks[id];
+    debugstream << "Registered block:"
+                << "Block \"" << type.getName() << "\"(ID = " << id << ") = {"
+                << "Solid: " << type.isSolid()
+                << ", Translucent: " << type.isTranslucent()
+                << ", Opaque: " << type.isOpaque()
+                << ", Hardness: " << type.getHardness()
+                << "}";
+    return id;
 }
 
-void BlockManager::showInfo(size_t id) const {
-    BlockType block = mBlocks[id];
-    debugstream << "Block \"" << block.getName() << "\"(ID = " << id << ") = {"
-        << "Solid: " << block.isSolid()
-        << ", Translucent: " << block.isTranslucent()
-        << ", Opaque: " << block.isOpaque()
-        << ", Explode power: " << block.getExplodePower()
-        << ", Hardness: " << block.getHardness()
-        << "}";
+Blocks &Blocks::getInstance() {
+    static Blocks mgr;
+    return mgr;
 }

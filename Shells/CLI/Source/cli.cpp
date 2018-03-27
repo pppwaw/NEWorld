@@ -36,7 +36,7 @@ void ServerCommandLine::initBuiltinCommands() noexcept {
     mCommands.registerCommand("server.stop", {"internal", "Stop the server."},
                               [this](Command cmd)-> CommandExecuteStat {
                                   debugstream << "The server is stopping...";
-                                  context.rpc.getServer().stop();
+                                  RPC::getServer().stop();
                                   infostream << "Server RPC stopped.";
                                   mCommands.setRunningStatus(false);
                                   return {true, ""};

@@ -18,7 +18,6 @@
 // 
 
 #include <string>
-#include <cstring>
 #include "Filesystem.h"
 #include "StringUtils.h"
 
@@ -105,8 +104,6 @@ namespace {
 }
 
 #if (BOOST_OS_CYGWIN || BOOST_OS_WINDOWS)
-#include <string>
-#include <vector>
 
 filesystem::path ExecPathHelper::executablePathWorker() {
     std::vector<wchar_t> buf(32768, 0);

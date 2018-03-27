@@ -21,6 +21,7 @@
 
 #include "Config.h"
 #include <string>
+#include <type_traits>
 
 class NWCOREAPI Library {
 public:

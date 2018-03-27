@@ -17,6 +17,7 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+#include <Common/RPC/RPC.h>
 #include "server.h"
 #include "Game/Context/nwcontext.hpp"
 #include "Game/SyncService/chunkservice.hpp"
@@ -47,17 +48,17 @@ void registerRPCFunctions() {
     // std::vector<uint32_t> getChunk(size_t worldID, Vec3i position):
     //          Request a chunk from the server.
     //          The chunk will be built or loaded if does not exist.
-    context.rpc.getServer().bind("getChunk", &serverGetChunk);
+    RPC::getServer().bind("getChunk", &serverGetChunk);
 
     // std::vector<uint32_t> getAvailableWorldId():
     //          Get all avaliable world ids.
-    context.rpc.getServer().bind("getAvailableWorldId",
+    RPC::getServer().bind("getAvailableWorldId",
                                  []() -> std::vector<uint32_t> { return {0}; });
 
     // std::unordered_map<string, string> getWorldInfo(uint32_t world):
     //          Get world info by id.
     //          "name" : name of the world
-    context.rpc.getServer().bind("getWorldInfo",
+    RPC::getServer().bind("getWorldInfo",
                                  [](uint32_t worldID) {
                                      std::unordered_map<std::string, std::string> ret;
                                      World* world = chunkService.getWorlds().getWorld(worldID);
@@ -76,7 +77,7 @@ Server::Server(uint16_t port) {
         context.plugins.initializePlugins(nwPluginTypeCore);*/
 
     infostream << "Initializing server RPC at port " << port << "...";
-    context.rpc.enableServer(port);
+    RPC::enableServer(port);
     registerRPCFunctions();
 
     infostream << "Initializing map...";
@@ -90,11 +91,11 @@ Server::Server(uint16_t port) {
 // This function won't block the thread
 void Server::run(size_t threadNumber) {
     // Network
-    context.rpc.getServer().async_run(threadNumber);
+    RPC::getServer().async_run(threadNumber);
     infostream << "Server RPC started. Thread number: " << threadNumber;
 }
 
-void Server::stop() { context.rpc.getServer().stop(); }
+void Server::stop() { RPC::getServer().stop(); }
 
 Server::~Server() {
     // TODO: Terminate here

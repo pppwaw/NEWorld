@@ -20,7 +20,6 @@
 #include "worldrenderer.h"
 #include "Game/Client/player.h"
 #include "../renderdetector.hpp"
-#include <GL/glew.h>
 
 size_t WorldRenderer::render(const Vec3i& position) const {
     std::vector<std::pair<Vec3i, const ChunkRenderer*>> chunkPending;

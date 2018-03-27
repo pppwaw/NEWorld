@@ -14,7 +14,6 @@ namespace filesystem = boost::filesystem;
 #endif
 #endif
 #include <iostream>
-#include <string>
 #include <set>
 
 int main(int argc, char** argv) {

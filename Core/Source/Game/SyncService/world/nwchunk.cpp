@@ -18,7 +18,7 @@
 // 
 
 #include "Common/Math/Vector.h"
-#include "nwblock.h"
+#include "Blocks.h"
 #include "nwchunk.h"
 #include "world.h"
 

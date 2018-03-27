@@ -19,13 +19,9 @@
 
 #include <atomic>
 #include <chrono>
+#include <Common/RPC/RPC.h>
 #include "gamescene.h"
-#include "window.h"
-#include "renderer/blockrenderer.h"
-#include "Game/SyncService/taskdispatcher.hpp"
 #include "Common/JsonHelper.h"
-#include "Common/Logger.h"
-#include "Common/Modules.h"
 
 class PutBlockTask : public ReadWriteTask {
 public:
@@ -135,7 +131,7 @@ size_t GameScene::requestWorld() {
     // TODO: change this
 
     if (isClient()) {
-        auto& client = context.rpc.getClient();
+        auto& client = RPC::getClient();
         debugstream << "Connecting the server for world information...";
         auto worldIds = client.call("getAvailableWorldId").as<std::vector<uint32_t>>();
         if (worldIds.empty()) {
@@ -176,7 +172,7 @@ GameScene::GameScene(const std::string& name, const Window& window):
     }
 
     // Initialize connection
-    context.rpc.enableClient(
+    RPC::enableClient(
         getJsonValue<std::string>(getSettings()["server"]["ip"], "127.0.0.1"),
         getJsonValue<unsigned short>(getSettings()["server"]["port"], 31111));
 

@@ -33,7 +33,7 @@ extern "C" {
         NWtextureid right, left, top, bottom, front, back;
     };
 
-    NWAPI NWtextureid NWAPICALL nwRegisterTexture(const filesystem::path& pth);
-    NWAPI void NWAPICALL nwSetBlockRenderFunc(size_t id, NWblockrenderfunc func);
-    NWAPI void NWAPICALL nwUseDefaultBlockRenderFunc(size_t id, void* data);
+    NWCOREAPI NWtextureid NWAPICALL nwRegisterTexture(const filesystem::path& pth);
+    NWCOREAPI void NWAPICALL nwSetBlockRenderFunc(size_t id, NWblockrenderfunc func);
+    NWCOREAPI void NWAPICALL nwUseDefaultBlockRenderFunc(size_t id, void* data);
 }

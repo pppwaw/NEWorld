@@ -20,9 +20,9 @@
 #pragma once
 
 #include <cmath>
-#include <type_traits>
 #include <utility>
 #include <functional>
+#include <type_traits>
 #include <rpc/msgpack/adaptor/define_decl.hpp>
 
 template <typename T>

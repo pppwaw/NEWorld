@@ -18,8 +18,6 @@
 // 
 
 #include "renderdetector.hpp"
-#include "Game/SyncService/chunkservice.hpp"
-#include "renderer/chunkrenderer.h"
 #include "Game/Client/player.h"
 
 class VBOGenerateTask : public RenderTask {

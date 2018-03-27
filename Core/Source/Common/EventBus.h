@@ -22,10 +22,9 @@
 #include <vector>
 #include <type_traits>
 #include <unordered_map>
-#include <Game/Api/nwapi_internal.hpp>
 #include "Logger.h"
 
-class NWAPI EventBus {
+class NWCOREAPI EventBus {
 public:
     /**
      * \brief To register a function for future `call`

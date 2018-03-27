@@ -21,8 +21,7 @@
 #include "renderer/blockrenderer.h"
 #include <Game/Api/nwapigui.hpp>
 #include <Common/EventBus.h>
-#include "Common/Logger.h"
-#include "Common/Filesystem.h"
+#include <Game/Api/nwapi_internal.hpp>
 
 extern "C" {
     NWAPI void NWAPICALL nwSetBlockRenderFunc(size_t, NWblockrenderfunc) { }

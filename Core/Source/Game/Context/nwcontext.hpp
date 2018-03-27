@@ -18,13 +18,11 @@
 // 
 
 #pragma once
-#include "Game/SyncService/world/nwblock.h"
-#include "Common/RPC/RPC.h"
+
+#include "Common/Config.h"
 #include <argagg.hpp>
 
 struct GameContext {
-    BlockManager blocks;
-    RPC rpc;
     argagg::parser_results args;
 };
 

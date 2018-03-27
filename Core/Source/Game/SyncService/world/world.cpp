@@ -20,6 +20,7 @@
 #include <Game/SyncService/taskdispatcher.hpp>
 #include <Game/SyncService/chunkservice.hpp>
 #include <Game/Client/player.h>
+#include <Common/RPC/RPC.h>
 #include "world.h"
 #include "Common/JsonHelper.h"
 #include "Common/OrderedList.h"
@@ -43,16 +44,6 @@ std::vector<AABB> World::getHitboxes(const AABB& range) const {
                 res.emplace_back(currd, currd + Vec3d(1.0, 1.0, 1.0));
             }
     return res;
-}
-
-void World::updateChunkLoadStatus() {
-    std::unique_lock<std::mutex> lock(mMutex);
-    for (auto iter = mChunks.begin(); iter != mChunks.end();) {
-        if (iter->second->checkReleaseable())
-            iter = mChunks.erase(iter);
-        else
-            ++iter;
-    }
 }
 
 static constexpr Vec3i middleOffset() noexcept {
@@ -176,7 +167,7 @@ public:
         : mWorld(world), mChunkPosition(chunkPosition) { }
 
     void task(const ChunkService& cs) override {
-        auto data = context.rpc.getClient()
+        auto data = RPC::getClient()
                            .call("getChunk", mWorld.getWorldID(), mChunkPosition)
                            .as<std::vector<uint32_t>>();
         ChunkManager::data_t chunk(new Chunk(mChunkPosition, mWorld, data));

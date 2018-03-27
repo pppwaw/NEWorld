@@ -17,8 +17,9 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+#include <Common/Logger.h>
 #include "Game/Context/nwcontext.hpp"
-#include "Game/SyncService/world/nwblock.h"
+#include "Game/SyncService/world/Blocks.h"
 #include "Game/Api/ApiCore.h"
 #include "Game/SyncService/world/nwchunk.h"
 
@@ -35,20 +36,20 @@ namespace PluginAPI {
     }
 
     BlockType convertBlockType(const NWblocktype& src) {
-        return BlockType(src.blockname, src.solid, src.translucent, src.opaque, src.explodePower, src.hardness);
+        return BlockType(src.blockname, src.solid, src.translucent, src.opaque, src.hardness);
     }
 }
 
 extern "C" {
     using namespace PluginAPI;
 
-    NWAPI size_t NWAPICALL nwRegisterBlock(const NWblocktype* block) {
-        return context.blocks.registerBlock(convertBlockType(*block));
+    NWCOREAPI size_t NWAPICALL nwRegisterBlock(const NWblocktype* block) {
+        return Blocks::getInstance().registerBlock(convertBlockType(*block));
     }
 
-    NWAPI void NWAPICALL nwLog(char* str) { }
+    NWCOREAPI void NWAPICALL nwLog(char* str) { }
 
-    NWAPI size_t NWAPICALL nwRegisterChunkGenerator(NWchunkgenerator* const generator) {
+    NWCOREAPI size_t NWAPICALL nwRegisterChunkGenerator(NWchunkgenerator* const generator) {
         if (Chunk::ChunkGeneratorLoaded) {
             warningstream << "Ignoring multiple chunk generators!";
             return 1;

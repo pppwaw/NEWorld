@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "nwapi_internal.hpp"
+#include "Common/Config.h"
 
 extern "C" {
 
@@ -53,14 +53,14 @@ extern "C" {
     typedef void* NWworld;
 
     // NEWorld APIs
-    NWAPI NWchunk NWAPICALL nwCreateChunk(NWworld, const NWvec3i*);
-    NWAPI NWblockdata* NWAPICALL nwGetBlocksInChunk(NWchunk);
-    NWAPI void NWAPICALL nwDeleteChunk(NWchunk);
+    NWCOREAPI NWchunk NWAPICALL nwCreateChunk(NWworld, const NWvec3i*);
+    NWCOREAPI NWblockdata* NWAPICALL nwGetBlocksInChunk(NWchunk);
+    NWCOREAPI void NWAPICALL nwDeleteChunk(NWchunk);
 
-    NWAPI size_t NWAPICALL nwRegisterBlock(const NWblocktype*);
-    NWAPI void NWAPICALL nwLog(char* str);
+    NWCOREAPI size_t NWAPICALL nwRegisterBlock(const NWblocktype*);
+    NWCOREAPI void NWAPICALL nwLog(char* str);
 
     typedef void NWAPICALL NWchunkgenerator(const NWvec3i*, NWblockdata*, int32_t);
-    NWAPI size_t NWAPICALL nwRegisterChunkGenerator(NWchunkgenerator* const generator);
+    NWCOREAPI size_t NWAPICALL nwRegisterChunkGenerator(NWchunkgenerator* const generator);
 
 }

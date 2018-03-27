@@ -19,7 +19,6 @@
 
 #include "blockrenderer.h"
 #include "chunkrenderer.h"
-#include <cmath>
 #include <SDL2/SDL.h>
 
 size_t BlockTextureBuilder::mPixelPerTexture = 32;
@@ -28,7 +27,7 @@ std::vector<Texture::RawTexture> BlockTextureBuilder::mRawTexs;
 std::vector<std::shared_ptr<BlockRenderer>> BlockRendererManager::mBlockRenderers;
 
 static bool adjacentTest(BlockData a, BlockData b) noexcept {
-    return a.getID() != 0 && !context.blocks[b.getID()].isOpaque() && !(a.getID() == b.getID());
+    return a.getID() != 0 && !Blocks::getInstance()[b.getID()].isOpaque() && !(a.getID() == b.getID());
 }
 
 // Render default block

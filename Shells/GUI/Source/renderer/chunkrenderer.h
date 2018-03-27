@@ -22,7 +22,7 @@
 #include "blockrenderer.h"
 #include "renderer.h"
 #include "Common/Utility.h"
-#include "Game/SyncService/world/nwblock.h"
+#include "Game/SyncService/world/Blocks.h"
 #include "Game/Context/nwcontext.hpp"
 #include "Game/SyncService/world/world.h"
 #include "vertexarray.h"
@@ -47,7 +47,7 @@ public:
             for (tmp.y = 0; tmp.y < Chunk::Size(); ++tmp.y)
                 for (tmp.z = 0; tmp.z < Chunk::Size(); ++tmp.z) {
                     BlockData b = chunk->getBlock(tmp);
-                    auto target = context.blocks[b.getID()].isTranslucent() ? &mVATranslucent : &mVAOpacity;
+                    auto target = Blocks::getInstance()[b.getID()].isTranslucent() ? &mVATranslucent : &mVAOpacity;
                     BlockRendererManager::render(*target, b.getID(), chunk, tmp);
                 }
     }

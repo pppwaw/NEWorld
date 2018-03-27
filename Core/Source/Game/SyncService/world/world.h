@@ -22,8 +22,8 @@
 #include <array>
 #include <string>
 #include <memory>
-#include <utility>
 #include <vector>
+#include <utility>
 #include <algorithm>
 #include "nwchunk.h"
 #include "Common/Physics/AABB.h"
@@ -34,7 +34,7 @@ class ModuleManager;
 
 class NWCOREAPI World final : public NonCopyable {
 public:
-    World(std::string name, const BlockManager& blocks)
+    World(std::string name, const Blocks& blocks)
         : mName(std::move(name)), mID(0), mBlocks(blocks), mChunks(1024), mDaylightBrightness(15) { }
 
     World(World&& rhs) noexcept
@@ -104,12 +104,10 @@ public:
     ////////////////////////////////////////
     // BlockType Management
     ////////////////////////////////////////
-    const BlockManager& getBlockTypes() const { return mBlocks; }
+    const Blocks& getBlockTypes() const { return mBlocks; }
     const BlockType& getType(int id) const { return mBlocks[id]; }
 
     std::vector<AABB> getHitboxes(const AABB& range) const;
-
-    void updateChunkLoadStatus();
 
     // Tasks
     void registerChunkTasks(ChunkService& chunkService, Player& player);
@@ -127,12 +125,11 @@ private:
 protected:
     // World name
     std::string mName;
-    std::mutex mMutex;
     // World ID
     size_t mID;
     static size_t IDCount;
     // Loaded blocks
-    const BlockManager& mBlocks;
+    const Blocks& mBlocks;
     // All Chunks (Chunk array)
     ChunkManager mChunks;
     int mDaylightBrightness;
@@ -141,7 +138,7 @@ protected:
 
 class WorldManager {
 public:
-    WorldManager(BlockManager& blocks) : mBlocks(blocks) { }
+    WorldManager(Blocks& blocks) : mBlocks(blocks) { }
 
     ~WorldManager() { mWorlds.clear(); }
 
@@ -184,5 +181,5 @@ public:
 
 private:
     std::vector<std::unique_ptr<World>> mWorlds;
-    BlockManager& mBlocks;
+    Blocks& mBlocks;
 };
