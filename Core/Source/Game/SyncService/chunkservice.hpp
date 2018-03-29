@@ -19,7 +19,6 @@
 
 #pragma once
 #include "Game/SyncService/world/world.h"
-#include "Game/Context/nwcontext.hpp"
 #include "taskdispatcher.hpp"
 
 /**

@@ -19,11 +19,14 @@
 
 #pragma once
 
+#include <argagg.hpp>
 #include "Common/Modules.h"
 
-class NEWorld : public ModuleObject {
+class NEWorld {
 public:
     NEWorld();
     ~NEWorld();
     void run();
+    static NEWorld& getInstance();
+    argagg::parser_results args;
 };

@@ -23,7 +23,6 @@
 #include "renderer.h"
 #include "Common/Utility.h"
 #include "Game/SyncService/world/Blocks.h"
-#include "Game/Context/nwcontext.hpp"
 #include "Game/SyncService/world/world.h"
 #include "vertexarray.h"
 

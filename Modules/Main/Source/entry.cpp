@@ -25,13 +25,12 @@
 int32_t GrassID = 0, RockID, DirtID, SandID, WaterID;
 
 int32_t registerBlock(const char* name, bool solid, bool translucent, bool opaque,
-                      int explodepower, int hardness) {
+                      int hardness) {
     NWblocktype block;
     block.blockname = name;
     block.solid = solid;
     block.translucent = translucent;
     block.opaque = opaque;
-    block.explodePower = explodepower;
     block.hardness = hardness;
     return nwRegisterBlock(&block);
 }
@@ -40,11 +39,11 @@ class MainModule : public ModuleObject {
 public:
     MainModule() {
         nwRegisterChunkGenerator(generator);
-        GrassID = registerBlock("Grass", true, false, true, 0, 2);
-        RockID = registerBlock("Rock", true, false, true, 0, 2);
-        DirtID = registerBlock("Dirt", true, false, true, 0, 2);
-        SandID = registerBlock("Sand", true, false, true, 0, 2);
-        WaterID = registerBlock("Water", false, true, false, 0, 2);
+        GrassID = registerBlock("Grass", true, false, true, 2);
+        RockID = registerBlock("Rock", true, false, true, 2);
+        DirtID = registerBlock("Dirt", true, false, true, 2);
+        SandID = registerBlock("Sand", true, false, true, 2);
+        WaterID = registerBlock("Water", false, true, false, 2);
         try {
             rendererInit();
         }
@@ -55,10 +54,10 @@ public:
         auto path = (assetDir("infinideas.main") / "blocks");
         NWtextureid id[] =
         {
-            CALL_AUTO(nwRegisterTexture, path / "/grass_top.png"),
-            CALL_AUTO(nwRegisterTexture, path / "/grass_round.png"),
-            CALL_AUTO(nwRegisterTexture, path / "/dirt.png"),
-            CALL_AUTO(nwRegisterTexture, path / "/rock.png"),
+            CALL_AUTO(nwRegisterTexture, path / "grass_top.png"),
+            CALL_AUTO(nwRegisterTexture, path / "grass_round.png"),
+            CALL_AUTO(nwRegisterTexture, path / "dirt.png"),
+            CALL_AUTO(nwRegisterTexture, path / "rock.png"),
             CALL_AUTO(nwRegisterTexture, path / "sand.png"),
             CALL_AUTO(nwRegisterTexture, path / "water.png")
         };

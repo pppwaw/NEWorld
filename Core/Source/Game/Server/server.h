@@ -19,18 +19,13 @@
 
 #pragma once
 
-#include "Common/RateController.h"
-#include "Game/SyncService/world/world.h"
-#include "Common/Modules.h"
+#include <Common/Config.h>
+#include <cstdint>
 
-constexpr int UpdateInterval = 1000 / 60, GlobalUpdateInterval = 1000 / 60; // unit: ms
-
-class NWAPIEXPORT Server {
+class NWCOREAPI Server {
 public:
     Server(uint16_t port);
     void run(size_t threadNumber);
     void stop();
     ~Server();
-protected:
-    RateController mRateCounterScheduler{1};
 };

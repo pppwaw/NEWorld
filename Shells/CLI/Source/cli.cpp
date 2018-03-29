@@ -17,9 +17,9 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+#include <Common/RPC/RPC.h>
 #include "cli.hpp"
 #include "Common/JsonHelper.h"
-#include "Game/Context/nwcontext.hpp"
 #include "Game/SyncService/chunkservice.hpp"
 
 void ServerCommandLine::initBuiltinCommands() noexcept {

@@ -17,9 +17,8 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
-#include <Common/RPC/RPC.h>
 #include "server.h"
-#include "Game/Context/nwcontext.hpp"
+#include <Common/RPC/RPC.h>
 #include "Game/SyncService/chunkservice.hpp"
 #include "rpc/this_handler.h"
 
@@ -72,9 +71,6 @@ void registerRPCFunctions() {
 Server::Server(uint16_t port) {
     using namespace std::chrono;
     auto startTime = steady_clock::now();
-    /*
-        infostream << "Initializing nwcore plugins...";
-        context.plugins.initializePlugins(nwPluginTypeCore);*/
 
     infostream << "Initializing server RPC at port " << port << "...";
     RPC::enableServer(port);

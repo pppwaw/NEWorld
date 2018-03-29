@@ -193,11 +193,7 @@ public:
 
     // Convert world position to chunk coordinate (one axis)
     static int getAxisPos(int pos) noexcept {
-#ifdef NEWORLD_COMPILER_RSHIFT_ARITH
         return pos >> Chunk::SizeLog2();
-#else
-        return ((pos >= 0) ? pos : (pos - Chunk::Size() + 1)) / Chunk::Size();
-#endif
     }
 
     // Convert world position to chunk coordinate (all axes)

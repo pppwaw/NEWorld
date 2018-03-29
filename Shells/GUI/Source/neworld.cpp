@@ -54,3 +54,8 @@ NEWorld::~NEWorld() {
     infostream << "Terminating...";
     Texture::free();
 }
+
+NEWorld &NEWorld::getInstance() {
+    static NEWorld instance;
+    return instance;
+}
