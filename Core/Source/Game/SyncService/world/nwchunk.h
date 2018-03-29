@@ -31,13 +31,13 @@
 #include "Common/Math/Vector.h"
 #include "Common/Utility.h"
 
-using ChunkGenerator = void NWAPICALL(const Vec3i*, BlockData*, int);
+using ChunkGenerator = std::add_pointer_t<void(const Vec3i*, BlockData*, int)>;
 
 class NWCOREAPI Chunk final : public NonCopyable {
 public:
     // Chunk size
     static bool ChunkGeneratorLoaded;
-    static ChunkGenerator* ChunkGen;
+    static ChunkGenerator ChunkGen;
     static constexpr int BlocksSize = 0b1000000000000000;
     static constexpr int SizeLog2() { return 5; }
     static constexpr int Size() { return 0b100000; };
@@ -218,3 +218,5 @@ public:
 private:
     array_t mChunks;
 };
+
+NWCOREAPI size_t NWAPICALL nwRegisterChunkGenerator(const ChunkGenerator generator);

@@ -19,13 +19,13 @@
 
 #pragma once
 
-#include "ApiCore.h"
+#include <Game/SyncService/world/Blocks.h>
 #include "Common/Filesystem.h"
 
 // API related to GUI or renderer
 
 typedef size_t NWtextureid;
-typedef void (*NWblockrenderfunc)(void* cthis, NWblockdata data, int x, int y, int z);
+typedef void (*NWblockrenderfunc)(void* cthis, BlockData data, int x, int y, int z);
 
 struct NWblocktexture {
     NWtextureid right, left, top, bottom, front, back;

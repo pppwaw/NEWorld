@@ -17,6 +17,7 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+#include <Common/Logger.h>
 #include "Common/Math/Vector.h"
 #include "Blocks.h"
 #include "nwchunk.h"
@@ -29,7 +30,7 @@ void NWAPICALL DefaultChunkGen(const Vec3i*, BlockData* blocks, int32_t daylight
 }
 
 bool Chunk::ChunkGeneratorLoaded = false;
-ChunkGenerator* Chunk::ChunkGen = &DefaultChunkGen;
+ChunkGenerator Chunk::ChunkGen = DefaultChunkGen;
 
 Chunk::Chunk(const Vec3i& position, const class World& world)
     : mPosition(position), mWorld(&world) { build(mWorld->getDaylightBrightness()); }
@@ -44,6 +45,17 @@ Chunk::Chunk(const Vec3i& position, const class World& world, const std::vector<
 }
 
 void Chunk::build(int daylightBrightness) {
-    (*ChunkGen)(&getPosition(), getBlocks(), daylightBrightness);
+    ChunkGen(&getPosition(), getBlocks(), daylightBrightness);
     setUpdated(true);
+}
+
+size_t nwRegisterChunkGenerator(const ChunkGenerator generator) {
+    if (Chunk::ChunkGeneratorLoaded) {
+        warningstream << "Ignoring multiple chunk generators!";
+        return 1;
+    }
+    Chunk::ChunkGeneratorLoaded = true;
+    Chunk::ChunkGen = generator;
+    debugstream << "Registered chunk generator";
+    return 0;
 }

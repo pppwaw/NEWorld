@@ -17,6 +17,8 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+#include <Game/SyncService/world/Blocks.h>
+#include <Game/SyncService/world/nwchunk.h>
 #include "worldgen.h"
 #include "Game/Api/nwapigui.hpp"
 #include "Common/EventBus.h"
@@ -26,13 +28,8 @@ int32_t GrassID = 0, RockID, DirtID, SandID, WaterID;
 
 int32_t registerBlock(const char* name, bool solid, bool translucent, bool opaque,
                       int hardness) {
-    NWblocktype block;
-    block.blockname = name;
-    block.solid = solid;
-    block.translucent = translucent;
-    block.opaque = opaque;
-    block.hardness = hardness;
-    return nwRegisterBlock(&block);
+    BlockType block { name, solid, translucent, opaque, hardness };
+    return Blocks::getInstance().registerBlock(block);
 }
 
 class MainModule : public ModuleObject {

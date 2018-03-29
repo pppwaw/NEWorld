@@ -19,6 +19,9 @@
 
 #include <cmath>
 #include <iostream>
+#include <Common/Math/Vector.h>
+#include <Game/SyncService/world/Blocks.h>
+#include <Game/SyncService/world/nwchunk.h>
 #include "worldgen.h"
 
 int WorldGen::seed = 1025;
@@ -28,24 +31,25 @@ double WorldGen::NoiseScaleZ = 64;
 extern int32_t GrassID, RockID, DirtID, SandID, WaterID;
 
 // Chunk generator
-void NWAPICALL generator(const NWvec3i* pos, NWblockdata* blocks, int daylightBrightness) {
-    for (int x = 0; x < NWChunkSize; x++)
-        for (int z = 0; z < NWChunkSize; z++) {
-            int absHeight = WorldGen::getHeight(pos->x * NWChunkSize + x, pos->z * NWChunkSize + z);
-            int height = absHeight - pos->y * NWChunkSize;
+void generator(const Vec3i* pos, BlockData* blocks, int daylightBrightness) {
+    for (int x = 0; x < Chunk::Size(); x++)
+        for (int z = 0; z < Chunk::Size(); z++) {
+            int absHeight = WorldGen::getHeight(pos->x * Chunk::Size() + x, pos->z * Chunk::Size() + z);
+            int height = absHeight - pos->y * Chunk::Size();
             bool underWater = (absHeight) <= 0;
-            for (int y = 0; y < NWChunkSize; y++) {
-                NWblockdata& block = blocks[x * NWChunkSize * NWChunkSize + y * NWChunkSize + z];
+            for (int y = 0; y < Chunk::Size(); y++) {
+                auto& block = blocks[x * Chunk::Size() * Chunk::Size() + y * Chunk::Size() + z];
                 if (y <= height) {
-                    if (y == height) { block.id = ((underWater) ? SandID : GrassID); }
-                    else if (y >= height - 3) { block.id = ((underWater) ? SandID : DirtID); }
-                    else { block.id = RockID; }
-                    block.brightness = block.state = 0;
+                    if (y == height) { block.setID((underWater) ? SandID : GrassID); }
+                    else if (y >= height - 3) { block.setID((underWater) ? SandID : DirtID); }
+                    else { block.setID(RockID); }
+                    block.setBrightness(0);
+                    block.setState(0);
                 }
                 else {
-                    block.id = ((pos->y * NWChunkSize + y <= 0) ? WaterID : NWAirID);
-                    block.brightness = daylightBrightness;
-                    block.state = 0;
+                    block.setID((pos->y * Chunk::Size() + y <= 0) ? WaterID : 0);
+                    block.setBrightness(daylightBrightness);
+                    block.setState(0);
                 }
             }
         }

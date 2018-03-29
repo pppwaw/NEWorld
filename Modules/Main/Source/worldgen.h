@@ -19,8 +19,6 @@
 
 #pragma once
 
-#include "Game/Api/ApiCore.h"
-
 // Perlin Noise 2D
 namespace WorldGen {
     extern int seed;
@@ -43,4 +41,4 @@ namespace WorldGen {
 }
 
 // Chunk generator
-void NWAPICALL generator(const NWvec3i* pos, NWblockdata* blocks, int daylightBrightness);
+void generator(const Vec3i* pos, BlockData* blocks, int daylightBrightness);
