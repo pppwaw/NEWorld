@@ -29,6 +29,7 @@ NEWorld::NEWorld() {
     Texture::init();
     void registerGUIAPI();
     registerGUIAPI();
+    loadModules();
 }
 
 void NEWorld::run() {
@@ -55,7 +56,11 @@ NEWorld::~NEWorld() {
     Texture::free();
 }
 
-NEWorld &NEWorld::getInstance() {
-    static NEWorld instance;
-    return instance;
-}
+DECL_APPLICATION(NEWorld)
+
+CmdOption help { { "help", {"-h", "--help"}, "shows this help message", 0 } };
+
+CmdOption multiPlayer { {
+    "multiplayer-client", {"-c", "--client"},
+    "Start the game as a client of multiplayer session", 0
+} };

@@ -15,6 +15,7 @@ target_compile_definitions(NEWorld
 # Link libraries for NEWorld
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
+set(SDL2_BUILDING_LIBRARY ON)
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 target_include_directories(NEWorld PUBLIC

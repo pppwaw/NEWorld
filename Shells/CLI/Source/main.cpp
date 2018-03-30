@@ -17,13 +17,19 @@
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
 // 
 
+#include <Common/Application.h>
 #include "cli.hpp"
 #include "Common/JsonHelper.h"
 #include "Game/Server/server.h"
 
-int NWAPIEXPORT main(int argc, char* argv[]) {
-    ServerCommandLine cli;
-    Server server(getJsonValue<unsigned short>(getSettings()["server"]["port"], 31111));
-    server.run(getJsonValue<size_t>(getSettings()["server"]["rpc_thread_number"], 1));
-    cli.start();
-}
+class CLIShell : public Application {
+public:
+    void run() override {
+        ServerCommandLine cli;
+        Server server(getJsonValue<unsigned short>(getSettings()["server"]["port"], 31111));
+        server.run(getJsonValue<size_t>(getSettings()["server"]["rpc_thread_number"], 1));
+        cli.start();
+    }
+};
+
+DECL_APPLICATION(CLIShell)

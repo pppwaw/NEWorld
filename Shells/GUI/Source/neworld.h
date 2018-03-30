@@ -20,13 +20,13 @@
 #pragma once
 
 #include <argagg.hpp>
+#include <Common/Application.h>
 #include "Common/Modules.h"
 
-class NEWorld {
+class NEWorld : public Application {
 public:
     NEWorld();
     ~NEWorld();
-    void run();
-    static NEWorld& getInstance();
+    void run() override;
     argagg::parser_results args;
 };
