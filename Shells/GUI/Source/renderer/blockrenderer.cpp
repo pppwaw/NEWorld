@@ -23,8 +23,8 @@
 
 size_t BlockTextureBuilder::mPixelPerTexture = 32;
 size_t BlockTextureBuilder::mTexturePerLine = 8;
-std::vector<Texture::RawTexture> BlockTextureBuilder::mRawTexs;
-std::vector<std::shared_ptr<BlockRenderer>> BlockRendererManager::mBlockRenderers;
+std::vector<Texture::RawTexture> BlockTextureBuilder::mRawTexs{};
+std::vector<std::shared_ptr<BlockRenderer>> BlockRendererManager::mBlockRenderers{};
 
 static bool adjacentTest(BlockData a, BlockData b) noexcept {
     return a.getID() != 0 && !Blocks::getInstance()[b.getID()].isOpaque() && !(a.getID() == b.getID());
@@ -186,8 +186,8 @@ void BlockTextureBuilder::setWidthPerTex(size_t wid) { mPixelPerTexture = wid; }
 
 size_t BlockTextureBuilder::getWidthPerTex() { return mPixelPerTexture; }
 
-size_t BlockTextureBuilder::addTexture(const Texture::RawTexture& rawTexture) {
-    mRawTexs.push_back(rawTexture);
+size_t BlockTextureBuilder::addTexture(Texture::RawTexture&& rawTexture) {
+    mRawTexs.push_back(std::move(rawTexture));
     return mRawTexs.size() - 1;
 }
 

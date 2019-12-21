@@ -93,7 +93,7 @@ public:
     template <typename T, typename... Args>
     auto call(const std::string& funcName, Args&&... args) {
         auto& list = getSubscribers<T>(funcName);
-        if (list.size() == 0) {
+        if (list.size() != 1) {
             warningstream << "Failed to call function " << funcName
                 << " with type " << typeid(T).name() << " (hash: " << typeid(T).hash_code() << "): "
                 << (list.empty()

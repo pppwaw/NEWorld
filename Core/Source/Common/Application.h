@@ -37,4 +37,5 @@ struct NWCOREAPI CmdOption {
 };
 
 #define DECL_CMD_OPTION(x) namespace { CmdOption opt { std::move(x) }; }
-#define DECL_APPLICATION(x) namespace { x appInstance {}; }
+
+NWCOREAPI int gameMain(int argc, char** argv);

@@ -32,4 +32,7 @@ public:
     }
 };
 
-DECL_APPLICATION(CLIShell)
+int main(int argc, char** argv) {
+	CLIShell shell;
+	return gameMain(argc, argv);
+}

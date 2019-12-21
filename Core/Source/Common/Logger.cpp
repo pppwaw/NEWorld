@@ -25,7 +25,6 @@
 #include "Common/Filesystem.h"
 #include "Common/Console.h"
 
-std::mutex Logger::mutex;
 std::vector<std::ofstream> Logger::fsink;
 std::array<const char*, 6> Logger::levelTags
 {
@@ -70,7 +69,7 @@ void Logger::addFileSink(const std::string& path, const std::string& prefix) {
 }
 
 Logger::Logger(const char* fileName, const char* funcName, int lineNumber, Level level, const char* mgr)
-    : mLevel(level), mLock(mutex) {
+    : mLevel(level) {
     if (mLevel >= lineLevel) {
         mFileName = fileName;
         mFuncName = funcName;

@@ -19,6 +19,7 @@ set(SDL2_BUILDING_LIBRARY ON)
 find_package(SDL2 REQUIRED)
 find_package(SDL2-image REQUIRED)
 target_link_libraries(NEWorld Core Threads::Threads SDL2::SDL2 SDL2::SDL2_image GLEW::GLEW)
+add_definitions(-DSDL_MAIN_HANDLED)
 add_dependencies(NEWorld NEWorldCopyAsset)
 
 

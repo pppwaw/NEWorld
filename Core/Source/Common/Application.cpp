@@ -38,7 +38,9 @@ Application::Application() {
 
 Application::~Application() {}
 
-void Application::run() {}
+void Application::run() {
+	errorstream << "No application is specified.";
+}
 
 argagg::parser_results& Application::args() { return pargs; }
 
@@ -46,7 +48,7 @@ CmdOption::CmdOption(argagg::definition def) {
     parser.definitions.push_back(std::move(def));
 }
 
-NWAPIEXPORT int main(int argc, char** argv) {
+NWAPIEXPORT int gameMain(int argc, char** argv) {
     try { pargs = parser.parse(argc, argv); }
     catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;

@@ -56,11 +56,14 @@ NEWorld::~NEWorld() {
     Texture::free();
 }
 
-DECL_APPLICATION(NEWorld)
-
 CmdOption help { { "help", {"-h", "--help"}, "shows this help message", 0 } };
 
 CmdOption multiPlayer { {
     "multiplayer-client", {"-c", "--client"},
     "Start the game as a client of multiplayer session", 0
 } };
+
+int main(int argc, char** argv) {
+	NEWorld neworld;
+	return gameMain(argc, argv);
+}

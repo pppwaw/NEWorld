@@ -55,7 +55,7 @@ public:
     static void setWidthPerTex(size_t wid);
     static size_t getWidthPerTex();
     static size_t addTexture(const char* path);
-    static size_t addTexture(const Texture::RawTexture& rawTexture);
+    static size_t addTexture(Texture::RawTexture&& rawTexture);
 
     //Finalize Func
     static Texture buildAndFlush();

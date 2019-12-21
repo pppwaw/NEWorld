@@ -63,13 +63,11 @@ private:
     const char* mFuncName;
     bool fileOnly{false};
     std::stringstream mContent;
-    std::lock_guard<std::mutex> mLock;
 
     static Level coutLevel;
     static Level cerrLevel;
     static Level fileLevel;
     static Level lineLevel;
-    static std::mutex mutex;
     static std::vector<std::ofstream> fsink;
     static std::array<const char*, 6> levelTags;
 
