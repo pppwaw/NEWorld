@@ -33,9 +33,7 @@ target_compile_definitions(Core
 
 # Link libraries for Core
 find_package(rpclib REQUIRED)
-target_include_directories(Core PUBLIC ${RPCLIB_INCLUDE_DIR})
-target_link_libraries(Core Threads::Threads ${RPCLIB_LIBS})
-target_compile_definitions(Core PUBLIC ${RPCLIB_COMPILE_DEFINITIONS})
+target_link_libraries(Core Threads::Threads rpclib::rpc)
 
 add_subdirectory(Tools)
 add_subdirectory(Shells)

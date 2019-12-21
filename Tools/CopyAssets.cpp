@@ -1,20 +1,8 @@
-#ifdef _MSC_VER
+
 #include <filesystem>
-namespace filesystem = std::experimental::filesystem;
-#else
-#if __has_include(<filesystem>)
-#include <filesystem>
-namespace filesystem = std::filesystem;
-#elif __has_include(<experimental/filesystem>)
-#include <experimental/filesystem>
-namespace filesystem = std::experimental::filesystem;
-#elif __has_include(<boost/filesystem.hpp>)
-#include <boost/filesystem.hpp>
-namespace filesystem = boost::filesystem;
-#endif
-#endif
 #include <iostream>
 #include <set>
+namespace filesystem = std::filesystem;
 
 int main(int argc, char** argv) {
     if (argc < 4) {

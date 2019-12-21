@@ -154,7 +154,7 @@ private:
 
 ModuleManager::ModuleLoader::ModuleLoader() {
     constexpr auto pathSep =
-#if (BOOST_OS_WINDOWS)
+#if (_WIN32)
         ";";
 #else
         ":";
@@ -163,11 +163,7 @@ ModuleManager::ModuleLoader::ModuleLoader() {
     env = "PATH=" + env + pathSep + filesystem::absolute(getModuleDir()).string() + pathSep;
     auto const nenv = new char[env.size() + 1];
     std::strcpy(nenv, env.c_str());
-#if BOOST_COMP_MSVC
-    _putenv(nenv);
-#else
     putenv(nenv);
-#endif
     walk();
     for (auto&& x : mMap)
         loadPlugin(x.second);

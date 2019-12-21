@@ -21,20 +21,20 @@
 #include "Filesystem.h"
 #include "StringUtils.h"
 
-#if (BOOST_OS_CYGWIN || BOOST_OS_WINDOWS)
+#if (BOOST_OS_CYGWIN || _WIN32)
 #include "Internals/Windows.hpp"
 #endif
 
 namespace {
     constexpr const char* pathSep =
-#if (BOOST_OS_WINDOWS)
+#if (_WIN32)
         ";";
 #else
         ":";
 #endif
 
     constexpr const char* sep =
-#if (BOOST_OS_WINDOWS)
+#if (_WIN32)
         "\\";
 #else
         "/";
@@ -64,7 +64,7 @@ namespace {
 
     filesystem::path makeWithString(const char* argv0) {
         std::error_code ec;
-        auto p(filesystem::canonical(argv0, filesystem::current_path(), ec));
+        auto p(filesystem::canonical(argv0, ec));
         return ec ? p.make_preferred() : "";
     }
 
@@ -103,7 +103,7 @@ namespace {
     };
 }
 
-#if (BOOST_OS_CYGWIN || BOOST_OS_WINDOWS)
+#if (BOOST_OS_CYGWIN || _WIN32)
 
 filesystem::path ExecPathHelper::executablePathWorker() {
     std::vector<wchar_t> buf(32768, 0);

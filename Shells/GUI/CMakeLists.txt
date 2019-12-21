@@ -17,12 +17,8 @@ find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 set(SDL2_BUILDING_LIBRARY ON)
 find_package(SDL2 REQUIRED)
-find_package(SDL2_image REQUIRED)
-target_include_directories(NEWorld PUBLIC
-        ${SDL2_INCLUDE_DIRS} ${SDL2_IMAGE_INCLUDE_DIRS}
-        ${OPENGL_INCLUDE_DIRS} ${GLEW_INCLUDE_DIRS})
-target_link_libraries(NEWorld Core Threads::Threads
-        ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARIES} ${GLEW_LIBRARY} ${OPENGL_LIBRARIES})
+find_package(SDL2-image REQUIRED)
+target_link_libraries(NEWorld Core Threads::Threads SDL2::SDL2 SDL2::SDL2_image GLEW::GLEW)
 add_dependencies(NEWorld NEWorldCopyAsset)
 
 

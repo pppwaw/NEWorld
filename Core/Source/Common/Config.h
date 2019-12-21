@@ -19,11 +19,8 @@
 
 #pragma once
 
-#include <boost/predef/compiler.h>
-#include <boost/predef/platform.h>
-
 // Compiler flags
-#if BOOST_COMP_MSVC
+#if _MSC_VER
 #pragma warning(disable: 4251)
 #pragma warning(disable: 4275)
 #define _CRT_SECURE_NO_WARNINGS
@@ -34,7 +31,7 @@
 #endif
 
 // NWAPICALL
-#if BOOST_COMP_MSVC
+#if _MSC_VER
 #define NWAPICALL __cdecl
 #elif defined(__i386__) || defined(__i386)
     #define NWAPICALL __attribute__((__cdecl__))
@@ -44,8 +41,8 @@
 #endif
 
 // NWAPIEXPORT
-#if (BOOST_OS_CYGWIN || BOOST_OS_WINDOWS)
-#if  BOOST_COMP_MSVC
+#if (__CYGWIN__ || _WIN32)
+#if  _MSC_VER
 #define NWAPIENTRY __declspec(dllimport)
 #define NWAPIEXPORT __declspec(dllexport)
 #else

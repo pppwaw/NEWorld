@@ -21,7 +21,7 @@
 #include <cassert>
 #include <sstream>
 
-#if (BOOST_OS_CYGWIN || BOOST_OS_WINDOWS)
+#if (__CYGWIN__ || _WIN32)
 
 #include "Internals/Windows.hpp"
 
