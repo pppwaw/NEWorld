@@ -68,6 +68,9 @@ public:
     static void lockCursor() { SDL_SetRelativeMouseMode(SDL_TRUE); }
     static void unlockCursor() { SDL_SetRelativeMouseMode(SDL_FALSE); }
 
+    void GetDrawableSize(int& x, int& y) const noexcept {
+        SDL_GL_GetDrawableSize(mWindow, &x, &y);
+    }
 private:
     SDL_Window* mWindow = nullptr;
     std::string mTitle;

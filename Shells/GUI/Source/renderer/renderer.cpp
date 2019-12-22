@@ -18,8 +18,70 @@
 // 
 
 #include "renderer.h"
+#include "Common/Filesystem.h"
+#include <nlohmann/json.hpp>
+#include <fstream>
+#include <iostream>
 
-int Renderer::matrixMode = 0;
+namespace {
+    GLuint gProgram{0}, gIndex{0}, gMvpId{0}, gVao{0};
+
+    class Shader {
+    public:
+        explicit Shader(GLenum stage): mShader(glCreateShader(stage)) {}
+
+        void Compile(const std::string& text) {
+            auto array = text.c_str();
+            glShaderSource(mShader, 1, &array, nullptr);
+            glCompileShader(mShader);
+            int status {};
+            glGetShaderiv(mShader, GL_COMPILE_STATUS, &status);
+            if(status != GL_TRUE){
+                int logLen = 0;
+                glGetShaderiv(mShader, GL_INFO_LOG_LENGTH, &logLen);
+                std::string log(static_cast<size_t>(logLen + 1), '\0');
+                glGetShaderInfoLog(mShader,logLen + 1,&logLen,log.data());
+                const auto message = "Could not compile shader, error :" + log;
+                errorstream<< "Could not compile shader, error " << status << ": " << log;
+                throw std::runtime_error(log);
+            }
+        }
+
+        ~Shader() {
+            if (mShader) {
+                glDeleteShader(mShader);
+            }
+        }
+
+        [[nodiscard]] GLuint Native() const noexcept { return mShader; }
+    private:
+        GLuint mShader {};
+    };
+
+    std::string LoadFile(const filesystem::path& path) {
+        std::ifstream file(path);
+        return std::string(std::istreambuf_iterator<char>(file),std::istreambuf_iterator<char>());
+    }
+
+    void BuildIndexBuffer() {
+        glGenBuffers(1, &gIndex);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gIndex);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, 262144/2*3*sizeof(int), nullptr, GL_STATIC_DRAW);
+        auto idx = reinterpret_cast<std::uint32_t*>(glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY));
+        auto cnt = 0;
+        for (auto i = 0; i<262144/4; ++i) {
+            auto b = i*4;
+            idx[cnt++] = b+2;
+            idx[cnt++] = b+1;
+            idx[cnt++] = b;
+            idx[cnt++] = b+3;
+            idx[cnt++] = b+2;
+            idx[cnt++] = b;
+        }
+        glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    }
+}
 
 void Renderer::init() {
     debugstream << "Start to initialize GLEW...";
@@ -35,4 +97,51 @@ void Renderer::init() {
     glClearDepth(1.0f);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+    BuildIndexBuffer();
+    glGenVertexArrays(1, &gVao);
+    glBindVertexArray(gVao);
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glEnableVertexAttribArray(2);
+    glBindVertexArray(0);
+}
+
+void Renderer::ConfigShader(const std::string& name) {
+    if (gProgram) { glDeleteProgram(gProgram); gProgram = 0; }
+    gProgram = glCreateProgram();
+    nlohmann::json config {};
+    const auto base = assetDir("infinideas.gui") / "Shaders" / name;
+    std::ifstream file (base / "Info.json");
+    file >> config;
+    auto vertex = Shader(GL_VERTEX_SHADER);
+    auto pixel = Shader(GL_FRAGMENT_SHADER);
+    if (config.find("vertex") != config.end()) {
+        vertex.Compile(LoadFile(base / std::string(config["vertex"])));
+    }
+    if (config.find("pixel") != config.end()) {
+        pixel.Compile(LoadFile(base / std::string(config["pixel"])));
+    }
+    glAttachShader(gProgram, vertex.Native());
+    glAttachShader(gProgram, pixel.Native());
+    glLinkProgram(gProgram);
+    glDetachShader(gProgram, vertex.Native());
+    glDetachShader(gProgram, pixel.Native());
+    gMvpId = glGetUniformLocation(gProgram, "MVP");
+    glUniform1i(glGetUniformLocation(gProgram, "Texture"), 0);
+}
+
+void Renderer::StartFrame() {
+    glBindVertexArray(gVao);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gIndex);
+    glUseProgram(gProgram);
+}
+
+void Renderer::EndFrame() {
+    glUseProgram(0);
+    glBindVertexArray(0);
+}
+
+void Renderer::SetMatrix() {
+    const auto matrix = GetMvpMatrix();
+    glUniformMatrix4fv(gMvpId, 1, GL_FALSE, matrix.data);
 }

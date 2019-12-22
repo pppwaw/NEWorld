@@ -260,3 +260,6 @@ res/fonts/
 *.dylib
 *.nwModule
 /cmakeBuild
+
+# CLion
+cmake-build-*

@@ -16,9 +16,9 @@ target_compile_definitions(NEWorld
 find_package(OpenGL REQUIRED)
 find_package(GLEW CONFIG REQUIRED)
 set(SDL2_BUILDING_LIBRARY ON)
-find_package(SDL2 CONFIG REQUIRED)
-find_package(SDL2-image CONFIG REQUIRED)
-target_link_libraries(NEWorld Core Threads::Threads SDL2::SDL2 SDL2::SDL2_image GLEW::GLEW)
+find_package(SDL2 REQUIRED)
+find_package(SDL2_image REQUIRED)
+target_link_libraries(NEWorld Core OpenGL::GL Threads::Threads SDL2::SDL2 SDL2::SDL2_image GLEW::GLEW)
 add_definitions(-DSDL_MAIN_HANDLED -DGLEW_NO_GLU)
 add_dependencies(NEWorld NEWorldCopyAsset)
 

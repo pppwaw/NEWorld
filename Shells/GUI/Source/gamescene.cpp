@@ -20,6 +20,7 @@
 #include <atomic>
 #include <chrono>
 #include <Common/RPC/RPC.h>
+#include <iostream>
 #include "gamescene.h"
 #include "Common/JsonHelper.h"
 #include "neworld.h"
@@ -252,9 +253,8 @@ void GameScene::render() {
 
     glClearColor(0.6f, 0.9f, 1.0f, 1.0f);
     glClearDepth(1.0f);
-    glEnable(GL_TEXTURE_2D);
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    glDisable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 
     double timeDelta = mUpdateScheduler.getDeltaTimeMs() / 1000.0 * UpdateFrequency;
@@ -262,19 +262,21 @@ void GameScene::render() {
     Vec3d playerRenderedPosition = mPlayer.getPosition() - mPlayer.getPositionDelta() * (1.0 - timeDelta);
     Vec3d playerRenderedRotation = mPlayer.getRotation() - mPlayer.getRotationDelta() * (1.0 - timeDelta);
 
+    glActiveTexture(GL_TEXTURE0);
     mTexture.bind(Texture::Texture2D);
     Renderer::clear();
-    Renderer::setViewport(0, 0, mWindow.getWidth(), mWindow.getHeight());
+    int width{}, height{};
+    mWindow.GetDrawableSize(width, height);
+    Renderer::setViewport(0, 0, width, height);
     Renderer::restoreProj();
     Renderer::applyPerspective(70.0f, float(mWindow.getWidth()) / mWindow.getHeight(), 0.1f, 3000.0f);
+    Renderer::restoreView();
+    Renderer::rotateView(float(-playerRenderedRotation.x), Vec3f(1.0f, 0.0f, 0.0f));
+    Renderer::rotateView(float(-playerRenderedRotation.y), Vec3f(0.0f, 1.0f, 0.0f));
+    Renderer::rotateView(float(-playerRenderedRotation.z), Vec3f(0.0f, 0.0f, 1.0f));
+    Renderer::translateView(-playerRenderedPosition);
     Renderer::restoreScale();
-    Renderer::rotate(float(-playerRenderedRotation.x), Vec3f(1.0f, 0.0f, 0.0f));
-    Renderer::rotate(float(-playerRenderedRotation.y), Vec3f(0.0f, 1.0f, 0.0f));
-    Renderer::rotate(float(-playerRenderedRotation.z), Vec3f(0.0f, 0.0f, 1.0f));
-    Renderer::translate(-playerRenderedPosition);
-
     // Render
-
     mWorldRenderer->render(Vec3i(mPlayer.getPosition()));
     // mPlayer.render();
 

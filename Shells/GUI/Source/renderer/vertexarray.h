@@ -96,40 +96,6 @@ public:
         mVertexes = 0;
     }
 
-    // Set texture coordinates
-    void setTexture(size_t size, const float* texture) {
-        Assert(size <= mFormat.textureCount);
-        memcpy(mVertexAttributes, texture, size * sizeof(float));
-    }
-
-    void setTexture(std::initializer_list<float> texture) { setTexture(texture.size(), texture.begin()); }
-
-    // Set color value
-    void setColor(size_t size, const float* color) {
-        Assert(size <= mFormat.colorCount);
-        memcpy(mVertexAttributes + mFormat.textureCount, color, size * sizeof(float));
-    }
-
-    void setColor(std::initializer_list<float> color) { setColor(color.size(), color.begin()); }
-
-    // Set normal vector
-    void setNormal(size_t size, const float* normal) {
-        Assert(size <= mFormat.normalCount);
-        memcpy(mVertexAttributes + mFormat.textureCount + mFormat.colorCount, normal, size * sizeof(float));
-    }
-
-    void setNormal(std::initializer_list<float> normal) { setNormal(normal.size(), normal.begin()); }
-
-    // Add vertex
-    void addVertex(const float* coords) {
-        auto cnt = mFormat.textureCount + mFormat.colorCount + mFormat.normalCount;
-        memcpy(mData + mVertexes * mFormat.vertexAttributeCount, mVertexAttributes, cnt * sizeof(float));
-        memcpy(mData + mVertexes * mFormat.vertexAttributeCount + cnt, coords, mFormat.coordinateCount * sizeof(float));
-        mVertexes++;
-    }
-
-    void addVertex(std::initializer_list<float> coords) { addVertex(coords.begin()); }
-
     void addPrimitive(size_t size, std::initializer_list<float> d) {
         memcpy(mData + mVertexes * mFormat.vertexAttributeCount, d.begin(),
                size * mFormat.vertexAttributeCount * sizeof(float));
@@ -169,9 +135,6 @@ class VertexBuffer : public NonCopyable {
 public:
     VertexBuffer(): id(0), vertexes(0) { }
 
-    VertexBuffer(VertexBufferID id_, int vertexes_, const VertexFormat& format_):
-        id(id_), vertexes(vertexes_), format(format_) { }
-
     VertexBuffer(VertexBuffer&& rhs) noexcept:
         id(rhs.id), vertexes(rhs.vertexes), format(rhs.format) {
         rhs.vertexes = rhs.id = 0;
@@ -181,7 +144,6 @@ public:
     explicit VertexBuffer(const VertexArray& va);
 
     VertexBuffer& operator=(VertexBuffer&& rhs) noexcept {
-
         id = rhs.id;
         vertexes = rhs.vertexes;
         format = rhs.format;
@@ -201,7 +163,7 @@ public:
     // Destroy vertex buffer
     void destroy() {
         if (id) {
-            glDeleteBuffersARB(1, &id);
+            glDeleteBuffers(1, &id);
             vertexes = id = 0;
             format = VertexFormat();
         }

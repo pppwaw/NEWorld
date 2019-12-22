@@ -22,8 +22,9 @@
 #include "Common/Logger.h"
 #include "Common/Filesystem.h"
 #include "Common/JsonHelper.h"
-#include <cstdlib>
 #include <set>
+#include <cstdlib>
+#include <unordered_map>
 
 struct Version {
     constexpr Version(int a, int b, int c, int d) : vMajor(a), vMinor(b), vRevision(c), vBuild(d) {}

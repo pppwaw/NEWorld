@@ -69,7 +69,7 @@ static struct nk_sdl {
 } sdl;
 
 #ifdef __APPLE__
-  #define NK_SHADER_VERSION "#version 150\n"
+  #define NK_SHADER_VERSION "#version 330\n"
 #else
   #define NK_SHADER_VERSION "#version 300 es\n"
 #endif

@@ -32,39 +32,42 @@ public:
     static void setViewport(int x, int y, int width, int height) { glViewport(x, y, width, height); }
 
     // Reset translations/rotations (Restore transform matrixes)
-    static void restoreScale() {
-        setModelMatrix();
-        glLoadIdentity();
-    }
+    static void restoreScale() { mModel = Mat4f{1.0f}; }
 
     // Apply translation
     static void translate(const Vec3f& delta) {
-        setModelMatrix();
-        glTranslatef(delta.x, delta.y, delta.z);
+        mModel *= Mat4f::translation(delta);
     }
 
     // Apply rotation
     static void rotate(float degrees, const Vec3f& scale) {
-        setModelMatrix();
-        glRotatef(degrees, scale.x, scale.y, scale.z);
+        mModel *= Mat4f::rotation(degrees, scale);
+    }
+
+    // Reset translations/rotations (Restore transform matrixes)
+    static void restoreView() { mView = Mat4f{1.0f}; }
+
+    // Apply translation
+    static void translateView(const Vec3f& delta) {
+        mView *= Mat4f::translation(delta);
+    }
+
+    // Apply rotation
+    static void rotateView(float degrees, const Vec3f& scale) {
+        mView *= Mat4f::rotation(degrees, scale);
     }
 
     // Restore projection matrix
-    static void restoreProj() {
-        setProjMatrix();
-        glLoadIdentity();
-    }
+    static void restoreProj() { mProjection = Mat4f{1.0f}; }
 
     // Perspective projection
     static void applyPerspective(float fov, float aspect, float zNear, float zFar) {
-        setProjMatrix();
-        glMultMatrixf(Mat4f::perspective(fov, aspect, zNear, zFar).getTranspose().data);
+        mProjection *= Mat4f::perspective(fov, aspect, zNear, zFar);
     }
 
     // Orthogonal projection
     static void applyOrtho(float left, float right, float top, float bottom, float zNear, float zFar) {
-        setProjMatrix();
-        glMultMatrixf(Mat4f::ortho(left, right, top, bottom, zNear, zFar).getTranspose().data);
+        mProjection *= Mat4f::ortho(left, right, top, bottom, zNear, zFar);
     }
 
     static void clear() { glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); }
@@ -78,18 +81,15 @@ public:
         if (err) warningstream << "OpenGL Error " << err;
     }
 
+    static Mat4f GetMvpMatrix() noexcept { return mProjection * mView * mModel; }
+
+    static void ConfigShader(const std::string& name);
+
+    static void StartFrame();
+
+    static void EndFrame();
+
+    static void SetMatrix();
 private:
-    static int matrixMode;
-
-    static void setProjMatrix() {
-        if (matrixMode == GL_PROJECTION) return;
-        glMatrixMode(GL_PROJECTION);
-        matrixMode = GL_PROJECTION;
-    }
-
-    static void setModelMatrix() {
-        if (matrixMode == GL_MODELVIEW) return;
-        glMatrixMode(GL_MODELVIEW);
-        matrixMode = GL_MODELVIEW;
-    }
+    inline static Mat4f mModel{}, mProjection{}, mView{};
 };

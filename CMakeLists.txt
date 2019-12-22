@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(PROJECT_DIR ${CMAKE_SOURCE_DIR})
 set(SOURCE_DIR "${PROJECT_DIR}/Core/Source")
 
-if(UNIX)
+if(UNIX AND NOT APPLE)
     link_libraries(dl stdc++fs)
 endif()
 

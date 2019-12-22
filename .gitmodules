@@ -1,0 +1,3 @@
+[submodule "3rdParty/NRT"]
+	path = 3rdParty/NRT
+	url = https://github.com/DWVoid/NRT.git

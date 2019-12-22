@@ -20,6 +20,7 @@
 #pragma once
 #include <unordered_map>
 #include "chunkrenderer.h"
+#include "renderer.h"
 #include "Game/SyncService/chunkservice.hpp"
 
 const int MaxChunkRenderCount = 4;
@@ -30,7 +31,9 @@ const int MaxChunkRenderCount = 4;
 class WorldRenderer {
 public:
     WorldRenderer(const World& world, int renderDistance)
-        : mWorld(world), mRenderDist(renderDistance) { }
+        : mWorld(world), mRenderDist(renderDistance) {
+        Renderer::ConfigShader("Standard");
+    }
 
     // Render all chunks
     size_t render(const Vec3i& position) const;

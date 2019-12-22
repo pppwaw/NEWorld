@@ -54,8 +54,8 @@ public:
     const VertexArray& getVAOpacity() const noexcept { return mVAOpacity; }
     const VertexArray& getVATranslucent() const noexcept { return mVATranslucent; }
 private:
-    VertexArray mVAOpacity{262144, VertexFormat(2, 3, 0, 3)};
-    VertexArray mVATranslucent{262144, VertexFormat(2, 3, 0, 3)};
+    VertexArray mVAOpacity{262144, VertexFormat(2, 1, 0, 3)};
+    VertexArray mVATranslucent{262144, VertexFormat(2, 1, 0, 3)};
 };
 
 /**
@@ -89,6 +89,7 @@ public:
     void render(const Vec3i& c) const {
         if (!mBuffer.isEmpty()) {
             Renderer::translate(Vec3f(c * Chunk::Size()));
+            Renderer::SetMatrix();
             mBuffer.render();
             Renderer::translate(Vec3f(-c * Chunk::Size()));
         }
@@ -97,6 +98,7 @@ public:
     void renderTrans(const Vec3i& c) const {
         if (!mBufferTrans.isEmpty()) {
             Renderer::translate(Vec3f(c * Chunk::Size()));
+            Renderer::SetMatrix();
             mBufferTrans.render();
             Renderer::translate(Vec3f(-c * Chunk::Size()));
         }

@@ -1,0 +1,5 @@
+{
+  "vertex": "Vertex.vert",
+  "pixel": "Fragment.frag",
+  "attrib": "minimum"
+}

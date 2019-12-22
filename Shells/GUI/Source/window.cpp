@@ -22,7 +22,7 @@
 #include "renderer/renderer.h"
 
 void Window::pollEvents() {
-    if (SDL_GetRelativeMouseMode() == SDL_TRUE) {
+    if (SDL_GetRelativeMouseMode()==SDL_TRUE) {
         Uint32 buttons = SDL_GetRelativeMouseState(&mMouse.x, &mMouse.y);
         mMouse.left = buttons & SDL_BUTTON_LEFT;
         mMouse.right = buttons & SDL_BUTTON_RIGHT;
@@ -44,14 +44,12 @@ void Window::pollEvents() {
     while (SDL_PollEvent(&e)) {
         nk_sdl_handle_event(&e);
         switch (e.type) {
-        case SDL_QUIT:
-            mShouldQuit = true;
+        case SDL_QUIT:mShouldQuit = true;
             break;
         case SDL_WINDOWEVENT:
             switch (e.window.event) {
             case SDL_WINDOWEVENT_RESIZED:
-            case SDL_WINDOWEVENT_SIZE_CHANGED:
-                mWidth = e.window.data1;
+            case SDL_WINDOWEVENT_SIZE_CHANGED:mWidth = e.window.data1;
                 mHeight = e.window.data2;
                 break;
             }
@@ -61,29 +59,36 @@ void Window::pollEvents() {
     nk_input_end(mNuklearContext);
 }
 
+void PrintOglVersion() {
+    int major{}, minor{};
+    glGetIntegerv (GL_MAJOR_VERSION, &major);
+    glGetIntegerv (GL_MINOR_VERSION, &minor);
+    infostream << "OpenGL Version:" << major << '.' << minor;
+}
+
 Window::Window(const std::string& title, int width, int height)
-    : mTitle(title), mWidth(width), mHeight(height) {
+        :mTitle(title), mWidth(width), mHeight(height) {
     SDL_Init(SDL_INIT_VIDEO);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
-    //SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
-    //SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    //SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    //SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
 
-    mWindow = SDL_CreateWindow(mTitle.c_str(), 100, 100, mWidth, mHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
-    if (mWindow == nullptr)
+    mWindow = SDL_CreateWindow(mTitle.c_str(), 100, 100, mWidth, mHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+    if (mWindow==nullptr)
         fatalstream << "Failed to create SDL window!" << SDL_GetError();
-    Assert(mWindow != nullptr);
-    glewExperimental = 1;
-    glewInit();
+    Assert(mWindow!=nullptr);
 
     mContext = SDL_GL_CreateContext(mWindow);
-    if (mContext == nullptr)
+    if (mContext==nullptr)
         fatalstream << "Failed to create GL context! " << SDL_GetError();
-    Assert(mContext != nullptr);
-    SDL_GL_SetSwapInterval(0); // VSync
+    Assert(mContext!=nullptr);
+    glewExperimental = 1;
+    glewInit();
+    PrintOglVersion();
+    SDL_GL_SetSwapInterval(1); // VSync
     makeCurrentDraw();
     Renderer::init();
     mNuklearContext = nk_sdl_init(mWindow);
