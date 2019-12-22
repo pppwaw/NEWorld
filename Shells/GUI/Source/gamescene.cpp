@@ -226,9 +226,13 @@ GameScene::GameScene(const std::string& name, const Window& window):
                 auto time = std::max(static_cast<long long>(dispatcher.getTimeUsed()[i]), 0ll);
                 nk_labelf(ctx, NK_TEXT_LEFT, "Thread %zu: %lld ms (%.1f)%", i, time, time / 33.3333);
             }
+            nk_labelf(ctx, NK_TEXT_LEFT, "RW Tasks: %lld ms (%.1f)%", dispatcher.getRWTimeUsed(), dispatcher.getRWTimeUsed() / 33.3333);
+
             nk_labelf(ctx, NK_TEXT_LEFT, "Regular Tasks: read %zu write %zu",
                       dispatcher.getRegularReadOnlyTaskCount(),
                       dispatcher.getRegularReadWriteTaskCount());
+            nk_labelf(ctx, NK_TEXT_LEFT, "All Tasks: read %zu write %zu",
+                dispatcher.getReadOnlyTaskCount(), dispatcher.getReadWriteTaskCount());
         }));
 
     chunkService.getTaskDispatcher().start();

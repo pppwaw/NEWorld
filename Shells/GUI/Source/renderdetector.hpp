@@ -47,3 +47,18 @@ private:
     size_t mCurrentWorldId;
     const Player& mPlayer;
 };
+
+class ChunkRenderDataGenerateTask : public ReadOnlyTask {
+public:
+    ChunkRenderDataGenerateTask(WorldRenderer& worldRenderer, size_t currentWorldID, Vec3i chunkPos) :
+        mWorldRenderer(worldRenderer), mCurrentWorldId(currentWorldID), mChunkPos(chunkPos) { }
+
+    void task(const ChunkService& cs) override;
+
+    std::unique_ptr<ReadOnlyTask> clone() override { return std::make_unique<ChunkRenderDataGenerateTask>(*this); }
+
+private:
+    WorldRenderer& mWorldRenderer;
+    size_t mCurrentWorldId;
+    Vec3i mChunkPos;
+};

@@ -59,12 +59,8 @@ void RenderDetectorTask::task(const ChunkService& cs) {
         if (chunk->isUpdated() &&
             chunkpos.chebyshevDistance(chunkPosition) <= mWorldRenderer.mRenderDist) {
             if (neighbourChunkLoadCheck(*world, chunkPosition)) {
-                // TODO: maybe build a VA pool can speed this up.
-                ChunkRenderData crd;
-                crd.generate(chunk.get());
-                chunkService.getTaskDispatcher().addRenderTask(
-                    std::make_unique<VBOGenerateTask>(*world, chunkPosition, std::move(crd),
-                                                      mWorldRenderer.mChunkRenderers)
+                chunkService.getTaskDispatcher().addReadOnlyTask(
+                    std::make_unique<ChunkRenderDataGenerateTask>(mWorldRenderer, mCurrentWorldId, chunk->getPosition())
                 );
                 if (counter++ == 3) break;
             }
@@ -79,4 +75,16 @@ void RenderDetectorTask::task(const ChunkService& cs) {
             */
         }
     }
+}
+
+void ChunkRenderDataGenerateTask::task(const ChunkService& cs)
+{
+    // TODO: maybe build a VA pool can speed this up.
+    auto world = cs.getWorlds().getWorld(mCurrentWorldId);
+    auto& chunk = world->getChunks()[mChunkPos];
+    ChunkRenderData crd;
+    crd.generate(&chunk);
+    chunkService.getTaskDispatcher().addRenderTask(
+        std::make_unique<VBOGenerateTask>(*world, mChunkPos, std::move(crd), mWorldRenderer.mChunkRenderers)
+    );
 }

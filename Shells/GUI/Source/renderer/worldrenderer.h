@@ -38,6 +38,7 @@ public:
     void registerTask(ChunkService& chunkService, Player& player) noexcept;
 
     friend class RenderDetectorTask;
+    friend class ChunkRenderDataGenerateTask;
 
 private:
     const World& mWorld;

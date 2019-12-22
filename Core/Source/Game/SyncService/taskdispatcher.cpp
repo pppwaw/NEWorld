@@ -49,6 +49,8 @@ void TaskDispatcher::worker(size_t threadID) {
             std::swap(mReadOnlyTasks, mNextReadOnlyTasks);
             std::swap(mReadWriteTasks, mNextReadWriteTasks);
 
+            mTimeUsedRWTasks = meter.getDeltaTimeMs() - mTimeUsed[threadID];
+
             // Limit UPS
             meter.yield();
 

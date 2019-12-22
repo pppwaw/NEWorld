@@ -109,6 +109,9 @@ public:
 
     size_t getRegularReadOnlyTaskCount() const noexcept { return mRegularReadOnlyTasks.size(); }
     size_t getRegularReadWriteTaskCount() const noexcept { return mRegularReadWriteTasks.size(); }
+    size_t getReadOnlyTaskCount() const noexcept { return mNextReadOnlyTasks.size(); }
+    size_t getReadWriteTaskCount() const noexcept { return mNextReadWriteTasks.size(); }
+    size_t getThreadNum() const noexcept { return mThreadNumber; }
 
     /**
      * \brief Process render tasks.
@@ -123,6 +126,7 @@ public:
     }
 
     const std::vector<int64_t>& getTimeUsed() const noexcept { return mTimeUsed; }
+	int64_t getRWTimeUsed() const noexcept { return mTimeUsedRWTasks; }
 
     void stop() {
         mShouldExit = true;
@@ -147,5 +151,7 @@ private:
 
     ChunkService& mChunkService;
 
-    std::vector<int64_t> mTimeUsed; // For statistical purpose only
+    // For statistical purpose only
+    std::vector<int64_t> mTimeUsed;
+    int64_t mTimeUsedRWTasks;
 };

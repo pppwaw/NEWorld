@@ -18,7 +18,6 @@
 // 
 
 #include <cmath>
-#include <iostream>
 #include <Common/Math/Vector.h>
 #include <Game/SyncService/world/Blocks.h>
 #include <Game/SyncService/world/nwchunk.h>
@@ -32,13 +31,14 @@ extern int32_t GrassID, RockID, DirtID, SandID, WaterID;
 
 // Chunk generator
 void generator(const Vec3i* pos, BlockData* blocks, int daylightBrightness) {
-    for (int x = 0; x < Chunk::Size(); x++)
-        for (int z = 0; z < Chunk::Size(); z++) {
+    constexpr const auto ChunkSize = Chunk::Size();
+    for (int x = 0; x < ChunkSize; x++)
+        for (int z = 0; z < ChunkSize; z++) {
             int absHeight = WorldGen::getHeight(pos->x * Chunk::Size() + x, pos->z * Chunk::Size() + z);
-            int height = absHeight - pos->y * Chunk::Size();
+            int height = absHeight - pos->y * ChunkSize;
             bool underWater = (absHeight) <= 0;
-            for (int y = 0; y < Chunk::Size(); y++) {
-                auto& block = blocks[x * Chunk::Size() * Chunk::Size() + y * Chunk::Size() + z];
+            for (int y = 0; y < ChunkSize; y++) {
+                auto& block = blocks[x * ChunkSize * ChunkSize + y * ChunkSize + z];
                 if (y <= height) {
                     if (y == height) { block.setID((underWater) ? SandID : GrassID); }
                     else if (y >= height - 3) { block.setID((underWater) ? SandID : DirtID); }
@@ -47,7 +47,7 @@ void generator(const Vec3i* pos, BlockData* blocks, int daylightBrightness) {
                     block.setState(0);
                 }
                 else {
-                    block.setID((pos->y * Chunk::Size() + y <= 0) ? WaterID : 0);
+                    block.setID((pos->y * ChunkSize + y <= 0) ? WaterID : 0);
                     block.setBrightness(daylightBrightness);
                     block.setState(0);
                 }
