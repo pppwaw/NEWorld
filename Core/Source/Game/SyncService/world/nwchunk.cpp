@@ -23,10 +23,11 @@
 #include "nwchunk.h"
 #include "world.h"
 
-void NWAPICALL DefaultChunkGen(const Vec3i*, BlockData* blocks, int32_t daylightBrightness) {
+void NWAPICALL DefaultChunkGen(const Vec3i*, Chunk* chunk, int32_t daylightBrightness) {
     // This is the default terrain generator. Use this when no generators were loaded from plugins.
-    for (int x = 0; x < Chunk::Size() * Chunk::Size() * Chunk::Size(); ++x)
-        blocks[x] = BlockData(0, daylightBrightness, 0);
+    
+    //for (int x = 0; x < Chunk::Size() * Chunk::Size() * Chunk::Size(); ++x)
+    //    blocks[x] = BlockData(0, daylightBrightness, 0);
 }
 
 bool Chunk::ChunkGeneratorLoaded = false;
@@ -38,14 +39,13 @@ Chunk::Chunk(const Vec3i& position, const class World& world)
 Chunk::Chunk(const Vec3i& position, const class World& world, const std::vector<uint32_t>& data)
     : mPosition(position), mWorld(&world) {
     assert(data.size() == Chunk::BlocksSize);
-    // It's undefined behavior to use memcpy.
-    //  std::memcpy(mBlocks, data.data(), sizeof(BlockData) * 32768);
-    for (size_t i = 0; i < 32768; ++i)
-        mBlocks[i] = BlockData(data.data()[i]);
+    allocateBlocks();
+    static_assert(std::is_trivially_copyable<BlockData>::value);
+    std::memcpy(getBlocks()->data(), data.data(), sizeof(BlockData) * BlocksSize);
 }
 
 void Chunk::build(int daylightBrightness) {
-    ChunkGen(&getPosition(), getBlocks(), daylightBrightness);
+    ChunkGen(&getPosition(), this, daylightBrightness);
     setUpdated(true);
 }
 

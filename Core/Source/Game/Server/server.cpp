@@ -36,10 +36,9 @@ std::vector<uint32_t> serverGetChunk(size_t worldID, Vec3i position) {
     }
     std::vector<uint32_t> chunkData;
     chunkData.resize(32768);
-    // It's undefined behavior to use memcpy.
-    //    std::memcpy(chunkData.data(), chunkPtr->getBlocks(), sizeof(BlockData) * 32768);
-    for (size_t i = 0; i < 32768; ++i)
-        chunkData.data()[i] = chunkPtr->getBlocks()[i].getData();
+
+    if (chunkPtr->isMonotonic()) chunkPtr->allocateBlocks();
+    std::memcpy(chunkData.data(), chunkPtr->getBlocks()->data(), sizeof(BlockData) * Chunk::BlocksSize);
     return chunkData;
 }
 

@@ -30,11 +30,32 @@ double WorldGen::NoiseScaleZ = 64;
 extern int32_t GrassID, RockID, DirtID, SandID, WaterID;
 
 // Chunk generator
-void generator(const Vec3i* pos, BlockData* blocks, int daylightBrightness) {
+void generator(const Vec3i* pos, Chunk* chunk, int daylightBrightness) {
     constexpr const auto ChunkSize = Chunk::Size();
+
+    int heightMap[ChunkSize][ChunkSize];
+
+    bool needAllocation = false;
+    for (int x = 0; x < ChunkSize; x++) {
+        for (int z = 0; z < ChunkSize; z++) {
+            int absHeight = WorldGen::getHeight(pos->x * ChunkSize + x, pos->z * ChunkSize + z);
+            heightMap[x][z] = absHeight;
+            int height = absHeight - pos->y * ChunkSize;
+            if (height >= 0 || pos->y * ChunkSize <= 0) {
+                needAllocation = true;
+            }
+        }
+    }
+    if (!needAllocation) {
+        chunk->setMonotonic({ 0,0,0 });
+        return;
+    }
+    chunk->allocateBlocks();
+    auto& blocks = *chunk->getBlocks();
+
     for (int x = 0; x < ChunkSize; x++)
         for (int z = 0; z < ChunkSize; z++) {
-            int absHeight = WorldGen::getHeight(pos->x * Chunk::Size() + x, pos->z * Chunk::Size() + z);
+            int absHeight = heightMap[x][z];
             int height = absHeight - pos->y * ChunkSize;
             bool underWater = (absHeight) <= 0;
             for (int y = 0; y < ChunkSize; y++) {

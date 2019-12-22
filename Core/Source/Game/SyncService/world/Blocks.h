@@ -33,6 +33,9 @@ public:
 
     BlockData(uint32_t allData) { mBlockDataUnion.allData = allData; }
 
+    bool operator==(const BlockData& rhs) { return rhs.getData() == getData(); }
+    bool operator!=(const BlockData& rhs) { return !(*this == rhs); }
+
     uint32_t getData() const noexcept { return mBlockDataUnion.allData; }
 
     uint32_t getID() const noexcept { return mBlockDataUnion.data.id; }

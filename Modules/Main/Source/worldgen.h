@@ -41,4 +41,5 @@ namespace WorldGen {
 }
 
 // Chunk generator
-void generator(const Vec3i* pos, BlockData* blocks, int daylightBrightness);
+class Chunk;
+void generator(const Vec3i* pos, Chunk* blocks, int daylightBrightness);

@@ -25,22 +25,25 @@
 #include <memory>
 #include <vector>
 #include <utility>
+#include <array>
 #include <unordered_map>
 #include "Blocks.h"
 #include "Common/Debug.h"
 #include "Common/Math/Vector.h"
 #include "Common/Utility.h"
 
-using ChunkGenerator = std::add_pointer_t<void(const Vec3i*, BlockData*, int)>;
+class Chunk;
+using ChunkGenerator = std::add_pointer_t<void(const Vec3i*, Chunk*, int)>;
 
 class NWCOREAPI Chunk final : public NonCopyable {
 public:
     // Chunk size
     static bool ChunkGeneratorLoaded;
     static ChunkGenerator ChunkGen;
-    static constexpr int BlocksSize = 0b1000000000000000;
+    static constexpr int BlocksSize = 32 * 32 * 32;
     static constexpr int SizeLog2() { return 5; }
     static constexpr int Size() { return 32; };
+    using Blocks = std::array<BlockData, BlocksSize>;
 
     explicit Chunk(const Vec3i& position, const class World& world);
     explicit Chunk(const Vec3i& position, const class World& world, const std::vector<uint32_t>& data);
@@ -60,18 +63,18 @@ public:
     // Get block data in this chunk
     BlockData getBlock(const Vec3i& pos) const {
         Assert(pos.x >= 0 && pos.x < Size() && pos.y >= 0 && pos.y < Size() && pos.z >= 0 && pos.z < Size());
-        return mBlocks[pos.x * Size() * Size() + pos.y * Size() + pos.z];
+        return !isMonotonic() ? (*getBlocks())[pos.x * Size() * Size() + pos.y * Size() + pos.z] : mMonotonicBlock;
     }
 
-    // Get block pointer
-    BlockData* getBlocks() noexcept { return mBlocks; }
-
-    const BlockData* getBlocks() const noexcept { return mBlocks; }
+    // Get block pointer. Note that they might return nullptr in case of monotonic chunk.
+    Blocks* getBlocks() noexcept { return mBlocks.get(); }
+    const Blocks* getBlocks() const noexcept { return mBlocks.get(); }
 
     // Set block data in this chunk
     void setBlock(const Vec3i& pos, BlockData block) {
         Assert(pos.x >= 0 && pos.x < Size() && pos.y >= 0 && pos.y < Size() && pos.z >= 0 && pos.z < Size());
-        mBlocks[pos.x * Size() * Size() + pos.y * Size() + pos.z] = block;
+        if (isMonotonic() && block != mMonotonicBlock) allocateBlocks();
+        (*getBlocks())[pos.x * Size() * Size() + pos.y * Size() + pos.z] = block;
         mUpdated = true;
     }
 
@@ -101,10 +104,17 @@ public:
     }
 
     const World* getWorld() const noexcept { return mWorld; }
+    bool isMonotonic() const noexcept { return mBlocks == nullptr; }
+    void allocateBlocks() { Assert(isMonotonic()); mBlocks = std::make_unique<Blocks>(); }
+    void setMonotonic(BlockData block) noexcept { Assert(isMonotonic()); mMonotonicBlock = block; }
+
 private:
     std::mutex mMutex;
     Vec3i mPosition;
-    BlockData mBlocks[BlocksSize];
+    
+    std::unique_ptr<Blocks> mBlocks;
+    BlockData mMonotonicBlock;
+
     // TODO: somehow avoid it! not safe.
     mutable bool mUpdated = false;
     bool mModified = false;
