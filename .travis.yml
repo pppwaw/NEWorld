@@ -1,9 +1,10 @@
 language: generic
 sudo: required
-dist: trusty
+dist: bionic
 cache:
   directories:
     - CMakeFiles/
+    - vcpkg/
 matrix:
   include:
     - os: linux
@@ -16,25 +17,23 @@ matrix:
             - llvm-toolchain-precise-3.8
             - ubuntu-toolchain-r-test
           packages:
-            - g++-7
-            - gcc-7
+            - g++-8
+            - gcc-8
             - p7zip
             - cmake
             - cmake-data
-            - libgl1-mesa-dev
-            - libglu1-mesa-dev
-            - libglew-dev
-            - libsdl2-dev
-            - libsdl2-image-dev
+            - libgl-dev
+            - mesa-common-dev
 install:
   - |
-    git clone https://github.com/rpclib/rpclib.git
-    cd ./rpclib
-    cmake . -DBUILD_SHARED_LIBS=ON && make -j8
-    sudo make install 
+    git clone https://github.com/Microsoft/vcpkg.git
+    cd ./vcpkg
+    ./bootstrap-vcpkg.sh
+    ./vcpkg integrate install
+    ./vcpkg install sdl2 sdl2-image glew rpclib
     cd ..
 script:
   - mkdir cmakeBuild && cd cmakeBuild
-  - export CXX=g++-7 CC=gcc-7
-  - cmake ..
+  - export CXX=g++-8 CC=gcc-8
+  - cmake -DCMAKE_TOOLCHAIN_FILE=/home/travis/build/Infinideastudio/NEWorld/vcpkg/scripts/buildsystems/vcpkg.cmake ..
   - make -j8

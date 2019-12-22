@@ -21,6 +21,7 @@
 
 #include <Common/Config.h>
 #include <cstdint>
+#include <cstddef>
 
 class NWCOREAPI Server {
 public:

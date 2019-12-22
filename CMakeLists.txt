@@ -32,7 +32,7 @@ target_compile_definitions(Core
     PRIVATE -DNWCompartmentLoggerPrefix="Core")
 
 # Link libraries for Core
-find_package(rpclib REQUIRED)
+find_package(rpclib CONFIG REQUIRED)
 target_link_libraries(Core Threads::Threads rpclib::rpc)
 
 add_subdirectory(Tools)

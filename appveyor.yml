@@ -1,4 +1,4 @@
-image: Visual Studio 2017
+image: Visual Studio 2019
 version: '{build}'
 cache: c:\tools\vcpkg\installed\
 platform:
@@ -10,14 +10,16 @@ configuration:
 clone_folder: C:\NEWorld
 clone_depth: 1
 install:
+  - cd C:\Tools\vcpkg
+  - git pull
+  - .\bootstrap-vcpkg.bat
+  - .\vcpkg.exe integrate install
   - if %PLATFORM% equ Win32 (vcpkg.exe install sdl2 sdl2-image glew rpclib) else (vcpkg.exe install sdl2:x64-windows sdl2-image:x64-windows glew:x64-windows rpclib:x64-windows) > nul
+  - cd %APPVEYOR_BUILD_FOLDER%
 before_build:
   - mkdir projectBuild
   - cd projectBuild
-  - if %CONFIGURATION% equ Debug (if %PLATFORM% equ Win32 (cmake ../ -G "Visual Studio 15 2017" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE="C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake" ))
-  - if %CONFIGURATION% equ Release (if %PLATFORM% equ Win32 (cmake ../ -G "Visual Studio 15 2017" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake" ))
-  - if %CONFIGURATION% equ Debug (if %PLATFORM% equ x64 (cmake ../ -G "Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE="C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake" ))
-  - if %CONFIGURATION% equ Release (if %PLATFORM% equ x64 (cmake ../ -G "Visual Studio 15 2017 Win64" -DCMAKE_BUILD_TYPE=Release -DCMAKE_TOOLCHAIN_FILE="C:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake" ))
+  - cmake ../ -G "Visual Studio 16 2019" -A %PLATFORM% -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DCMAKE_TOOLCHAIN_FILE="C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake"
   - cd ..
 build:
   project: projectBuild/NEWorld.sln
