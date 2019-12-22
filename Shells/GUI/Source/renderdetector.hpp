@@ -31,18 +31,6 @@ public:
     std::unique_ptr<ReadOnlyTask> clone() override { return std::make_unique<RenderDetectorTask>(*this); }
 
 private:
-    static bool neighbourChunkLoadCheck(const World& world, const Vec3i& pos) {
-        constexpr std::array<Vec3i, 6> delta
-        {
-            Vec3i(1, 0, 0), Vec3i(-1, 0, 0), Vec3i(0, 1, 0),
-            Vec3i(0, -1, 0), Vec3i(0, 0, 1), Vec3i(0, 0, -1)
-        };
-        for (auto&& p : delta)
-            if (!world.isChunkLoaded(pos + p))
-                return false;
-        return true;
-    }
-
     WorldRenderer& mWorldRenderer;
     size_t mCurrentWorldId;
     const Player& mPlayer;

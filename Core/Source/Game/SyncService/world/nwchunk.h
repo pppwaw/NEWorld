@@ -40,7 +40,7 @@ public:
     static ChunkGenerator ChunkGen;
     static constexpr int BlocksSize = 0b1000000000000000;
     static constexpr int SizeLog2() { return 5; }
-    static constexpr int Size() { return 0b100000; };
+    static constexpr int Size() { return 32; };
 
     explicit Chunk(const Vec3i& position, const class World& world);
     explicit Chunk(const Vec3i& position, const class World& world, const std::vector<uint32_t>& data);

@@ -20,6 +20,18 @@
 #include "renderdetector.hpp"
 #include "Game/Client/player.h"
 
+static bool neighbourChunkLoadCheck(const World& world, const Vec3i& pos) {
+    constexpr std::array<Vec3i, 6> delta
+    {
+        Vec3i(1, 0, 0), Vec3i(-1, 0, 0), Vec3i(0, 1, 0),
+        Vec3i(0, -1, 0), Vec3i(0, 0, 1), Vec3i(0, 0, -1)
+    };
+    for (auto&& p : delta)
+        if (!world.isChunkLoaded(pos + p))
+            return false;
+    return true;
+}
+
 class VBOGenerateTask : public RenderTask {
 public:
     VBOGenerateTask(const World& world, const Vec3i& position, ChunkRenderData crd,
@@ -82,6 +94,7 @@ void ChunkRenderDataGenerateTask::task(const ChunkService& cs)
     // TODO: maybe build a VA pool can speed this up.
     auto world = cs.getWorlds().getWorld(mCurrentWorldId);
     auto& chunk = world->getChunks()[mChunkPos];
+    if (!neighbourChunkLoadCheck(*world, mChunkPos)) return;
     ChunkRenderData crd;
     crd.generate(&chunk);
     chunkService.getTaskDispatcher().addRenderTask(
