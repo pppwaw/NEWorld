@@ -9,7 +9,16 @@ if(UNIX AND NOT APPLE)
     link_libraries(dl stdc++fs)
 endif()
 
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_DIR}/Build/CMake")
+if(_VCPKG_ROOT_DIR)
+	set(VCPKG_USED ON)
+	message("Vcpkg detected.")
+else()
+	message("Vcpkg not detected.")
+endif()
+
+if(NOT VCPKG_USED)
+	list(APPEND CMAKE_MODULE_PATH "${PROJECT_DIR}/Build/CMake")
+endif()
 
 project(NEWorld)
 set(NEWORLD_PRODUCT_DIR ${CMAKE_BINARY_DIR}/Product-$<CONFIG>)

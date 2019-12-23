@@ -59,7 +59,7 @@ if(NOT SDL2_IMAGE_LIBRARY AND SDL2IMAGE_LIBRARY)
     set(SDL2_IMAGE_LIBRARY ${SDL2IMAGE_LIBRARY} CACHE FILEPATH "file cache entry initialized from old variable name")
 endif()
 find_library(SDL2_IMAGE_LIBRARY
-    NAMES SDL2_image
+    NAMES SDL2-image
     HINTS
     ENV SDL2IMAGEDIR
     ENV SDL2DIR

@@ -26,7 +26,7 @@ using Json = nlohmann::json;
 
 const std::string SettingsFilename = "./settings";
 
-NWCOREAPI Json readJsonFromFile(std::string filename);
+NWCOREAPI Json readJsonFromFile(const std::string& filename);
 
 NWCOREAPI void writeJsonToFile(std::string filename, Json& json);
 

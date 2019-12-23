@@ -22,6 +22,7 @@
 #include <nlohmann/json.hpp>
 #include <fstream>
 #include <iostream>
+#include <Common\JsonHelper.h>
 
 namespace {
     GLuint gProgram{0}, gIndex{0}, gMvpId{0}, gVao{0};
@@ -42,7 +43,7 @@ namespace {
                 std::string log(static_cast<size_t>(logLen + 1), '\0');
                 glGetShaderInfoLog(mShader,logLen + 1,&logLen,log.data());
                 const auto message = "Could not compile shader, error :" + log;
-                errorstream<< "Could not compile shader, error " << status << ": " << log;
+                errorstream << "Could not compile shader, error " << status << ": " << log;
                 throw std::runtime_error(log);
             }
         }
@@ -109,17 +110,16 @@ void Renderer::init() {
 void Renderer::ConfigShader(const std::string& name) {
     if (gProgram) { glDeleteProgram(gProgram); gProgram = 0; }
     gProgram = glCreateProgram();
-    nlohmann::json config {};
     const auto base = assetDir("infinideas.gui") / "Shaders" / name;
-    std::ifstream file (base / "Info.json");
-    file >> config;
+    nlohmann::json config = readJsonFromFile((base / "Info.json").string());
+
     auto vertex = Shader(GL_VERTEX_SHADER);
     auto pixel = Shader(GL_FRAGMENT_SHADER);
     if (config.find("vertex") != config.end()) {
-        vertex.Compile(LoadFile(base / std::string(config["vertex"])));
+        vertex.Compile(LoadFile(base / config["vertex"].get<std::string>()));
     }
     if (config.find("pixel") != config.end()) {
-        pixel.Compile(LoadFile(base / std::string(config["pixel"])));
+        pixel.Compile(LoadFile(base / config["pixel"].get<std::string>()));
     }
     glAttachShader(gProgram, vertex.Native());
     glAttachShader(gProgram, pixel.Native());

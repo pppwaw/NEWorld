@@ -37,16 +37,16 @@ namespace {
 
 }
 
-NWCOREAPI Json readJsonFromFile(std::string filename) {
+NWCOREAPI Json readJsonFromFile(const std::string& filename) {
     std::ifstream file(filename);
     if (file) {
-        std::string content = std::string(std::istreambuf_iterator<char>(file),
-                                          std::istreambuf_iterator<char>());
-        if (!content.empty()) {
-            try { return Json::parse(content); }
-            catch (std::invalid_argument& exception) {
-                warningstream << "Failed to load json " << filename << ": " << exception.what();
-            }
+        try {
+            Json ret;
+            file >> ret;
+            return ret;
+        }
+        catch (std::invalid_argument & exception) {
+            warningstream << "Failed to load json " << filename << ": " << exception.what();
         }
     }
     return Json();
