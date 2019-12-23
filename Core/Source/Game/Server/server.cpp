@@ -35,10 +35,11 @@ std::vector<uint32_t> serverGetChunk(size_t worldID, Vec3i position) {
         chunkPtr = world->insertChunkAndUpdate(position, std::move(chunk))->second.get();
     }
     std::vector<uint32_t> chunkData;
-    chunkData.resize(32768);
+    chunkData.resize(Chunk::BlocksSize);
 
     if (chunkPtr->isMonotonic()) chunkPtr->allocateBlocks();
     std::memcpy(chunkData.data(), chunkPtr->getBlocks()->data(), sizeof(BlockData) * Chunk::BlocksSize);
+    //debugstream << "getChunk("<<position.x<<"," << position.y << "," << position.z <<")";
     return chunkData;
 }
 

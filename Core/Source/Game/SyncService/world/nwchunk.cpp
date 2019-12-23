@@ -33,11 +33,21 @@ void NWAPICALL DefaultChunkGen(const Vec3i*, Chunk* chunk, int32_t daylightBrigh
 bool Chunk::ChunkGeneratorLoaded = false;
 ChunkGenerator Chunk::ChunkGen = DefaultChunkGen;
 
-Chunk::Chunk(const Vec3i& position, const class World& world)
-    : mPosition(position), mWorld(&world) { build(mWorld->getDaylightBrightness()); }
+Chunk::Chunk(const Vec3i& position, const class World& world, LoadBehavior behavior)
+    : mPosition(position), mWorld(&world) {
+    if (behavior == LoadBehavior::Build) build(mWorld->getDaylightBrightness());
+    else mLoading = true;
+}
 
 Chunk::Chunk(const Vec3i& position, const class World& world, const std::vector<uint32_t>& data)
     : mPosition(position), mWorld(&world) {
+    assert(data.size() == Chunk::BlocksSize);
+    allocateBlocks();
+    static_assert(std::is_trivially_copyable<BlockData>::value);
+    std::memcpy(getBlocks()->data(), data.data(), sizeof(BlockData) * BlocksSize);
+}
+
+void Chunk::finishLoading(const std::vector<uint32_t>& data) noexcept {
     assert(data.size() == Chunk::BlocksSize);
     allocateBlocks();
     static_assert(std::is_trivially_copyable<BlockData>::value);

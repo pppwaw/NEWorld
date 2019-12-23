@@ -45,7 +45,9 @@ public:
     static constexpr int Size() { return 32; };
     using Blocks = std::array<BlockData, BlocksSize>;
 
-    explicit Chunk(const Vec3i& position, const class World& world);
+    enum class LoadBehavior { Build, Loading };
+
+    explicit Chunk(const Vec3i& position, const class World& world, LoadBehavior behavior = LoadBehavior::Build);
     explicit Chunk(const Vec3i& position, const class World& world, const std::vector<uint32_t>& data);
     ~Chunk() = default;
 
@@ -56,6 +58,10 @@ public:
     bool isUpdated() const noexcept { return mUpdated; }
 
     bool isModified() const noexcept { return mModified; }
+
+    // Get chunk loading status
+    bool isLoading() const noexcept { return mLoading; }
+    void finishLoading(const std::vector<uint32_t>& data) noexcept;
 
     // Set chunk updated flag
     void setUpdated(bool updated) const noexcept { mUpdated = updated; }
@@ -105,7 +111,7 @@ public:
 
     const World* getWorld() const noexcept { return mWorld; }
     bool isMonotonic() const noexcept { return mBlocks == nullptr; }
-    void allocateBlocks() { Assert(isMonotonic()); mBlocks = std::make_unique<Blocks>(); }
+    void allocateBlocks() { /*Assert(isMonotonic());*/ if(isMonotonic()) mBlocks = std::make_unique<Blocks>(); }
     void setMonotonic(BlockData block) noexcept { Assert(isMonotonic()); mMonotonicBlock = block; }
 
 private:
@@ -118,6 +124,7 @@ private:
     // TODO: somehow avoid it! not safe.
     mutable bool mUpdated = false;
     bool mModified = false;
+    bool mLoading = false;
     const class World* mWorld;
     // For Garbage Collection
     int mReferenceCount{0};

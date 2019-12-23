@@ -127,7 +127,7 @@ private:
     size_t& mUpdateCounter;
 };
 
-static bool isClient() { return false; } //NEWorld::getInstance().args["multiplayer-client"]; }
+static bool isClient() { return Application::args()["multiplayer-client"]; }
 
 size_t GameScene::requestWorld() {
     // TODO: change this

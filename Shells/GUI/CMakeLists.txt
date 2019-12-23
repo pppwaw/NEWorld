@@ -27,4 +27,3 @@ target_link_libraries(NEWorld Core OpenGL::GL Threads::Threads SDL2::SDL2 SDL2::
 add_definitions(-DSDL_MAIN_HANDLED -DGLEW_NO_GLU)
 add_dependencies(NEWorld NEWorldCopyAsset)
 
-

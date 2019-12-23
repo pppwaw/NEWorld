@@ -36,6 +36,7 @@ void TaskDispatcher::worker(size_t threadID) {
 
         // The last finished thread is responsible to do writing jobs
         if (mNumberOfUnfinishedThreads.fetch_sub(1) == 1) {
+            std::lock_guard<std::mutex> lock(mRWTaskMutex);
             // All other threads have finished?
             for (const auto& task : mReadWriteTasks) { task->task(mChunkService); }
 

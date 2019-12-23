@@ -89,7 +89,13 @@ public:
 
     void addReadWriteTask(std::unique_ptr<ReadWriteTask> task) noexcept {
         std::lock_guard<std::mutex> lock(mMutex);
-        mNextReadWriteTasks.emplace_back(std::move(task));
+        if (mRWTaskMutex.try_lock()){
+            mReadWriteTasks.emplace_back(std::move(task));
+            mRWTaskMutex.unlock();
+        }
+        else {
+            mNextReadWriteTasks.emplace_back(std::move(task));
+        }
     }
 
     void addRenderTask(std::unique_ptr<RenderTask> task) noexcept {
@@ -139,6 +145,7 @@ private:
 
     // TODO: replace it with lock-free structure.
     std::mutex mMutex;
+    std::mutex mRWTaskMutex;
 
     std::vector<std::unique_ptr<ReadOnlyTask>> mReadOnlyTasks, mNextReadOnlyTasks, mRegularReadOnlyTasks;
     std::vector<std::unique_ptr<ReadWriteTask>> mReadWriteTasks, mNextReadWriteTasks, mRegularReadWriteTasks;
