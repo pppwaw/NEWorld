@@ -266,7 +266,7 @@ void GameScene::render() {
     mTexture.bind(Texture::Texture2D);
     Renderer::clear();
     int width{}, height{};
-    mWindow.GetDrawableSize(width, height);
+    mWindow.getDrawableSize(width, height);
     Renderer::setViewport(0, 0, width, height);
     Renderer::restoreProj();
     Renderer::applyPerspective(70.0f, float(mWindow.getWidth()) / mWindow.getHeight(), 0.1f, 3000.0f);

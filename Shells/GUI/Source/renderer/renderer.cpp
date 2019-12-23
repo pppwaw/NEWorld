@@ -31,7 +31,7 @@ namespace {
     public:
         explicit Shader(GLenum stage): mShader(glCreateShader(stage)) {}
 
-        void Compile(const std::string& text) {
+        void compile(const std::string& text) {
             auto array = text.c_str();
             glShaderSource(mShader, 1, &array, nullptr);
             glCompileShader(mShader);
@@ -54,17 +54,17 @@ namespace {
             }
         }
 
-        [[nodiscard]] GLuint Native() const noexcept { return mShader; }
+        [[nodiscard]] GLuint native() const noexcept { return mShader; }
     private:
         GLuint mShader {};
     };
 
-    std::string LoadFile(const filesystem::path& path) {
+    std::string loadFile(const filesystem::path& path) {
         std::ifstream file(path);
         return std::string(std::istreambuf_iterator<char>(file),std::istreambuf_iterator<char>());
     }
 
-    void BuildIndexBuffer() {
+    void buildIndexBuffer() {
         glGenBuffers(1, &gIndex);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gIndex);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, 262144/2*3*sizeof(int), nullptr, GL_STATIC_DRAW);
@@ -98,7 +98,7 @@ void Renderer::init() {
     glClearDepth(1.0f);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
-    BuildIndexBuffer();
+    buildIndexBuffer();
     glGenVertexArrays(1, &gVao);
     glBindVertexArray(gVao);
     glEnableVertexAttribArray(0);
@@ -107,7 +107,7 @@ void Renderer::init() {
     glBindVertexArray(0);
 }
 
-void Renderer::ConfigShader(const std::string& name) {
+void Renderer::configShader(const std::string& name) {
     if (gProgram) { glDeleteProgram(gProgram); gProgram = 0; }
     gProgram = glCreateProgram();
     const auto base = assetDir("infinideas.gui") / "Shaders" / name;
@@ -116,32 +116,32 @@ void Renderer::ConfigShader(const std::string& name) {
     auto vertex = Shader(GL_VERTEX_SHADER);
     auto pixel = Shader(GL_FRAGMENT_SHADER);
     if (config.find("vertex") != config.end()) {
-        vertex.Compile(LoadFile(base / config["vertex"].get<std::string>()));
+        vertex.compile(loadFile(base / config["vertex"].get<std::string>()));
     }
     if (config.find("pixel") != config.end()) {
-        pixel.Compile(LoadFile(base / config["pixel"].get<std::string>()));
+        pixel.compile(loadFile(base / config["pixel"].get<std::string>()));
     }
-    glAttachShader(gProgram, vertex.Native());
-    glAttachShader(gProgram, pixel.Native());
+    glAttachShader(gProgram, vertex.native());
+    glAttachShader(gProgram, pixel.native());
     glLinkProgram(gProgram);
-    glDetachShader(gProgram, vertex.Native());
-    glDetachShader(gProgram, pixel.Native());
+    glDetachShader(gProgram, vertex.native());
+    glDetachShader(gProgram, pixel.native());
     gMvpId = glGetUniformLocation(gProgram, "MVP");
     glUniform1i(glGetUniformLocation(gProgram, "Texture"), 0);
 }
 
-void Renderer::StartFrame() {
+void Renderer::startFrame() {
     glBindVertexArray(gVao);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gIndex);
     glUseProgram(gProgram);
 }
 
-void Renderer::EndFrame() {
+void Renderer::endFrame() {
     glUseProgram(0);
     glBindVertexArray(0);
 }
 
-void Renderer::SetMatrix() {
-    const auto matrix = GetMvpMatrix();
+void Renderer::setMatrix() {
+    const auto matrix = getMvpMatrix();
     glUniformMatrix4fv(gMvpId, 1, GL_FALSE, matrix.data);
 }

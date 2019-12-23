@@ -89,7 +89,7 @@ public:
     void render(const Vec3i& c) const {
         if (!mBuffer.isEmpty()) {
             Renderer::translate(Vec3f(c * Chunk::Size()));
-            Renderer::SetMatrix();
+            Renderer::setMatrix();
             mBuffer.render();
             Renderer::translate(Vec3f(-c * Chunk::Size()));
         }
@@ -98,7 +98,7 @@ public:
     void renderTrans(const Vec3i& c) const {
         if (!mBufferTrans.isEmpty()) {
             Renderer::translate(Vec3f(c * Chunk::Size()));
-            Renderer::SetMatrix();
+            Renderer::setMatrix();
             mBufferTrans.render();
             Renderer::translate(Vec3f(-c * Chunk::Size()));
         }

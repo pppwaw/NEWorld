@@ -25,7 +25,7 @@ size_t WorldRenderer::render(const Vec3i& position) const {
     std::vector<std::pair<Vec3i, const ChunkRenderer*>> chunkPending;
     chunkPending.reserve(512);
 
-    Renderer::StartFrame();
+    Renderer::startFrame();
     Vec3i chunkpos = World::getChunkPos(position);
     for (auto& c : mChunkRenderers) {
         if (chunkpos.chebyshevDistance(c.first) <= mRenderDist) {
@@ -37,7 +37,7 @@ size_t WorldRenderer::render(const Vec3i& position) const {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     for (auto& c : chunkPending) { c.second->renderTrans(c.first); }
     glDisable(GL_BLEND);
-    Renderer::EndFrame();
+    Renderer::endFrame();
     return chunkPending.size();
 }
 

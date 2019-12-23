@@ -81,15 +81,15 @@ public:
         if (err) warningstream << "OpenGL Error " << err;
     }
 
-    static Mat4f GetMvpMatrix() noexcept { return mProjection * mView * mModel; }
+    static Mat4f getMvpMatrix() noexcept { return mProjection * mView * mModel; }
 
-    static void ConfigShader(const std::string& name);
+    static void configShader(const std::string& name);
 
-    static void StartFrame();
+    static void startFrame();
 
-    static void EndFrame();
+    static void endFrame();
 
-    static void SetMatrix();
+    static void setMatrix();
 private:
     inline static Mat4f mModel{}, mProjection{}, mView{};
 };

@@ -32,7 +32,7 @@ class WorldRenderer {
 public:
     WorldRenderer(const World& world, int renderDistance)
         : mWorld(world), mRenderDist(renderDistance) {
-        Renderer::ConfigShader("Standard");
+        Renderer::configShader("Standard");
     }
 
     // Render all chunks
