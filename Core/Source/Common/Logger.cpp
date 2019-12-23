@@ -21,6 +21,7 @@
 #include <ctime>
 #include <fstream>
 #include <iostream>
+#include <mutex>
 #include "Logger.h"
 #include "Common/Filesystem.h"
 #include "Common/Console.h"
@@ -103,6 +104,9 @@ Logger::Logger(const char* fileName, const char* funcName, int lineNumber, Level
 }
 
 void Logger::writeOstream(std::ostream& ostream, bool noColor) const {
+    static std::mutex mutex;
+    std::lock_guard<std::mutex> lock(mutex);
+
     using namespace LColorFunc;
     constexpr static char stylechar = '&';
     static std::map<char, ColorFunc> cmap =
