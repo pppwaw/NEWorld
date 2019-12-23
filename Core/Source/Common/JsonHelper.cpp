@@ -53,7 +53,7 @@ NWCOREAPI Json readJsonFromFile(const std::string& filename) {
 }
 
 NWCOREAPI void writeJsonToFile(std::string filename, Json& json) {
-    const std::string& dump = json.dump();
+    const std::string& dump = json.dump(4);
     if (!json.is_null())
         std::ofstream(filename).write(dump.c_str(), dump.length());
 }
