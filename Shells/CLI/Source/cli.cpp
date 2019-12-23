@@ -67,7 +67,9 @@ void ServerCommandLine::initBuiltinCommands() noexcept {
                               });
 
     mCommands.registerCommand("conf.show", {"internal", "Show the configuration."},
-                              [this](Command cmd)-> CommandExecuteStat { return {true, getSettings().dump()}; });
+                              [this](Command cmd)-> CommandExecuteStat {
+        return {true, getSettings().dump(4)};
+    });
 
     mCommands.registerCommand("conf.save", {"internal", "Save the configuration."},
                               [this](Command cmd)-> CommandExecuteStat {

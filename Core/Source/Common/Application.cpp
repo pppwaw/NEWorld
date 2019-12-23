@@ -54,7 +54,7 @@ NWAPIEXPORT int gameMain(int argc, char** argv) {
         std::cerr << e.what() << std::endl;
         return -1;
     }
-    if ( pargs["help"]) {
+    if (pargs["help"]) {
         argagg::fmt_ostream fmt(std::cerr);
         fmt << "Usage:" << std::endl << parser;
         return 0;

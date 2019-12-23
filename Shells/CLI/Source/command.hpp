@@ -26,6 +26,7 @@
 #include <unordered_map>
 #include <thread>
 #include <functional>
+#include "Common/Console.h"
 
 class CommandExecuteStat {
 public:
@@ -84,12 +85,12 @@ public:
     void inputLoop() {
         while (mThreadRunning.load(std::memory_order_acquire)) {
             std::string input;
-            //std::cout << LColorFunc::white << "$> " << LColorFunc::lwhite;
+            std::cout << LColorFunc::white << "$> " << LColorFunc::lwhite;
             mWaitingForInput.store(true, std::memory_order_release);
             getline(std::cin, input);
             mWaitingForInput.store(false, std::memory_order_release);
             auto result = handleCommand(Command(input));
-            if (result.info != "")
+            if (!result.info.empty())
                 infostream << result.info;
         }
     }
