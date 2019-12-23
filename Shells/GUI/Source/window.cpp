@@ -20,9 +20,10 @@
 #include "window.h"
 #include "Common/Debug.h"
 #include "renderer/renderer.h"
+#include "Common/JsonHelper.h"
 
 void Window::pollEvents() {
-    if (SDL_GetRelativeMouseMode()==SDL_TRUE) {
+    if (SDL_GetRelativeMouseMode() == SDL_TRUE) {
         Uint32 buttons = SDL_GetRelativeMouseState(&mMouse.x, &mMouse.y);
         mMouse.left = buttons & SDL_BUTTON_LEFT;
         mMouse.right = buttons & SDL_BUTTON_RIGHT;
@@ -49,7 +50,8 @@ void Window::pollEvents() {
         case SDL_WINDOWEVENT:
             switch (e.window.event) {
             case SDL_WINDOWEVENT_RESIZED:
-            case SDL_WINDOWEVENT_SIZE_CHANGED:mWidth = e.window.data1;
+            case SDL_WINDOWEVENT_SIZE_CHANGED:
+                mWidth = e.window.data1;
                 mHeight = e.window.data2;
                 break;
             }
@@ -88,7 +90,8 @@ Window::Window(const std::string& title, int width, int height)
     glewExperimental = 1;
     glewInit();
     PrintOglVersion();
-    SDL_GL_SetSwapInterval(1); // VSync
+    if(getJsonValue<bool>(getSettings()["gui"]["vsync"], false))
+        SDL_GL_SetSwapInterval(1); // VSync
     makeCurrentDraw();
     Renderer::init();
     mNuklearContext = nk_sdl_init(mWindow);
