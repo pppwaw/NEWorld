@@ -20,11 +20,13 @@
 #pragma once
 #include "Game/SyncService/taskdispatcher.hpp"
 #include "renderer/worldrenderer.h"
+#include "Common/JsonHelper.h"
 
 class RenderDetectorTask : public ReadOnlyTask {
 public:
     RenderDetectorTask(WorldRenderer& worldRenderer, size_t currentWorldID, const Player& player) :
-        mWorldRenderer(worldRenderer), mCurrentWorldId(currentWorldID), mPlayer(player) { }
+        mWorldRenderer(worldRenderer), mCurrentWorldId(currentWorldID), mPlayer(player),
+        mMaxChunkLoadPerTick(getJsonValue<size_t>(getSettings()["gui"]["chunk_load_per_tick"], 3)) { }
 
     void task(const ChunkService& cs) override;
 
@@ -34,6 +36,7 @@ private:
     WorldRenderer& mWorldRenderer;
     size_t mCurrentWorldId;
     const Player& mPlayer;
+    size_t mMaxChunkLoadPerTick;
 };
 
 class ChunkRenderDataGenerateTask : public ReadOnlyTask {

@@ -59,7 +59,6 @@ private:
 
 void RenderDetectorTask::task(const ChunkService& cs) {
     int counter = 0;
-    // TODO: improve performance by adding multiple instances of this and set a step when itering the chunks.
     // Render build list
     //PODOrderedList<int, Chunk*, MaxChunkRenderCount> chunkRenderList;
     Vec3i chunkpos = World::getChunkPos(mPlayer.getPosition());
@@ -74,7 +73,7 @@ void RenderDetectorTask::task(const ChunkService& cs) {
                 chunkService.getTaskDispatcher().addReadOnlyTask(
                     std::make_unique<ChunkRenderDataGenerateTask>(mWorldRenderer, mCurrentWorldId, chunk->getPosition())
                 );
-                if (counter++ == 3) break;
+                if (counter++ == mMaxChunkLoadPerTick) break;
             }
         }
         else {
