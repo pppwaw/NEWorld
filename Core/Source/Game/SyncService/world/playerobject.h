@@ -49,6 +49,6 @@ private:
 
     void refreshHitbox() {
         mHitboxSize = Vec3d(mWidth, mHeight, mWidth);
-        mHitbox = AABB(-mHitboxSize / 2, mHitboxSize / 2);
+        mHitbox = AABB(-mHitboxSize, mHitboxSize / 2);
     }
 };
