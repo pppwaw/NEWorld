@@ -110,7 +110,7 @@ public:
     std::vector<AABB> getHitboxes(const AABB& range) const;
 
     // Tasks
-    void registerChunkTasks(ChunkService& chunkService, Player& player);
+    void registerChunkTasks(Player& player);
 private:
     /**
      * \brief Find chunks that needs to be loaded or unloaded

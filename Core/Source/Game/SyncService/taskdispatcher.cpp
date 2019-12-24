@@ -19,53 +19,252 @@
 
 #include "taskdispatcher.hpp"
 #include "Common/RateController.h"
+#include <vector>
+#include <Core/Threading/Micro/Timer.h>
+#include <NRT/Core/Include/Core/Threading/SpinLock.h>
+#include <NRT/Core/Include/Core/Utilities/TempAlloc.h>
 
-void TaskDispatcher::worker(size_t threadID) {
-    debugstream << "Worker thread " << threadID << " initialized.";
-    RateController meter{30};
-    while (!mShouldExit) {
-        // A tick starts
-        const size_t currentRoundNumber = mRoundNumber;
-        // Process read-only work.
-        for (auto i = threadID; i < mReadOnlyTasks.size(); i += mThreadNumber) {
-            mReadOnlyTasks[i]->task(mChunkService);
-        }
+namespace {
+    enum class DispatchMode : int {
+        Read, ReadWrite, None, Render
+    };
 
-        // Finish the tick
-        mTimeUsed[threadID] = meter.getDeltaTimeMs();
+    ChunkService* gService{nullptr};
+    std::atomic_bool gEnter{false};
+    thread_local DispatchMode gThreadMode{DispatchMode::None};
 
-        // The last finished thread is responsible to do writing jobs
-        if (mNumberOfUnfinishedThreads.fetch_sub(1) == 1) {
-            std::lock_guard<std::mutex> lock(mRWTaskMutex);
-            // All other threads have finished?
-            for (const auto& task : mReadWriteTasks) { task->task(mChunkService); }
+    std::vector<std::unique_ptr<ReadOnlyTask>> gReadOnlyTasks, gNextReadOnlyTasks, gRegularReadOnlyTasks;
+    std::vector<std::unique_ptr<ReadWriteTask>> gReadWriteTasks, gNextReadWriteTasks, gRegularReadWriteTasks;
+    std::vector<std::unique_ptr<RenderTask>> gRenderTasks, gNextRenderTasks;
+    std::vector<int64_t> gTimeUsed;
+    int64_t gTimeUsedRWTasks;
 
-            // ...and finish up!
-            mReadOnlyTasks.clear();
-            mReadWriteTasks.clear();
-            for (auto& task : mRegularReadOnlyTasks)
-                mNextReadOnlyTasks.emplace_back(task->clone());
-            for (auto& task : mRegularReadWriteTasks)
-                mNextReadWriteTasks.emplace_back(task->clone());
-            std::swap(mReadOnlyTasks, mNextReadOnlyTasks);
-            std::swap(mReadWriteTasks, mNextReadWriteTasks);
+    SpinLock gReadLock{}, gWriteLock{}, gRenderLock{};
 
-            mTimeUsedRWTasks = meter.getDeltaTimeMs() - mTimeUsed[threadID];
-
-            // Limit UPS
-            meter.yield();
-
-            // Time to move to next tick!
-            // Notify other threads that we are good to go
-            mNumberOfUnfinishedThreads = mThreadNumber;
-            ++mRoundNumber;
-        }
-        else {
-            meter.yield();
-            // Wait for other threads...
-            while (mRoundNumber == currentRoundNumber)
-                std::this_thread::yield();
-        }
+    void ExecuteWriteTasks() noexcept {
+        gThreadMode = DispatchMode::ReadWrite;
+        for (const auto& task : gReadWriteTasks) { task->task(*gService); }
+        gThreadMode = DispatchMode::None;
     }
-    debugstream << "Worker thread " << threadID << " exited.";
+
+    void PrepareNextReadOnly() {
+        gReadOnlyTasks.clear();
+        gReadLock.Enter();
+        for (auto& task : gRegularReadOnlyTasks)
+            gNextReadOnlyTasks.emplace_back(task->clone());
+        std::swap(gReadOnlyTasks, gNextReadOnlyTasks);
+        gReadLock.Leave();
+    }
+
+    void PrepareNextReadWrite() {
+        gReadWriteTasks.clear();
+        gWriteLock.Enter();
+        for (auto& task : gRegularReadWriteTasks)
+            gNextReadWriteTasks.emplace_back(task->clone());
+        std::swap(gReadWriteTasks, gNextReadWriteTasks);
+        gWriteLock.Leave();
+    }
+
+    template <class T>
+    [[nodiscard]] auto CountElapsedMs(const T& start) {
+        return std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now()-start).count();
+    }
+
+    void ReadOnlyTaskFinal() noexcept {
+        const auto start = std::chrono::steady_clock::now();
+        ExecuteWriteTasks();
+        PrepareNextReadOnly();
+        PrepareNextReadWrite();
+        gEnter.store(false);
+        gTimeUsedRWTasks = CountElapsedMs(start);
+    }
+
+    class ReadPoolTask : public AInstancedExecTask {
+    public:
+        void Exec(uint32_t instance) noexcept override {
+            InitTick();
+            const auto completed = DrainReads();
+            FinishTick(instance);
+            CompleteTasks(completed);
+        }
+
+        static void Reset() noexcept {
+            mCounter = mDone = 0;
+            mTCount = gReadOnlyTasks.size();
+        }
+
+        static void CompleteTasks(int count) noexcept {
+            if (ReadPoolTask::mDone.fetch_add(count)+count==ReadPoolTask::mTCount) {
+                ReadOnlyTaskFinal();
+            }
+        }
+
+        static void AddTasks(int count) noexcept { mTCount.fetch_add(count); }
+
+        static int CountCurrentRead() noexcept { return mTCount.load(); }
+    private:
+        void InitTick() noexcept {
+            meter.sync();
+            gThreadMode = DispatchMode::Read;
+        }
+
+        void FinishTick(uint32_t instance) noexcept {
+            gThreadMode = DispatchMode::None;
+            gTimeUsed[instance] = meter.getDeltaTimeMs();
+        }
+
+        [[nodiscard]] static int DrainReads() noexcept {
+            int localCount = 0;
+            for (;;) {
+                const auto i = mCounter.fetch_add(1);
+                if (i<gReadOnlyTasks.size()) {
+                    gReadOnlyTasks[i]->task(*gService);
+                    ++localCount;
+                }
+                else return localCount;
+            }
+        }
+        RateController meter{30};
+
+        inline static std::atomic_int mCounter{}, mDone{}, mTCount{};
+    } gReadPoolTask;
+
+    class MainTimer : public CycleTask {
+    public:
+        MainTimer() noexcept
+                :CycleTask(std::chrono::milliseconds(33)) { }
+
+        void OnTimer() noexcept override {
+            auto val = gEnter.exchange(true);
+            if (!val) {
+                ReadPoolTask::Reset();
+                ThreadPool::Spawn(&gReadPoolTask);
+            }
+        }
+    } gMainTimer;
+
+    class ReadSingleTask : public IExecTask {
+    public:
+        explicit ReadSingleTask(std::unique_ptr<ReadOnlyTask> task) noexcept
+                :mTask(std::move(task)) { }
+        void Exec() noexcept override {
+            gThreadMode = DispatchMode::Read;
+            mTask->task(*gService);
+            gThreadMode = DispatchMode::None;
+            mTask.reset();
+            ReadPoolTask::CompleteTasks(1);
+            Temp::Delete(this);
+        }
+
+        [[nodiscard]] static IExecTask* Create(std::unique_ptr<ReadOnlyTask> task) noexcept {
+            ReadPoolTask::AddTasks(1);
+            return Temp::New<ReadSingleTask>(std::move(task));
+        }
+    private:
+        std::unique_ptr<ReadOnlyTask> mTask;
+    };
+}
+
+void TaskDispatch::boot(ChunkService& service) {
+    gTimeUsed.resize(ThreadPool::CountThreads());
+    gService = std::addressof(service);
+    gEnter.store(false);
+    gMainTimer.Enable();
+}
+
+void TaskDispatch::shutdown() noexcept {
+    gMainTimer.Disable();
+}
+
+void TaskDispatch::addNow(std::unique_ptr<ReadOnlyTask> task) noexcept {
+    if (gThreadMode==DispatchMode::Read) {
+        ThreadPool::Enqueue(ReadSingleTask::Create(std::move(task)));
+    }
+    else {
+        TaskDispatch::addNext(std::move(task));
+    }
+}
+
+void TaskDispatch::addNext(std::unique_ptr<ReadOnlyTask> task) noexcept {
+    gReadLock.Enter();
+    gNextReadOnlyTasks.emplace_back(std::move(task));
+    gReadLock.Leave();
+}
+
+void TaskDispatch::addNow(std::unique_ptr<ReadWriteTask> task) noexcept {
+    if (gThreadMode==DispatchMode::ReadWrite) {
+        task->task(*gService);
+    }
+    else {
+        TaskDispatch::addNext(std::move(task));
+    }
+}
+
+void TaskDispatch::addNext(std::unique_ptr<ReadWriteTask> task) noexcept {
+    gWriteLock.Enter();
+    gNextReadWriteTasks.emplace_back(std::move(task));
+    gWriteLock.Leave();
+}
+
+void TaskDispatch::addNow(std::unique_ptr<RenderTask> task) noexcept {
+    if (gThreadMode==DispatchMode::Render) {
+        task->task(*gService);
+    }
+    else {
+        TaskDispatch::addNext(std::move(task));
+    }
+}
+
+void TaskDispatch::addNext(std::unique_ptr<RenderTask> task) noexcept {
+    gRenderLock.Enter();
+    gNextRenderTasks.emplace_back(std::move(task));
+    gRenderLock.Leave();
+}
+
+void TaskDispatch::handleRenderTasks() noexcept {
+    for (auto& task : gRenderTasks) task->task(*gService);
+    gRenderTasks.clear();
+    gRenderLock.Enter();
+    std::swap(gRenderTasks, gNextRenderTasks);
+    gRenderLock.Leave();
+}
+
+void TaskDispatch::addRegular(std::unique_ptr<ReadOnlyTask> task) noexcept {
+    gReadLock.Enter();
+    gRegularReadOnlyTasks.emplace_back(std::move(task));
+    gReadLock.Leave();
+}
+
+void TaskDispatch::addRegular(std::unique_ptr<ReadWriteTask> task) noexcept {
+    gWriteLock.Enter();
+    gRegularReadWriteTasks.emplace_back(std::move(task));
+    gWriteLock.Leave();
+}
+
+int TaskDispatch::countWorkers() noexcept {
+    return ThreadPool::CountThreads();
+}
+
+int64_t TaskDispatch::getReadTimeUsed(int i) noexcept {
+    return gTimeUsed.size()>i ? gTimeUsed[i] : 0;
+}
+
+int64_t TaskDispatch::getRWTimeUsed() noexcept {
+    return gTimeUsedRWTasks;
+}
+
+int TaskDispatch::getRegularReadTaskCount() noexcept {
+    return gRegularReadOnlyTasks.size();
+}
+
+int TaskDispatch::getRegularReadWriteTaskCount() noexcept {
+    return gRegularReadWriteTasks.size();
+}
+
+int TaskDispatch::getReadTaskCount() noexcept {
+    return ReadPoolTask::CountCurrentRead();
+}
+
+int TaskDispatch::getReadWriteTaskCount() noexcept {
+    return gReadWriteTasks.size();
 }

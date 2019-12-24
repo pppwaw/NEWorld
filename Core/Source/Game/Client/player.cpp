@@ -77,8 +77,8 @@ void Player::rotationMove() {
 
 Player::Player(size_t worldID) : PlayerObject(worldID) {
     // Register update event
-    chunkService.getTaskDispatcher().addRegularReadOnlyTask(
-        std::make_unique<PlayerUpdateTask>(*this, mWorldID)
+    TaskDispatch::addRegular(
+            std::make_unique<PlayerUpdateTask>(*this, mWorldID)
     );
 }
 

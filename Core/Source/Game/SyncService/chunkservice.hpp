@@ -38,18 +38,15 @@ public:
      */
     ChunkService(bool isAuthority) noexcept;
 
-    friend class TaskDispatcher;
-
-    TaskDispatcher& getTaskDispatcher() noexcept { return mTaskDispatcher; }
-
     WorldManager& getWorlds() noexcept { return mWorlds; }
+
     const WorldManager& getWorlds() const noexcept { return mWorlds; }
 
     bool isAuthority() const noexcept { return mAuthority; }
+
     void setAuthority(bool isAuthority) noexcept { mAuthority = isAuthority; }
 private:
     WorldManager mWorlds;
-    TaskDispatcher mTaskDispatcher;
     bool mAuthority;
 };
 

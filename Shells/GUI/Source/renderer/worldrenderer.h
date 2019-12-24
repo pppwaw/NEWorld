@@ -38,7 +38,7 @@ public:
     // Render all chunks
     size_t render(const Vec3i& position) const;
 
-    void registerTask(ChunkService& chunkService, Player& player) noexcept;
+    void registerTask(Player& player) noexcept;
 
     friend class RenderDetectorTask;
     friend class ChunkRenderDataGenerateTask;

@@ -107,11 +107,6 @@ public:
 
     // Get current vertex data
     const float* getData() const {
-        /*debugstream << "getData() called: "
-            << mVertexes << " used out of " << mMaxVertexes
-            << " (" << int(mVertexes / mMaxVertexes * 1000) / 10 << "), \t"
-            << (mVertexes * mFormat.vertexAttributeCount) * sizeof(float) / 1024
-            << "KiB used";*/
         return mData;
     }
 

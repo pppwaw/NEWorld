@@ -26,7 +26,7 @@
 #include "Common/JsonHelper.h"
 #include "Common/OrderedList.h"
 
-constexpr int MaxChunkLoadCount = 64, MaxChunkUnloadCount = 64;
+constexpr int MaxChunkLoadCount = 128, MaxChunkUnloadCount = 128;
 
 size_t World::IDCount = 0;
 
@@ -146,8 +146,8 @@ public:
     void task(const ChunkService& cs) override {
         if (!mChunkData.valid()) return;
         if (!isReady(mChunkData)) { // if not ready, check again in the next tick.
-            chunkService.getTaskDispatcher().addReadOnlyTask(
-                std::make_unique<RPCLoadWait>(mWorldId, std::move(mChunkData), mChunkPosition)
+            TaskDispatch::addNow(
+                    std::make_unique<RPCLoadWait>(mWorldId, std::move(mChunkData), mChunkPosition)
             );
             return;
         }
@@ -155,8 +155,8 @@ public:
         auto data = mChunkData.get().as<std::vector<uint32_t>>();
 
         // Add LoadFinishedTask
-        chunkService.getTaskDispatcher().addReadWriteTask(
-            std::make_unique<LoadFinishedTask>(mWorldId, mChunkPosition, std::move(data))
+        TaskDispatch::addNext(
+                std::make_unique<LoadFinishedTask>(mWorldId, mChunkPosition, std::move(data))
         );
     }
 
@@ -209,8 +209,8 @@ public:
                                          ChunkOnReleaseBehavior::Behavior::Release);
         }
         // Add addToWorldTask
-        chunkService.getTaskDispatcher().addReadWriteTask(
-            std::make_unique<AddToWorldTask>(mWorld.getWorldID(), std::move(chunk))
+        TaskDispatch::addNext(
+                std::make_unique<AddToWorldTask>(mWorld.getWorldID(), std::move(chunk))
         );
     }
 
@@ -241,12 +241,12 @@ public:
 
         ChunkManager::data_t chunk(new Chunk(mChunkPosition, mWorld, Chunk::LoadBehavior::Loading));
         // Add addToWorldTask
-        chunkService.getTaskDispatcher().addReadWriteTask(
-            std::make_unique<AddToWorldTask>(mWorld.getWorldID(), std::move(chunk))
+        TaskDispatch::addNext(
+                std::make_unique<AddToWorldTask>(mWorld.getWorldID(), std::move(chunk))
         );
         // Add a task to monitor its status
-        chunkService.getTaskDispatcher().addReadOnlyTask(
-            std::make_unique<RPCLoadWait>(mWorld.getWorldID(), std::move(data), mChunkPosition)
+        TaskDispatch::addNow(
+                std::make_unique<RPCLoadWait>(mWorld.getWorldID(), std::move(data), mChunkPosition)
         );
     }
 
@@ -269,20 +269,20 @@ public:
 
         for (auto& loadPos : loadList) {
             if (chunkService.isAuthority()) {
-                chunkService.getTaskDispatcher().addReadOnlyTask(
-                    std::make_unique<BuildOrLoadChunkTask>(mWorld, loadPos.second)
+                TaskDispatch::addNow(
+                        std::make_unique<BuildOrLoadChunkTask>(mWorld, loadPos.second)
                 );
             }
             else {
-                chunkService.getTaskDispatcher().addReadOnlyTask(
-                    std::make_unique<RPCGetChunkTask>(mWorld, loadPos.second)
+                TaskDispatch::addNow(
+                        std::make_unique<RPCGetChunkTask>(mWorld, loadPos.second)
                 );
             }
         }
         for (auto& unloadChunk : unloadList) {
             // add a unload task.
-            chunkService.getTaskDispatcher().addReadWriteTask(
-                std::make_unique<UnloadChunkTask>(mWorld, unloadChunk.second->getPosition())
+            TaskDispatch::addNext(
+                    std::make_unique<UnloadChunkTask>(mWorld, unloadChunk.second->getPosition())
             );
         }
     }
@@ -294,9 +294,9 @@ private:
     const World& mWorld;
 };
 
-void World::registerChunkTasks(ChunkService& chunkService, Player& player) {
+void World::registerChunkTasks(Player& player) {
     // LoadUnloadDetectorTask
-    chunkService.getTaskDispatcher().addRegularReadOnlyTask(
-        std::make_unique<LoadUnloadDetectorTask>(*this, player)
+    TaskDispatch::addRegular(
+            std::make_unique<LoadUnloadDetectorTask>(*this, player)
     );
 }

@@ -56,9 +56,24 @@ private:
     std::unordered_map<Vec3i, ChunkRenderer>& mChunkRenderers;
 };
 
+class ChunkRenderDataGenerateTask : public ReadOnlyTask {
+public:
+    ChunkRenderDataGenerateTask(WorldRenderer& worldRenderer, size_t currentWorldID, Vec3i chunkPos) :
+            mWorldRenderer(worldRenderer), mCurrentWorldId(currentWorldID), mChunkPos(chunkPos) { }
+
+    void task(const ChunkService& cs) override;
+
+    std::unique_ptr<ReadOnlyTask> clone() override { return std::make_unique<ChunkRenderDataGenerateTask>(*this); }
+
+private:
+    WorldRenderer& mWorldRenderer;
+    size_t mCurrentWorldId;
+    Vec3i mChunkPos;
+};
 
 void RenderDetectorTask::task(const ChunkService& cs) {
     int counter = 0;
+    // TODO: improve performance by adding multiple instances of this and set a step when itering the chunks.
     // Render build list
     //PODOrderedList<int, Chunk*, MaxChunkRenderCount> chunkRenderList;
     Vec3i chunkpos = World::getChunkPos(mPlayer.getPosition());
@@ -70,8 +85,9 @@ void RenderDetectorTask::task(const ChunkService& cs) {
         if (chunk->isUpdated() &&
             chunkpos.chebyshevDistance(chunkPosition) <= mWorldRenderer.mRenderDist) {
             if (neighbourChunkLoadCheck(*world, chunkPosition)) {
-                chunkService.getTaskDispatcher().addReadOnlyTask(
-                    std::make_unique<ChunkRenderDataGenerateTask>(mWorldRenderer, mCurrentWorldId, chunk->getPosition())
+                TaskDispatch::addNow(
+                        std::make_unique<ChunkRenderDataGenerateTask>(mWorldRenderer, mCurrentWorldId,
+                                chunk->getPosition())
                 );
                 if (counter++ == mMaxChunkLoadPerTick) break;
             }
@@ -96,7 +112,7 @@ void ChunkRenderDataGenerateTask::task(const ChunkService& cs)
     if (!neighbourChunkLoadCheck(*world, mChunkPos)) return;
     ChunkRenderData crd;
     crd.generate(&chunk);
-    chunkService.getTaskDispatcher().addRenderTask(
-        std::make_unique<VBOGenerateTask>(*world, mChunkPos, std::move(crd), mWorldRenderer.mChunkRenderers)
+    TaskDispatch::addNext(
+            std::make_unique<VBOGenerateTask>(*world, mChunkPos, std::move(crd), mWorldRenderer.mChunkRenderers)
     );
 }

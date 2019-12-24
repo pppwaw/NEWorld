@@ -19,6 +19,7 @@
 
 #include "server.h"
 #include <Common/RPC/RPC.h>
+#include <Common/Logger.h>
 #include "Game/SyncService/chunkservice.hpp"
 #include "rpc/this_handler.h"
 
@@ -92,7 +93,7 @@ void registerRPCFunctions() {
     // TODO: add a return value specifying if the operation is successful.
     RPC::getServer().bind("pickBlock",
         [](size_t worldID, Vec3i position){
-        chunkService.getTaskDispatcher().addReadWriteTask(std::make_unique<PickBlockTask>(worldID, position));
+            TaskDispatch::addNext(std::make_unique<PickBlockTask>(worldID, position));
     });
 }
 

@@ -241,4 +241,4 @@ private:
     array_t mChunks;
 };
 
-NWCOREAPI size_t NWAPICALL nwRegisterChunkGenerator(const ChunkGenerator generator);
+NWCOREAPI size_t NWAPICALL nwRegisterChunkGenerator(ChunkGenerator generator);

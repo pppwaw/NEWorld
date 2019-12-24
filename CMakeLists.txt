@@ -31,6 +31,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${NEWORLD_PRODUCT_DIR})
 include_directories(${SOURCE_DIR} "${PROJECT_DIR}/3rdParty")
 find_package(Threads REQUIRED)
 
+# Runtime
+add_subdirectory(3rdParty/NRT NRT)
+
 # Target: Core
 file(GLOB_RECURSE SRC_CORE ${SOURCE_DIR}/*.*)
 
@@ -42,7 +45,7 @@ target_compile_definitions(Core
 
 # Link libraries for Core
 find_package(rpclib CONFIG REQUIRED)
-target_link_libraries(Core Threads::Threads rpclib::rpc)
+target_link_libraries(Core Threads::Threads rpclib::rpc NRT.Core)
 
 add_subdirectory(Tools)
 add_subdirectory(Shells)

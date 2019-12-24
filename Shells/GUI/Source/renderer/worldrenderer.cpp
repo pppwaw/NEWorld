@@ -41,8 +41,8 @@ size_t WorldRenderer::render(const Vec3i& position) const {
     return chunkPending.size();
 }
 
-void WorldRenderer::registerTask(ChunkService& chunkService, Player& player) noexcept {
-    chunkService.getTaskDispatcher().addRegularReadOnlyTask(
-        std::make_unique<RenderDetectorTask>(*this, mWorld.getWorldID(), player)
+void WorldRenderer::registerTask(Player& player) noexcept {
+    TaskDispatch::addRegular(
+            std::make_unique<RenderDetectorTask>(*this, mWorld.getWorldID(), player)
     );
 }

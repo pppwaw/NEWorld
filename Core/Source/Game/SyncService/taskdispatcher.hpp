@@ -18,10 +18,9 @@
 // 
 
 #pragma once
-#include <thread>
-#include <vector>
-#include "Game/SyncService/world/world.h"
-#include "Common/Logger.h"
+#include <memory>
+#include "Common/Config.h"
+#include <Core/Threading/Micro/ThreadPool.h>
 
 class ChunkService;
 
@@ -61,104 +60,40 @@ struct NWCOREAPI RenderTask {
     virtual std::unique_ptr<RenderTask> clone() { throw std::runtime_error("Function not implemented"); }
 };
 
-class NWCOREAPI TaskDispatcher {
-public:
-    /**
-     * \brief Initialize the dispatcher and start threads.
-     * \param threadNumber The number of threads in the thread pool
-     * \param chunkService the chunk service that the dispatcher binds to
-     */
-    TaskDispatcher(size_t threadNumber, ChunkService& chunkService)
-        : mThreadNumber(threadNumber), mChunkService(chunkService),
-          mTimeUsed(threadNumber, 0) { }
+struct TaskDispatch {
+    static void NWCOREAPI boot(ChunkService& service);
 
-    ~TaskDispatcher() { if (!mShouldExit) stop(); }
+    static void NWCOREAPI shutdown() noexcept;
 
-    void start() {
-        mShouldExit = false;
-        mNumberOfUnfinishedThreads = mThreadNumber;
-        for (size_t i = 0; i < mThreadNumber; ++i)
-            mThreads.emplace_back([this, i]() { worker(i); });
-        infostream << "Update threads started.";
-    }
+    static void NWCOREAPI addNow(std::unique_ptr<ReadOnlyTask> task) noexcept;
 
-    void addReadOnlyTask(std::unique_ptr<ReadOnlyTask> task) noexcept {
-        std::lock_guard<std::mutex> lock(mMutex);
-        mNextReadOnlyTasks.emplace_back(std::move(task));
-    }
+    static void NWCOREAPI addNext(std::unique_ptr<ReadOnlyTask> task) noexcept;
 
-    void addReadWriteTask(std::unique_ptr<ReadWriteTask> task) noexcept {
-        std::lock_guard<std::mutex> lock(mMutex);
-        if (mRWTaskMutex.try_lock()){
-            mReadWriteTasks.emplace_back(std::move(task));
-            mRWTaskMutex.unlock();
-        }
-        else {
-            mNextReadWriteTasks.emplace_back(std::move(task));
-        }
-    }
+    static void NWCOREAPI addNow(std::unique_ptr<ReadWriteTask> task) noexcept;
 
-    void addRenderTask(std::unique_ptr<RenderTask> task) noexcept {
-        std::lock_guard<std::mutex> lock(mMutex);
-        mNextRenderTasks.emplace_back(std::move(task));
-    }
+    static void NWCOREAPI addNext(std::unique_ptr<ReadWriteTask> task) noexcept;
 
-    void addRegularReadOnlyTask(std::unique_ptr<ReadOnlyTask> task) noexcept {
-        std::lock_guard<std::mutex> lock(mMutex);
-        mRegularReadOnlyTasks.emplace_back(std::move(task));
-    }
+    static void NWCOREAPI addNow(std::unique_ptr<RenderTask> task) noexcept;
 
-    void addRegularReadWriteTask(std::unique_ptr<ReadWriteTask> task) noexcept {
-        std::lock_guard<std::mutex> lock(mMutex);
-        mRegularReadWriteTasks.emplace_back(std::move(task));
-    }
+    static void NWCOREAPI addNext(std::unique_ptr<RenderTask> task) noexcept;
 
-    size_t getRegularReadOnlyTaskCount() const noexcept { return mRegularReadOnlyTasks.size(); }
-    size_t getRegularReadWriteTaskCount() const noexcept { return mRegularReadWriteTasks.size(); }
-    size_t getReadOnlyTaskCount() const noexcept { return mNextReadOnlyTasks.size(); }
-    size_t getReadWriteTaskCount() const noexcept { return mNextReadWriteTasks.size(); }
-    size_t getThreadNum() const noexcept { return mThreadNumber; }
+    static void NWCOREAPI addRegular(std::unique_ptr<ReadOnlyTask> task) noexcept;
 
-    /**
-     * \brief Process render tasks.
-     *        This function should be called from the main thread.
-     */
-    void processRenderTasks() {
-        std::lock_guard<std::mutex> lock(mMutex);
+    static void NWCOREAPI addRegular(std::unique_ptr<ReadWriteTask> task) noexcept;
 
-        for (auto& task : mRenderTasks) task->task(mChunkService);
-        mRenderTasks.clear();
-        std::swap(mRenderTasks, mNextRenderTasks);
-    }
+    static void NWCOREAPI handleRenderTasks() noexcept;
 
-    const std::vector<int64_t>& getTimeUsed() const noexcept { return mTimeUsed; }
-	int64_t getRWTimeUsed() const noexcept { return mTimeUsedRWTasks; }
+    static int NWCOREAPI countWorkers() noexcept;
 
-    void stop() {
-        mShouldExit = true;
-        for (auto& thread : mThreads) thread.join();
-        infostream << "Update threads exited.";
-    }
+    static int64_t NWCOREAPI getReadTimeUsed(int i) noexcept;
 
-private:
-    void worker(size_t threadID);
+    static int64_t NWCOREAPI getRWTimeUsed() noexcept;
 
-    // TODO: replace it with lock-free structure.
-    std::mutex mMutex;
-    std::mutex mRWTaskMutex;
+    static int NWCOREAPI getRegularReadTaskCount() noexcept;
 
-    std::vector<std::unique_ptr<ReadOnlyTask>> mReadOnlyTasks, mNextReadOnlyTasks, mRegularReadOnlyTasks;
-    std::vector<std::unique_ptr<ReadWriteTask>> mReadWriteTasks, mNextReadWriteTasks, mRegularReadWriteTasks;
-    std::vector<std::unique_ptr<RenderTask>> mRenderTasks, mNextRenderTasks;
-    std::vector<std::thread> mThreads;
-    size_t mThreadNumber;
-    std::atomic<size_t> mRoundNumber{0};
-    std::atomic<size_t> mNumberOfUnfinishedThreads;
-    std::atomic<bool> mShouldExit{false};
+    static int NWCOREAPI getRegularReadWriteTaskCount() noexcept;
 
-    ChunkService& mChunkService;
+    static int NWCOREAPI getReadTaskCount() noexcept;
 
-    // For statistical purpose only
-    std::vector<int64_t> mTimeUsed;
-    int64_t mTimeUsedRWTasks;
+    static int NWCOREAPI getReadWriteTaskCount() noexcept;
 };

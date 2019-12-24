@@ -99,8 +99,8 @@ public:
                 Vec3i blockPos = Vec3i(int(std::floor(pos.x)), int(std::floor(pos.y)), int(std::floor(pos.z)));
                 try {
                     if (world->getBlock(blockPos).getID() != 0) {
-                        chunkService.getTaskDispatcher().addReadWriteTask(
-                            std::make_unique<PutBlockTask>(mPlayer.getWorldID(), blockPos, 0));
+                        TaskDispatch::addNext(
+                                std::make_unique<PutBlockTask>(mPlayer.getWorldID(), blockPos, 0));
                         break;
                     }
                 }
@@ -188,12 +188,10 @@ GameScene::GameScene(const std::string& name, const Window& window):
     infostream << "Initializing GUI plugins...";
 
     // Initialize update events
-    mCurrentWorld->registerChunkTasks(chunkService, mPlayer);
-    mWorldRenderer->registerTask(chunkService, mPlayer);
-    chunkService.getTaskDispatcher().addRegularReadOnlyTask(
-        std::make_unique<PlayerControlTask>(mPlayer));
-    chunkService.getTaskDispatcher().addRegularReadOnlyTask(
-        std::make_unique<UpsCounter>(mUpsCounter));
+    mCurrentWorld->registerChunkTasks(mPlayer);
+    mWorldRenderer->registerTask(mPlayer);
+    TaskDispatch::addRegular(std::make_unique<PlayerControlTask>(mPlayer));
+    TaskDispatch::addRegular(std::make_unique<UpsCounter>(mUpsCounter));
 
     // Initialize rendering
     mTexture = BlockTextureBuilder::buildAndFlush();
@@ -203,7 +201,7 @@ GameScene::GameScene(const std::string& name, const Window& window):
 
     // Initialize Widgets
     mGUIWidgets.addWidget(std::make_shared<WidgetCallback>(
-        "Debug", nk_rect(20, 20, 300, 300),
+        "Debug", nk_rect(20, 20, 300, 500),
         NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
         NK_WINDOW_CLOSABLE | NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE, [this](nk_context* ctx) {
             if (mRateCounterScheduler.isDue()) {
@@ -222,30 +220,30 @@ GameScene::GameScene(const std::string& name, const Window& window):
                       mPlayer.getPosition().x, mPlayer.getPosition().y, mPlayer.getPosition().z);
             nk_labelf(ctx, NK_TEXT_LEFT, "GUI Widgets: %zu", mGUIWidgets.getSize());
             nk_labelf(ctx, NK_TEXT_LEFT, "Chunks Loaded: %zu", mCurrentWorld->getChunkCount());
-            nk_labelf(ctx, NK_TEXT_LEFT, "Modules Loaded: %zu", getModuleCount());
+            nk_labelf(ctx, NK_TEXT_LEFT, "Modules Loaded: %d", getModuleCount());
             nk_labelf(ctx, NK_TEXT_LEFT, "Update threads workload:");
-            auto& dispatcher = chunkService.getTaskDispatcher();
-            for (size_t i = 0; i < dispatcher.getTimeUsed().size(); ++i) {
-                auto time = std::max(static_cast<long long>(dispatcher.getTimeUsed()[i]), 0ll);
-                nk_labelf(ctx, NK_TEXT_LEFT, "Thread %zu: %lld ms (%.1f)%", i, time, time / 33.3333);
+            for (size_t i = 0; i <TaskDispatch::countWorkers(); ++i) {
+                auto time = std::max(static_cast<long long>(TaskDispatch::getReadTimeUsed(i)), 0ll);
+                nk_labelf(ctx, NK_TEXT_LEFT, "Thread %zu: %lld ms (%.1f)%%", i, time, time * 100.0 / 33.3333);
             }
-            nk_labelf(ctx, NK_TEXT_LEFT, "RW Tasks: %lld ms (%.1f)%", dispatcher.getRWTimeUsed(), dispatcher.getRWTimeUsed() / 33.3333);
+            const auto rwTime = TaskDispatch::getRWTimeUsed();
+            nk_labelf(ctx, NK_TEXT_LEFT, "RW Tasks: %lld ms (%.1f)%%", rwTime, rwTime * 100.0 / 33.3333);
 
-            nk_labelf(ctx, NK_TEXT_LEFT, "Regular Tasks: read %zu write %zu",
-                      dispatcher.getRegularReadOnlyTaskCount(),
-                      dispatcher.getRegularReadWriteTaskCount());
-            nk_labelf(ctx, NK_TEXT_LEFT, "All Tasks: read %zu write %zu",
-                dispatcher.getReadOnlyTaskCount(), dispatcher.getReadWriteTaskCount());
+            nk_labelf(ctx, NK_TEXT_LEFT, "Regular Tasks: read %d write %d",
+                    TaskDispatch::getRegularReadTaskCount(),
+                    TaskDispatch::getRegularReadWriteTaskCount());
+            nk_labelf(ctx, NK_TEXT_LEFT, "All Tasks: read %d write %d",
+                    TaskDispatch::getReadTaskCount(), TaskDispatch::getReadWriteTaskCount());
         }));
 
-    chunkService.getTaskDispatcher().start();
+    TaskDispatch::boot(chunkService);
     infostream << "Game initialized!";
 }
 
-GameScene::~GameScene() { chunkService.getTaskDispatcher().stop(); }
+GameScene::~GameScene() { TaskDispatch::shutdown(); }
 
 void GameScene::render() {
-    chunkService.getTaskDispatcher().processRenderTasks();
+    TaskDispatch::handleRenderTasks();
 
     // Camera control by mouse
     static const double mouseSensitivity =

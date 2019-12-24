@@ -22,7 +22,7 @@
 #include <nlohmann/json.hpp>
 #include <fstream>
 #include <iostream>
-#include "Common\JsonHelper.h"
+#include "Common/JsonHelper.h"
 
 namespace {
     GLuint gProgram{0}, gIndex{0}, gMvpId{0}, gVao{0};

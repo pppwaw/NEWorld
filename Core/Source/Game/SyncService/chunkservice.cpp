@@ -25,5 +25,4 @@ NWCOREAPI ChunkService chunkService(true);
 
 ChunkService::ChunkService(bool isAuthority) noexcept
     : mWorlds(Blocks::getInstance()),
-      mTaskDispatcher(getJsonValue<size_t>(getSettings()["nwcore"]["update_thread_number"], 2), *this),
       mAuthority(isAuthority) {}
