@@ -66,27 +66,26 @@ struct TaskDispatch {
 
     static void NWCOREAPI shutdown() noexcept;
 
+    // Attempt to add a task to the current task queue if possible.
+    // If not, the task will be scheduled to run in the next tick.
     static void NWCOREAPI addNow(std::unique_ptr<ReadOnlyTask> task) noexcept;
-
-    static void NWCOREAPI addNext(std::unique_ptr<ReadOnlyTask> task) noexcept;
-
     static void NWCOREAPI addNow(std::unique_ptr<ReadWriteTask> task) noexcept;
-
-    static void NWCOREAPI addNext(std::unique_ptr<ReadWriteTask> task) noexcept;
-
     static void NWCOREAPI addNow(std::unique_ptr<RenderTask> task) noexcept;
 
+    // Add a task that is scheduled to run in the next tick.
+    static void NWCOREAPI addNext(std::unique_ptr<ReadOnlyTask> task) noexcept;
+    static void NWCOREAPI addNext(std::unique_ptr<ReadWriteTask> task) noexcept;
     static void NWCOREAPI addNext(std::unique_ptr<RenderTask> task) noexcept;
 
+    // Add regular tasks that run every tick.
     static void NWCOREAPI addRegular(std::unique_ptr<ReadOnlyTask> task) noexcept;
-
     static void NWCOREAPI addRegular(std::unique_ptr<ReadWriteTask> task) noexcept;
 
     static void NWCOREAPI handleRenderTasks() noexcept;
 
     static int NWCOREAPI countWorkers() noexcept;
 
-    static int64_t NWCOREAPI getReadTimeUsed(int i) noexcept;
+    static int64_t NWCOREAPI getReadTimeUsed(size_t i) noexcept;
 
     static int64_t NWCOREAPI getRWTimeUsed() noexcept;
 

@@ -80,41 +80,43 @@ namespace {
         gTimeUsedRWTasks = CountElapsedMs(start);
     }
 
-    class ReadPoolTask : public AInstancedExecTask {
+    // This task is scheduled by NRT Thread Pool directly and is responsible
+    // for processing NEWorld tasks pool.
+    class ExecutePoolTask : public AInstancedExecTask {
     public:
-        void Exec(uint32_t instance) noexcept override {
-            InitTick();
-            const auto completed = DrainReads();
-            FinishTick(instance);
-            CompleteTasks(completed);
+        void Exec(uint32_t instanceId) noexcept override {
+            initTick();
+            const auto completedTasksNum = drainReads();
+            finishTick(instanceId);
+            completeTasks(completedTasksNum);
         }
 
-        static void Reset() noexcept {
+        static void reset() noexcept {
             mCounter = mDone = 0;
-            mTCount = gReadOnlyTasks.size();
+            mTotalCount = gReadOnlyTasks.size();
         }
 
-        static void CompleteTasks(int count) noexcept {
-            if (ReadPoolTask::mDone.fetch_add(count)+count==ReadPoolTask::mTCount) {
+        static void completeTasks(int count) noexcept {
+            if (mDone.fetch_add(count) + count == mTotalCount) {
                 ReadOnlyTaskFinal();
             }
         }
 
-        static void AddTasks(int count) noexcept { mTCount.fetch_add(count); }
+        static void addTasks(int count) noexcept { mTotalCount.fetch_add(count); }
 
-        static int CountCurrentRead() noexcept { return mTCount.load(); }
+        static int countCurrentRead() noexcept { return mTotalCount.load(); }
     private:
-        void InitTick() noexcept {
-            meter.sync();
+        void initTick() noexcept {
+            mMeter.sync();
             gThreadMode = DispatchMode::Read;
         }
 
-        void FinishTick(uint32_t instance) noexcept {
+        void finishTick(uint32_t instanceId) noexcept {
             gThreadMode = DispatchMode::None;
-            gTimeUsed[instance] = meter.getDeltaTimeMs();
+            gTimeUsed[instanceId] = mMeter.getDeltaTimeMs();
         }
 
-        [[nodiscard]] static int DrainReads() noexcept {
+        [[nodiscard]] static int drainReads() noexcept {
             int localCount = 0;
             for (;;) {
                 const auto i = mCounter.fetch_add(1);
@@ -125,9 +127,9 @@ namespace {
                 else return localCount;
             }
         }
-        RateController meter{30};
+        RateController mMeter{30};
 
-        inline static std::atomic_int mCounter{}, mDone{}, mTCount{};
+        inline static std::atomic_int mCounter{}, mDone{}, mTotalCount{};
     } gReadPoolTask;
 
     class MainTimer : public CycleTask {
@@ -138,28 +140,31 @@ namespace {
         void OnTimer() noexcept override {
             auto val = gEnter.exchange(true);
             if (!val) {
-                ReadPoolTask::Reset();
+                ExecutePoolTask::reset();
                 ThreadPool::Spawn(&gReadPoolTask);
             }
         }
     } gMainTimer;
 
-    class ReadSingleTask : public IExecTask {
+
+    // This task is scheduled by NRT Thread Pool directly and is responsible
+    // for processing a single NEWorld Task.
+    class ExecuteSingleTask : public IExecTask {
     public:
-        explicit ReadSingleTask(std::unique_ptr<ReadOnlyTask> task) noexcept
+        explicit ExecuteSingleTask(std::unique_ptr<ReadOnlyTask> task) noexcept
                 :mTask(std::move(task)) { }
         void Exec() noexcept override {
             gThreadMode = DispatchMode::Read;
             mTask->task(*gService);
             gThreadMode = DispatchMode::None;
             mTask.reset();
-            ReadPoolTask::CompleteTasks(1);
+            ExecutePoolTask::completeTasks(1);
             Temp::Delete(this);
         }
 
-        [[nodiscard]] static IExecTask* Create(std::unique_ptr<ReadOnlyTask> task) noexcept {
-            ReadPoolTask::AddTasks(1);
-            return Temp::New<ReadSingleTask>(std::move(task));
+        [[nodiscard]] static IExecTask* create(std::unique_ptr<ReadOnlyTask> task) noexcept {
+            ExecutePoolTask::addTasks(1);
+            return Temp::New<ExecuteSingleTask>(std::move(task));
         }
     private:
         std::unique_ptr<ReadOnlyTask> mTask;
@@ -179,10 +184,10 @@ void TaskDispatch::shutdown() noexcept {
 
 void TaskDispatch::addNow(std::unique_ptr<ReadOnlyTask> task) noexcept {
     if (gThreadMode==DispatchMode::Read) {
-        ThreadPool::Enqueue(ReadSingleTask::Create(std::move(task)));
+        ThreadPool::Enqueue(ExecuteSingleTask::create(std::move(task)));
     }
     else {
-        TaskDispatch::addNext(std::move(task));
+        addNext(std::move(task));
     }
 }
 
@@ -197,7 +202,7 @@ void TaskDispatch::addNow(std::unique_ptr<ReadWriteTask> task) noexcept {
         task->task(*gService);
     }
     else {
-        TaskDispatch::addNext(std::move(task));
+        addNext(std::move(task));
     }
 }
 
@@ -212,7 +217,7 @@ void TaskDispatch::addNow(std::unique_ptr<RenderTask> task) noexcept {
         task->task(*gService);
     }
     else {
-        TaskDispatch::addNext(std::move(task));
+        addNext(std::move(task));
     }
 }
 
@@ -246,8 +251,8 @@ int TaskDispatch::countWorkers() noexcept {
     return ThreadPool::CountThreads();
 }
 
-int64_t TaskDispatch::getReadTimeUsed(int i) noexcept {
-    return gTimeUsed.size()>i ? gTimeUsed[i] : 0;
+int64_t TaskDispatch::getReadTimeUsed(size_t i) noexcept {
+    return gTimeUsed.size() > i ? gTimeUsed[i] : 0;
 }
 
 int64_t TaskDispatch::getRWTimeUsed() noexcept {
@@ -263,7 +268,7 @@ int TaskDispatch::getRegularReadWriteTaskCount() noexcept {
 }
 
 int TaskDispatch::getReadTaskCount() noexcept {
-    return ReadPoolTask::CountCurrentRead();
+    return ExecutePoolTask::countCurrentRead();
 }
 
 int TaskDispatch::getReadWriteTaskCount() noexcept {
