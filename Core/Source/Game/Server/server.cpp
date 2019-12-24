@@ -53,7 +53,7 @@ public:
         : mWorldId(worldID), mPos(pos) { }
 
     void task(ChunkService& cs) override {
-        auto world = chunkService.getWorlds().getWorld(mWorldId);
+        auto world = cs.getWorlds().getWorld(mWorldId);
         if (!world) return;
         world->setBlock(mPos, BlockData{ 0,0,0 });
     }

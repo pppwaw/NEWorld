@@ -94,7 +94,7 @@ public:
         : mWorldId(worldID), mChunk(std::move(chunk)) { }
 
     void task(ChunkService& cs) override {
-        auto world = chunkService.getWorlds().getWorld(mWorldId);
+        auto world = cs.getWorlds().getWorld(mWorldId);
         world->insertChunkAndUpdate(mChunk->getPosition(), std::move(mChunk));
     }
 
@@ -114,7 +114,7 @@ public:
         : mWorldId(worldID), mChunkPos(chunkPos), mData(std::move(data)) { }
 
     void task(ChunkService& cs) override {
-        auto world = chunkService.getWorlds().getWorld(mWorldId);
+        auto world = cs.getWorlds().getWorld(mWorldId);
         try {
             auto& chunk = world->getChunk(mChunkPos);
             chunk.replaceChunk(mData);

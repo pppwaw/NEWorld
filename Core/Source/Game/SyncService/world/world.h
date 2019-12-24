@@ -136,7 +136,7 @@ protected:
 };
 
 
-class WorldManager {
+class WorldManager: public NonCopyable {
 public:
     WorldManager(Blocks& blocks) : mBlocks(blocks) { }
 
@@ -149,10 +149,11 @@ public:
         return mWorlds[mWorlds.size() - 1].get();
     }
 
-    std::vector<std::unique_ptr<World>>::iterator begin() { return mWorlds.begin(); }
-    std::vector<std::unique_ptr<World>>::iterator end() { return mWorlds.end(); }
-    std::vector<std::unique_ptr<World>>::const_iterator begin() const { return mWorlds.cbegin(); }
-    std::vector<std::unique_ptr<World>>::const_iterator end() const { return mWorlds.cend(); }
+    [[nodiscard]] auto begin() { return mWorlds.begin(); }
+    [[nodiscard]] auto end() { return mWorlds.end(); }
+    [[nodiscard]] auto begin() const { return mWorlds.cbegin(); }
+    [[nodiscard]] auto end() const { return mWorlds.cend(); }
+
     size_t size() const noexcept { return mWorlds.size(); }
 
     World* getWorld(const std::string& name) {
