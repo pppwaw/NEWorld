@@ -33,7 +33,8 @@ install:
     ./vcpkg install sdl2 sdl2-image glew rpclib
     cd ..
 script:
+  - git submodule update --recursive --init
   - mkdir cmakeBuild && cd cmakeBuild
   - export CXX=g++-8 CC=gcc-8
-  - cmake -DCMAKE_TOOLCHAIN_FILE=/home/travis/build/Infinideastudio/NEWorld/vcpkg/scripts/buildsystems/vcpkg.cmake ..
+  - cmake -DVCPKG_USED=TRUE -DCMAKE_TOOLCHAIN_FILE=/home/travis/build/Infinideastudio/NEWorld/vcpkg/scripts/buildsystems/vcpkg.cmake ..
   - make -j8

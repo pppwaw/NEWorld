@@ -17,9 +17,10 @@ install:
   - if %PLATFORM% equ Win32 (vcpkg.exe install sdl2 sdl2-image glew rpclib) else (vcpkg.exe install sdl2:x64-windows sdl2-image:x64-windows glew:x64-windows rpclib:x64-windows) > nul
   - cd %APPVEYOR_BUILD_FOLDER%
 before_build:
+  - git submodule update --recursive --init
   - mkdir projectBuild
   - cd projectBuild
-  - cmake ../ -G "Visual Studio 16 2019" -A %PLATFORM% -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DCMAKE_TOOLCHAIN_FILE="C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake"
+  - cmake ../ -G "Visual Studio 16 2019" -A %PLATFORM% -DVCPKG_USED=TRUE -DCMAKE_BUILD_TYPE=%CONFIGURATION% -DCMAKE_TOOLCHAIN_FILE="C:/Tools/vcpkg/scripts/buildsystems/vcpkg.cmake"
   - cd ..
 build:
   project: projectBuild/NEWorld.sln

@@ -15,14 +15,15 @@
 // 
 // You should have received a copy of the GNU Lesser General Public License
 // along with NEWorld.  If not, see <http://www.gnu.org/licenses/>.
-// 
+//
 
+#include <vector>
 #include "taskdispatcher.hpp"
 #include "Common/RateController.h"
-#include <vector>
+#include <Core/Threading/SpinLock.h>
 #include <Core/Threading/Micro/Timer.h>
-#include <NRT/Core/Include/Core/Threading/SpinLock.h>
-#include <NRT/Core/Include/Core/Utilities/TempAlloc.h>
+#include <Core/Threading/Micro/ThreadPool.h>
+#include <Core/Utilities/TempAlloc.h>
 
 namespace {
     enum class DispatchMode : int {

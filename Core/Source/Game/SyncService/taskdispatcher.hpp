@@ -18,9 +18,10 @@
 // 
 
 #pragma once
+
 #include <memory>
+#include <stdexcept>
 #include "Common/Config.h"
-#include <Core/Threading/Micro/ThreadPool.h>
 
 class ChunkService;
 
