@@ -41,17 +41,20 @@ Chunk::Chunk(const Vec3i& position, const class World& world, LoadBehavior behav
 
 Chunk::Chunk(const Vec3i& position, const class World& world, const std::vector<uint32_t>& data)
     : mPosition(position), mWorld(&world) {
-    assert(data.size() == Chunk::BlocksSize);
-    allocateBlocks();
-    static_assert(std::is_trivially_copyable<BlockData>::value);
-    std::memcpy(getBlocks()->data(), data.data(), sizeof(BlockData) * BlocksSize);
+    replaceChunk(data);
 }
 
-void Chunk::finishLoading(const std::vector<uint32_t>& data) noexcept {
+void Chunk::replaceChunk(const std::vector<uint32_t>& data) noexcept {
+    if(data.size()==1) { // Monotonic chunk
+        setMonotonic(data[0]);
+        return;
+    }
+
     assert(data.size() == Chunk::BlocksSize);
     allocateBlocks();
     static_assert(std::is_trivially_copyable<BlockData>::value);
     std::memcpy(getBlocks()->data(), data.data(), sizeof(BlockData) * BlocksSize);
+    mLoading = false;
 }
 
 void Chunk::build(int daylightBrightness) {

@@ -20,7 +20,7 @@
 #include <atomic>
 #include <chrono>
 #include <Common/RPC/RPC.h>
-#include <iostream>
+#include <mutex>
 #include "gamescene.h"
 #include "Common/JsonHelper.h"
 #include "neworld.h"
@@ -31,7 +31,9 @@ public:
         : mWorldID(worldID), mBlockPosition(blockPosition), mBlockID(blockID) {}
 
     void task(ChunkService& cs) override {
-        // TODO: let the server handle this.
+        if(!cs.isAuthority())
+            RPC::getClient().async_call("pickBlock", mWorldID, mBlockPosition);
+
         cs.getWorlds().getWorld(mWorldID)->setBlock(mBlockPosition, mBlockID);
     }
 

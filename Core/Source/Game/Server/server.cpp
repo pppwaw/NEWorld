@@ -30,23 +30,43 @@ std::vector<uint32_t> serverGetChunk(size_t worldID, Vec3i position) {
     Chunk* chunkPtr = nullptr;
     try { chunkPtr = &world->getChunk(position); }
     catch (std::out_of_range&) {
+        // TODO: FIXME: data race here. Use task dispatcher?
         auto chunk = ChunkManager::data_t(new Chunk(position, *world),
                                           ChunkOnReleaseBehavior::Behavior::Release);
         chunkPtr = world->insertChunkAndUpdate(position, std::move(chunk))->second.get();
     }
+
+    if (chunkPtr->isMonotonic())
+        return std::vector<uint32_t> { chunkPtr->getMonotonicBlock().getData() };
+
     std::vector<uint32_t> chunkData;
     chunkData.resize(Chunk::BlocksSize);
-
-    if (chunkPtr->isMonotonic()) chunkPtr->allocateBlocks();
     std::memcpy(chunkData.data(), chunkPtr->getBlocks()->data(), sizeof(BlockData) * Chunk::BlocksSize);
     //debugstream << "getChunk("<<position.x<<"," << position.y << "," << position.z <<")";
     return chunkData;
 }
 
+class PickBlockTask : public ReadWriteTask {
+public:
+    PickBlockTask(size_t worldID, Vec3i pos)
+        : mWorldId(worldID), mPos(pos) { }
+
+    void task(ChunkService& cs) override {
+        auto world = chunkService.getWorlds().getWorld(mWorldId);
+        if (!world) return;
+        world->setBlock(mPos, BlockData{ 0,0,0 });
+    }
+
+private:
+    size_t mWorldId;
+    Vec3i mPos;
+};
+
 void registerRPCFunctions() {
     // std::vector<uint32_t> getChunk(size_t worldID, Vec3i position):
     //          Request a chunk from the server.
     //          The chunk will be built or loaded if does not exist.
+    // TODO: maybe use task dispatcher?
     RPC::getServer().bind("getChunk", &serverGetChunk);
 
     // std::vector<uint32_t> getAvailableWorldId():
@@ -66,6 +86,14 @@ void registerRPCFunctions() {
                                      ret["name"] = world->getWorldName();
                                      return ret;
                                  });
+
+    // void pickBlock(size_t worldID, Vec3i position):
+    //          Remove block at a specific location
+    // TODO: add a return value specifying if the operation is successful.
+    RPC::getServer().bind("pickBlock",
+        [](size_t worldID, Vec3i position){
+        chunkService.getTaskDispatcher().addReadWriteTask(std::make_unique<PickBlockTask>(worldID, position));
+    });
 }
 
 Server::Server(uint16_t port) {

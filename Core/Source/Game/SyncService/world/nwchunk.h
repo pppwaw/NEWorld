@@ -61,7 +61,7 @@ public:
 
     // Get chunk loading status
     bool isLoading() const noexcept { return mLoading; }
-    void finishLoading(const std::vector<uint32_t>& data) noexcept;
+    void replaceChunk(const std::vector<uint32_t>& data) noexcept;
 
     // Set chunk updated flag
     void setUpdated(bool updated) const noexcept { mUpdated = updated; }
@@ -111,7 +111,12 @@ public:
 
     const World* getWorld() const noexcept { return mWorld; }
     bool isMonotonic() const noexcept { return mBlocks == nullptr; }
-    void allocateBlocks() { /*Assert(isMonotonic());*/ if(isMonotonic()) mBlocks = std::make_unique<Blocks>(); }
+    BlockData getMonotonicBlock() const noexcept { return mMonotonicBlock; }
+    void allocateBlocks() { /*Assert(isMonotonic());*/
+        if (!isMonotonic()) return;
+        mBlocks = std::make_unique<Blocks>();
+        // TODO: fill the blocks with the monotonic block.
+    }
     void setMonotonic(BlockData block) noexcept { Assert(isMonotonic()); mMonotonicBlock = block; }
 
 private:

@@ -117,7 +117,7 @@ public:
         auto world = chunkService.getWorlds().getWorld(mWorldId);
         try {
             auto& chunk = world->getChunk(mChunkPos);
-            chunk.finishLoading(mData);
+            chunk.replaceChunk(mData);
         }
         catch (std::out_of_range) {}
     }
