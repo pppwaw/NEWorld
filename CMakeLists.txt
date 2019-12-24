@@ -28,6 +28,8 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/SDK/Lib)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${NEWORLD_PRODUCT_DIR})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${NEWORLD_PRODUCT_DIR})
 
+include(3rdParty/NRT/Build/Configure.cmake)
+
 # For the whole project
 include_directories(${SOURCE_DIR} "${PROJECT_DIR}/3rdParty")
 find_package(Threads REQUIRED)

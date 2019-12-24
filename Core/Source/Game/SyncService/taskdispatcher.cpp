@@ -146,7 +146,6 @@ namespace {
         }
     } gMainTimer;
 
-
     // This task is scheduled by NRT Thread Pool directly and is responsible
     // for processing a single NEWorld Task.
     class ExecuteSingleTask : public IExecTask {
