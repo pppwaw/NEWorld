@@ -44,11 +44,12 @@ public:
     static constexpr int SizeLog2() { return 5; }
     static constexpr int Size() { return 32; };
     using Blocks = std::array<BlockData, BlocksSize>;
+    using ChunkDataStorageType = std::vector<uint32_t>;
 
     enum class LoadBehavior { Build, Loading };
 
     explicit Chunk(const Vec3i& position, const class World& world, LoadBehavior behavior = LoadBehavior::Build);
-    explicit Chunk(const Vec3i& position, const class World& world, const std::vector<uint32_t>& data);
+    explicit Chunk(const Vec3i& position, const class World& world, const ChunkDataStorageType& data);
     ~Chunk() = default;
 
     // Get chunk position
@@ -61,7 +62,7 @@ public:
 
     // Get chunk loading status
     bool isLoading() const noexcept { return mLoading; }
-    void replaceChunk(const std::vector<uint32_t>& data) noexcept;
+    void replaceChunk(const ChunkDataStorageType& data) noexcept;
 
     // Set chunk updated flag
     void setUpdated(bool updated) const noexcept { mUpdated = updated; }
@@ -75,6 +76,7 @@ public:
     // Get block pointer. Note that they might return nullptr in case of monotonic chunk.
     Blocks* getBlocks() noexcept { return mBlocks.get(); }
     const Blocks* getBlocks() const noexcept { return mBlocks.get(); }
+    ChunkDataStorageType getChunkForExport() const noexcept;
 
     // Set block data in this chunk
     void setBlock(const Vec3i& pos, BlockData block) {

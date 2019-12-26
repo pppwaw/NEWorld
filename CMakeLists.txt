@@ -48,7 +48,8 @@ target_compile_definitions(Core
 
 # Link libraries for Core
 find_package(rpclib CONFIG REQUIRED)
-target_link_libraries(Core Threads::Threads rpclib::rpc NRT.Core)
+find_package(sqlite3 CONFIG REQUIRED)
+target_link_libraries(Core Threads::Threads rpclib::rpc NRT.Core sqlite3)
 
 add_subdirectory(Tools)
 add_subdirectory(Shells)

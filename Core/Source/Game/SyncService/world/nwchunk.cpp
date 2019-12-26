@@ -39,12 +39,12 @@ Chunk::Chunk(const Vec3i& position, const class World& world, LoadBehavior behav
     else mLoading = true;
 }
 
-Chunk::Chunk(const Vec3i& position, const class World& world, const std::vector<uint32_t>& data)
+Chunk::Chunk(const Vec3i& position, const class World& world, const ChunkDataStorageType& data)
     : mPosition(position), mWorld(&world) {
     replaceChunk(data);
 }
 
-void Chunk::replaceChunk(const std::vector<uint32_t>& data) noexcept {
+void Chunk::replaceChunk(const ChunkDataStorageType& data) noexcept {
     if(data.size()==1) { // Monotonic chunk
         setMonotonic(data[0]);
         return;
@@ -55,6 +55,16 @@ void Chunk::replaceChunk(const std::vector<uint32_t>& data) noexcept {
     static_assert(std::is_trivially_copyable<BlockData>::value);
     std::memcpy(getBlocks()->data(), data.data(), sizeof(BlockData) * BlocksSize);
     mLoading = false;
+}
+
+Chunk::ChunkDataStorageType Chunk::getChunkForExport() const noexcept {
+    if (isMonotonic())
+        return std::vector<uint32_t> { getMonotonicBlock().getData() };
+
+    std::vector<uint32_t> chunkData;
+    chunkData.resize(BlocksSize);
+    std::memcpy(chunkData.data(), getBlocks()->data(), sizeof(BlockData) * Chunk::BlocksSize);
+    return chunkData;
 }
 
 void Chunk::build(int daylightBrightness) {

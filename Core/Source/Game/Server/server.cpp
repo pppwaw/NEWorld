@@ -36,15 +36,7 @@ std::vector<uint32_t> serverGetChunk(size_t worldID, Vec3i position) {
                                           ChunkOnReleaseBehavior::Behavior::Release);
         chunkPtr = world->insertChunkAndUpdate(position, std::move(chunk))->second.get();
     }
-
-    if (chunkPtr->isMonotonic())
-        return std::vector<uint32_t> { chunkPtr->getMonotonicBlock().getData() };
-
-    std::vector<uint32_t> chunkData;
-    chunkData.resize(Chunk::BlocksSize);
-    std::memcpy(chunkData.data(), chunkPtr->getBlocks()->data(), sizeof(BlockData) * Chunk::BlocksSize);
-    //debugstream << "getChunk("<<position.x<<"," << position.y << "," << position.z <<")";
-    return chunkData;
+    return chunkPtr->getChunkForExport();
 }
 
 class PickBlockTask : public ReadWriteTask {
@@ -106,7 +98,7 @@ Server::Server(uint16_t port) {
     registerRPCFunctions();
 
     infostream << "Initializing map...";
-    chunkService.getWorlds().addWorld("test world");
+    chunkService.getWorlds().addWorld("test_world");
 
     // Done
     auto doneTime = steady_clock::now();

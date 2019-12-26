@@ -260,6 +260,8 @@ public:
     LoadUnloadDetectorTask(World& world, const Player& player): mPlayer(player), mWorld(world) { }
 
     void task(const ChunkService& cs) override {
+        // TODO: FIXME: Chunks might be repeatedly loaded or removed.
+
         PodOrderedList<int, Vec3i, MaxChunkLoadCount> loadList;
         PodOrderedList<int, Chunk*, MaxChunkUnloadCount, std::greater> unloadList;
 

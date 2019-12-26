@@ -27,6 +27,7 @@
 #include <algorithm>
 #include "nwchunk.h"
 #include "Common/Physics/AABB.h"
+#include "Game/SyncService/WorldStorage.h"
 
 class Player;
 class ChunkService;
@@ -35,11 +36,13 @@ class ModuleManager;
 class NWCOREAPI World final : public NonCopyable {
 public:
     World(std::string name, const Blocks& blocks)
-        : mName(std::move(name)), mID(0), mBlocks(blocks), mChunks(1024), mDaylightBrightness(15) { }
+        : mName(std::move(name)), mID(0), mBlocks(blocks), mChunks(1024), mDaylightBrightness(15),
+          mWorldStorage(mName) { }
 
     World(World&& rhs) noexcept
         : mName(std::move(rhs.mName)), mID(rhs.mID), mBlocks(rhs.mBlocks),
-          mChunks(std::move(rhs.mChunks)), mDaylightBrightness(rhs.mDaylightBrightness) { }
+          mChunks(std::move(rhs.mChunks)), mDaylightBrightness(rhs.mDaylightBrightness),
+          mWorldStorage(mName) { }
 
     ~World() = default;
 
@@ -62,7 +65,12 @@ public:
     size_t getChunkCount() const { return mChunks.size(); }
     ChunkReference getChunk(const Vec3i& ChunkPos) { return mChunks[ChunkPos]; }
     bool isChunkLoaded(const Vec3i& ChunkPos) const noexcept { return mChunks.isLoaded(ChunkPos); }
-    void deleteChunk(const Vec3i& ChunkPos) { mChunks.erase(ChunkPos); }
+    void deleteChunk(const Vec3i& ChunkPos) {
+        // TODO: check if the chunk needs to be saved.
+        if (!isChunkLoaded(ChunkPos)) return;
+        mWorldStorage.saveChunk(ChunkPos, getChunk(ChunkPos).getChunkForExport());
+        mChunks.erase(ChunkPos);
+    }
     static int getChunkAxisPos(int pos) { return ChunkManager::getAxisPos(pos); }
     static Vec3i getChunkPos(const Vec3i& pos) { return ChunkManager::getPos(pos); }
     static int getBlockAxisPos(int pos) { return ChunkManager::getBlockAxisPos(pos); }
@@ -133,6 +141,7 @@ protected:
     // All Chunks (Chunk array)
     ChunkManager mChunks;
     int mDaylightBrightness;
+    WorldStorage mWorldStorage;
 };
 
 
