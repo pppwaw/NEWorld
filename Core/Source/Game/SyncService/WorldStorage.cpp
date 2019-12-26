@@ -1,10 +1,11 @@
 #include "WorldStorage.h"
 #include <filesystem>
+#include <chrono>
 namespace fs = std::filesystem;
 
 std::optional<Chunk::ChunkDataStorageType> WorldStorage::requestChunk(Vec3i chunkPos) {
     if (auto pos = getChunkInfo(chunkPos)) {
-        auto& file = loadDataFile((*pos).file_id);
+        auto& file = loadDataFile(pos->file_id);
         auto data = Chunk::ChunkDataStorageType{};
         data.resize(Chunk::BlocksSize);
         file.seekg((*pos).offset);
@@ -15,25 +16,38 @@ std::optional<Chunk::ChunkDataStorageType> WorldStorage::requestChunk(Vec3i chun
 }
 
 void WorldStorage::saveChunk(Vec3i chunkPos, const Chunk::ChunkDataStorageType& data) {
-    auto chunkSize = Chunk::BlocksSize * sizeof(BlockData);
+    auto chunkSize = data.size() * sizeof(BlockData);
+    auto allocateSize = chunkSize;
+
     // Try find the chunk first
     if (auto info = getChunkInfo(chunkPos)) {
-        // 2. if exists, a. update current chunk data if size <= capacity. return.
-        //               b. remove the old item if size > capacity
-        if(chunkSize <= info->capacity) {
-            // update old chunk data
+        if(chunkSize <= info->capacity) { // Update current chunk data if size <= capacity
+            writeChunkToFile(loadDataFile(info->file_id), *info, data);
+            // TODO: Update the old record (size specifically if changed).
             return;
         }
-        // remove old chunk data and info
+        // Remove old chunk data and info if we need to reallocate
+        allocateSize = info->capacity * 1.5;
+        // TODO: Remove the old chunk. Should not happen now since the size is fixed.
     }
 
-    if(true) { // if file has enough room
-        // add the chunk to the end of the file
-    }
-    else {
-        // create a new file.
-    }
-    insertChunkInfo(chunkPos, 1, 0, 100, chunkSize, chunkSize);
+    // Chunk was not previously stored or we need to reallocate.
+    ChunkInfo info;
+    info.capacity = allocateSize;
+    info.size = chunkSize;
+    info.file_id = getFirstAvailableFileID(info.capacity);
+    info.time = std::chrono::duration_cast<std::chrono::seconds>(
+        std::chrono::system_clock::now().time_since_epoch()).count();
+
+    auto& file = loadDataFile(info.file_id);
+    info.offset = getFileSize(file); // Simply put the chunk at the end of the file for now.
+    // TODO: Search for available region in the file first.
+
+    // Update data file
+    writeChunkToFile(file, info, data);
+
+    // Update record
+    insertChunkInfo(chunkPos, info);
 }
 
 int WorldStorage::printSQLOutput(void* arg, int cnt, char** vals, char** col) {
@@ -44,14 +58,16 @@ int WorldStorage::printSQLOutput(void* arg, int cnt, char** vals, char** col) {
 }
 
 int WorldStorage::chunkInfoCallback(void* arg, int cnt, char** vals, char** col) {
-    ChunkInfo* info = static_cast<ChunkInfo*>(arg);
+    std::optional<ChunkInfo>* info = static_cast<std::optional<ChunkInfo>*>(arg);
+    if (cnt == 0) *info = {};
+    else *info = ChunkInfo{};
+
     for (int i = 0; i < cnt; i++) {
-        if (strcmp(col[i], "file_id")) info->file_id = atoi(vals[i]);
-        else if (strcmp(col[i], "offset")) info->offset = atoi(vals[i]);
-        else if (strcmp(col[i], "capacity")) info->capacity = atoi(vals[i]);
-        else if (strcmp(col[i], "size")) info->size = atoi(vals[i]);
-        else if (strcmp(col[i], "time")) info->time = atoi(vals[i]);
-        else debugstream << "Unhandled SQL result:" << col[i] << ":" << vals[i];
+        if (strcmp(col[i], "file_id") == 0) (*info)->file_id = atoi(vals[i]);
+        else if (strcmp(col[i], "offset") == 0) (*info)->offset = atoi(vals[i]);
+        else if (strcmp(col[i], "capacity") == 0) (*info)->capacity = atoi(vals[i]);
+        else if (strcmp(col[i], "size") == 0) (*info)->size = atoi(vals[i]);
+        else if (strcmp(col[i], "time") == 0) (*info)->time = atoi(vals[i]);
     }
     return 0;
 
@@ -60,7 +76,7 @@ int WorldStorage::chunkInfoCallback(void* arg, int cnt, char** vals, char** col)
 void WorldStorage::databaseInitialization() {
     if (!fs::exists(BaseWorldPath))
         fs::create_directory(BaseWorldPath);
-    std::fstream(getChunkInfoPath(mWorldName), 'w').close();
+    std::fstream(getChunkInfoPath(mWorldName), std::ios::out).close();
     if (sqlite3_open(getChunkInfoPath(mWorldName).c_str(), &mWorldInfo)) {
         errorstream << "Failed to open database: " << sqlite3_errmsg(mWorldInfo);
         throw WorldStorageIOException();
@@ -95,16 +111,38 @@ bool WorldStorage::executeSQLCommand(const char* sql, SQLCallback callback, void
 
 std::optional<WorldStorage::ChunkInfo> WorldStorage::getChunkInfo(Vec3i chunkPos) {
     std::string sql = "SELECT * from chunk_info where position = \"" + chunkPosToString(chunkPos) + "\"";
-    ChunkInfo chunkInfo;
-    if (executeSQLCommand(sql.c_str(), chunkInfoCallback, &chunkInfo))
+    std::optional<ChunkInfo> chunkInfo;
+    if (executeSQLCommand(sql.c_str(), chunkInfoCallback, &chunkInfo)){
         return chunkInfo;
+    }
     return {};
 }
 
-void WorldStorage::insertChunkInfo(Vec3i pos, int fileID, int offset, int time, int size, int capacity) {
+size_t WorldStorage::getFileSize(std::fstream& file) {
+    auto original = file.tellg();
+    file.seekg(0, std::ios::end);
+    auto ret = file.tellg();
+    file.seekg(original);
+    return ret;
+}
+
+size_t WorldStorage::getFirstAvailableFileID(size_t sizeNeeded) {
+    for (size_t i = 0; ; i++) {
+        auto& file = loadDataFile(i);
+        if (getFileSize(file) + sizeNeeded <= MaxSizePerFile) return i;
+    }
+}
+
+void WorldStorage::insertChunkInfo(Vec3i pos, const ChunkInfo& info) {
     std::string sql = "INSERT INTO chunk_info(position, file_id, offset, time, size, capacity) "
-        "VALUES (\"" + chunkPosToString(pos) + "\", " + std::to_string(fileID)
-        + ", " + std::to_string(offset) + "," + std::to_string(time) + "," + std::to_string(size)
-        + "," + std::to_string(capacity) + ");";
+        "VALUES (\"" + chunkPosToString(pos) + "\", " + std::to_string(info.file_id)
+        + ", " + std::to_string(info.offset) + "," + std::to_string(info.time) + "," + std::to_string(info.size)
+        + "," + std::to_string(info.capacity) + ");";
     executeSQLCommand(sql.c_str(), nullptr);
+}
+
+void WorldStorage::writeChunkToFile(std::fstream& file, const ChunkInfo& info,
+    const Chunk::ChunkDataStorageType& data) {
+    file.seekp(info.offset);
+    file.write(reinterpret_cast<const char*>(data.data()), info.size);
 }

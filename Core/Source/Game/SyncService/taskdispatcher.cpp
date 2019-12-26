@@ -179,6 +179,7 @@ void TaskDispatch::boot(ChunkService& service) {
 
 void TaskDispatch::shutdown() noexcept {
     gMainTimer.Disable();
+    ThreadPool::Stop();
 }
 
 void TaskDispatch::addNow(std::unique_ptr<ReadOnlyTask> task) noexcept {

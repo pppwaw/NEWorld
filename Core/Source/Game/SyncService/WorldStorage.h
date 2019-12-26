@@ -43,7 +43,10 @@ public:
     }
 
     ~WorldStorage() {
-        for(auto& file: mWorldDataFiles) file.close();
+        for (auto& file : mWorldDataFiles) {
+            file.flush();
+            file.close();
+        }
         sqlite3_close(mWorldInfo);
     }
 
@@ -58,10 +61,11 @@ private:
     using SQLCallback = int(void*, int, char**, char**);
 
     struct ChunkInfo {
-        int file_id, offset, time, size, capacity;
+        size_t file_id, offset, time, size, capacity;
     };
 
     static constexpr std::string_view BaseWorldPath = "Worlds/";
+    static constexpr size_t MaxSizePerFile = 1024 * 1024 * 256; // 256 MB
 
     static std::string getChunkInfoPath(const std::string& worldName) {
         return std::string(BaseWorldPath) + worldName + ".info";
@@ -84,11 +88,19 @@ private:
 
     std::optional<ChunkInfo> getChunkInfo(Vec3i chunkPos);
 
-    void insertChunkInfo(Vec3i position, int file_id, int offset, int time, int size, int capacity);
+    static size_t getFileSize(std::fstream& file);
+    size_t getFirstAvailableFileID(size_t sizeNeeded);
+    void insertChunkInfo(Vec3i pos, const ChunkInfo& info);
+    void writeChunkToFile(std::fstream& file, const ChunkInfo& info, const Chunk::ChunkDataStorageType& data);
 
     std::fstream& loadDataFile(size_t id) {
         if (id < mWorldDataFiles.size() && mWorldDataFiles[id].is_open()) return mWorldDataFiles[id];
-        return mWorldDataFiles[id] = std::fstream(getChunkDataPath(mWorldName, id), std::fstream::binary);
+        mWorldDataFiles.resize(std::max(id + 1, mWorldDataFiles.size()));
+        auto fileName = getChunkDataPath(mWorldName, id);
+        if (!std::filesystem::exists(fileName))
+            std::fstream(fileName, std::ios::out).close();
+        return  mWorldDataFiles[id] = std::fstream(fileName,
+            std::fstream::in | std::fstream::out | std::fstream::binary);
     }
 
     std::string mWorldName;
