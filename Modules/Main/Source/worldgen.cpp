@@ -53,15 +53,19 @@ void generator(const Vec3i* pos, Chunk* chunk, int daylightBrightness) {
     chunk->allocateBlocks();
     auto& blocks = *chunk->getBlocks();
 
+    const int SandHeight = 2;
+    const int WaterLevel = 0;
+
     for (int x = 0; x < ChunkSize; x++)
         for (int z = 0; z < ChunkSize; z++) {
             int absHeight = heightMap[x][z];
             int height = absHeight - pos->y * ChunkSize;
-            bool underWater = (absHeight) <= 0;
+            bool underWater = absHeight <= WaterLevel;
             for (int y = 0; y < ChunkSize; y++) {
                 auto& block = blocks[x * ChunkSize * ChunkSize + y * ChunkSize + z];
                 if (y <= height) {
-                    if (y == height) { block.setID((underWater) ? SandID : GrassID); }
+                    if (absHeight < SandHeight) { block.setID(SandID); }
+                    else if (y == height) { block.setID((underWater) ? SandID : GrassID); }
                     else if (y >= height - 3) { block.setID((underWater) ? SandID : DirtID); }
                     else { block.setID(RockID); }
                     block.setBrightness(0);
