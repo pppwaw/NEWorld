@@ -34,3 +34,17 @@ See [Compilation Guide](doc/installation.md), or you may download the latest Win
 * 若想要查看NEWorld的发展计划，请阅读 [待办事项](https://github.com/Infinideastudio/NEWorld/issues/46)
 
   If you want to see what is going to be added to NEWorld, please read [To-do list](https://github.com/Infinideastudio/NEWorld/issues/46)
+
+## 截图 Screenshots
+
+![Screenshot1](Docs/screenshot.png)
+
+![Screenshot Far](Docs/far.png)
+22 区块视距 （704 方块半径）
+
+22 chunks render distance (704 blocks) with 66000+ chunks loaded
+
+![Screenshot Old](Docs/old.png)
+带光影和水反的[旧 NEWorld](https://github.com/Infinideastudio/NEWorldOld/tree/0.5.0) (重构后的版本暂时没有光影)
+
+The [old NEWorld](https://github.com/Infinideastudio/NEWorldOld/tree/0.5.0) which has shadows and water reflections.
