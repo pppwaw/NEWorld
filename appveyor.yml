@@ -14,7 +14,7 @@ install:
   - git pull
   - .\bootstrap-vcpkg.bat
   - .\vcpkg.exe integrate install
-  - if %PLATFORM% equ Win32 (vcpkg.exe install sdl2 sdl2-image glew rpclib) else (vcpkg.exe install sdl2:x64-windows sdl2-image:x64-windows glew:x64-windows rpclib:x64-windows) > nul
+  - if %PLATFORM% equ Win32 (vcpkg.exe install sdl2 sdl2-image glew rpclib sqlite3) else (vcpkg.exe install sdl2:x64-windows sdl2-image:x64-windows glew:x64-windows rpclib:x64-windows sqlite3:x64-windows) > nul
   - cd %APPVEYOR_BUILD_FOLDER%
 before_build:
   - git submodule update --recursive --init

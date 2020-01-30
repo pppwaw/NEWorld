@@ -30,7 +30,7 @@ install:
     cd ./vcpkg
     ./bootstrap-vcpkg.sh
     ./vcpkg integrate install
-    ./vcpkg install sdl2 sdl2-image glew rpclib
+    ./vcpkg install sdl2 sdl2-image glew rpclib sqlite3
     cd ..
 script:
   - git submodule update --recursive --init
