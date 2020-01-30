@@ -28,6 +28,10 @@ struct MouseState {
     bool left, mid, right, relative = true;
 };
 
+enum class KeyState {
+    Hold, KeyDown, Released, KeyUp
+};
+
 class Window {
 public:
     Window(const Window&) = delete;
@@ -37,7 +41,7 @@ public:
 
     void swapBuffers() const { SDL_GL_SwapWindow(mWindow); }
 
-    static const Uint8* getKeyBoardState() { return SDL_GetKeyboardState(nullptr); }
+    KeyState getKeyBoardState(size_t key) const noexcept;
 
     int getWidth() const noexcept { return mWidth; }
 
@@ -55,18 +59,16 @@ public:
     nk_context* getNkContext() const noexcept { return mNuklearContext; }
 
     /**
-     * \brief Get the relative motion of mouse
-     * \return The relative motion of mouse
+     * \brief Get the mouse state
+     * \return The state of the mouse
      */
     MouseState getMouseMotion() const noexcept {
-        MouseState res = mMouse;
-        res.x -= mPrevMouse.x;
-        res.y -= mPrevMouse.y;
-        return res;
+        return mMouse;
     }
 
-    static void lockCursor() { SDL_SetRelativeMouseMode(SDL_TRUE); }
-    static void unlockCursor() { SDL_SetRelativeMouseMode(SDL_FALSE); }
+    void lockCursor() { SDL_SetRelativeMouseMode(SDL_TRUE); mCursorLocked = true; }
+    void unlockCursor() { SDL_SetRelativeMouseMode(SDL_FALSE); mCursorLocked = false; }
+    bool isCursorLocked() const noexcept { return mCursorLocked; }
 
     void getDrawableSize(int& x, int& y) const noexcept {
         SDL_GL_GetDrawableSize(mWindow, &x, &y);
@@ -77,6 +79,7 @@ private:
     int mWidth, mHeight;
     MouseState mMouse, mPrevMouse;
     bool mShouldQuit = false;
+    bool mCursorLocked = false;
 
     Window(const std::string& title, int width, int height);
     ~Window();

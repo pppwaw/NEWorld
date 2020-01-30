@@ -22,8 +22,23 @@
 #include "renderer/renderer.h"
 #include "Common/JsonHelper.h"
 
+KeyState Window::getKeyBoardState(size_t key) const noexcept {
+    // TODO: temporary implementation. It may cause issue if the same key is called twice (e.g. the second time KeyDown becomes Hold)
+    static bool keyPressed[SDL_NUM_SCANCODES] = { false };
+    const auto currentState = SDL_GetKeyboardState(nullptr)[key];
+    const auto oldState = keyPressed[key];
+    keyPressed[key] = currentState;
+    if (oldState && !currentState) return KeyState::KeyUp;
+    if (!oldState && currentState) return KeyState::KeyDown;
+    if (oldState && currentState) return KeyState::Hold;
+    if (!oldState && !currentState) return KeyState::Released;
+
+    return KeyState::Released;
+}
+
 void Window::pollEvents() {
-    if (SDL_GetRelativeMouseMode() == SDL_TRUE) {
+    mPrevMouse = mMouse;
+    if (mCursorLocked) {
         Uint32 buttons = SDL_GetRelativeMouseState(&mMouse.x, &mMouse.y);
         mMouse.left = buttons & SDL_BUTTON_LEFT;
         mMouse.right = buttons & SDL_BUTTON_RIGHT;
@@ -31,12 +46,10 @@ void Window::pollEvents() {
         mMouse.relative = true;
     }
     else {
-        mPrevMouse = mMouse;
         Uint32 buttons = SDL_GetMouseState(&mMouse.x, &mMouse.y);
         mMouse.left = buttons & SDL_BUTTON_LEFT;
         mMouse.right = buttons & SDL_BUTTON_RIGHT;
         mMouse.mid = buttons & SDL_BUTTON_MIDDLE;
-        if (mMouse.relative) mPrevMouse = mMouse;
         mMouse.relative = false;
     }
 
@@ -65,7 +78,9 @@ void PrintOglVersion() {
     int major{}, minor{};
     glGetIntegerv (GL_MAJOR_VERSION, &major);
     glGetIntegerv (GL_MINOR_VERSION, &minor);
-    infostream << "OpenGL Version:" << major << '.' << minor;
+    const GLubyte* vendor = glGetString(GL_VENDOR);
+    const GLubyte* renderer = glGetString(GL_RENDERER);
+    infostream << "OpenGL Version:" << major << '.' << minor << ", vendor: " << vendor << ", renderer: " << renderer;
 }
 
 Window::Window(const std::string& title, int width, int height)

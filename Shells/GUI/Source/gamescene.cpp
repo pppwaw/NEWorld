@@ -48,37 +48,52 @@ public:
     PlayerControlTask(Player& player) : mPlayer(player) {}
 
     void task(const ChunkService& cs) override {
-
-        constexpr double speed = 0.1;
+        auto speed = mPlayer.getMovingSpeed();
         constexpr double SelectDistance = 5.0;
         constexpr double SelectPrecision = 200.0;
 
+        auto& window = Window::getInstance();
         // TODO: Read keys from the configuration file
-        auto state = Window::getKeyBoardState();
-        if (state[SDL_SCANCODE_UP])
+        if (window.getKeyBoardState(SDL_SCANCODE_UP)==KeyState::Hold)
             mPlayer.accelerateRotation(Vec3d(1, 0.0, 0.0));
-        if (state[SDL_SCANCODE_DOWN] && mPlayer.getRotation().x > -90)
+        if (window.getKeyBoardState(SDL_SCANCODE_DOWN) == KeyState::Hold && mPlayer.getRotation().x > -90)
             mPlayer.accelerateRotation(Vec3d(-1, 0.0, 0.0));
-        if (state[SDL_SCANCODE_RIGHT])
+        if (window.getKeyBoardState(SDL_SCANCODE_RIGHT) == KeyState::Hold)
             mPlayer.accelerateRotation(Vec3d(0.0, -1, 0.0));
-        if (state[SDL_SCANCODE_LEFT])
+        if (window.getKeyBoardState(SDL_SCANCODE_LEFT) == KeyState::Hold)
             mPlayer.accelerateRotation(Vec3d(0.0, 1, 0.0));
-        if (state[SDL_SCANCODE_W])
+        if (window.getKeyBoardState(SDL_SCANCODE_W) == KeyState::Hold)
             mPlayer.accelerate(Vec3d(0.0, 0.0, -speed));
-        if (state[SDL_SCANCODE_S])
+        if (window.getKeyBoardState(SDL_SCANCODE_S) == KeyState::Hold)
             mPlayer.accelerate(Vec3d(0.0, 0.0, speed));
-        if (state[SDL_SCANCODE_A])
+        if (window.getKeyBoardState(SDL_SCANCODE_A) == KeyState::Hold)
             mPlayer.accelerate(Vec3d(-speed, 0.0, 0.0));
-        if (state[SDL_SCANCODE_D])
+        if (window.getKeyBoardState(SDL_SCANCODE_D) == KeyState::Hold)
             mPlayer.accelerate(Vec3d(speed, 0.0, 0.0));
-        if (state[SDL_SCANCODE_E])
+        if (window.getKeyBoardState(SDL_SCANCODE_E) == KeyState::Hold)
             mPlayer.accelerate(Vec3d(0.0, 0.0, -speed * 10));
-        if (state[SDL_SCANCODE_SPACE])
-            mPlayer.accelerate(Vec3d(0.0, 2 * speed, 0.0));
+        if (window.getKeyBoardState(SDL_SCANCODE_SPACE) == KeyState::Hold){
+            if (mPlayer.isFlying())
+                mPlayer.accelerate(Vec3d(0.0, 2 * speed, 0.0));
+            else
+                mPlayer.jump();
+        }
+
+        if (window.getKeyBoardState(SDL_SCANCODE_F1) == KeyState::KeyDown)
+            mPlayer.setFlying(!mPlayer.isFlying());
+
+        if (window.getKeyBoardState(SDL_SCANCODE_F2) == KeyState::KeyDown) {
+            if (Window::getInstance().isCursorLocked())
+                Window::getInstance().unlockCursor();
+            else
+                Window::getInstance().lockCursor();
+        }
+
 #ifdef NEWORLD_TARGET_MACOSX
         if (state[SDL_SCANCODE_LGUI] || state[SDL_SCANCODE_RGUI])
 #else
-        if (state[SDL_SCANCODE_LCTRL] || state[SDL_SCANCODE_RCTRL])
+        if ((window.getKeyBoardState(SDL_SCANCODE_LCTRL) == KeyState::Hold
+            || window.getKeyBoardState(SDL_SCANCODE_RCTRL) == KeyState::Hold) && mPlayer.isFlying())
 #endif
             mPlayer.accelerate(Vec3d(0.0, -2 * speed, 0.0));
 
@@ -114,6 +129,7 @@ public:
     std::unique_ptr<ReadOnlyTask> clone() override { return std::make_unique<PlayerControlTask>(*this); }
 
 private:
+    static constexpr double FallingSpeed = -0.5;
     Player& mPlayer;
 };
 
@@ -163,7 +179,7 @@ GameScene::GameScene(const std::string& name, const Window& window):
 
     mPlayer.setPosition(Vec3d(-16.0, 48.0, 32.0));
     mPlayer.setRotation(Vec3d(-45.0, -22.5, 0.0));
-    Window::lockCursor();
+    Window::getInstance().lockCursor();
 
     if (isClient()) {
         debugstream << "Game is running as the client of a multiplayer session.";
@@ -218,6 +234,8 @@ GameScene::GameScene(const std::string& name, const Window& window):
             nk_labelf(ctx, NK_TEXT_LEFT, "FPS %zu, UPS %zu", mFpsLatest, mUpsLatest);
             nk_labelf(ctx, NK_TEXT_LEFT, "Position: x %.1f y %.1f z %.1f",
                       mPlayer.getPosition().x, mPlayer.getPosition().y, mPlayer.getPosition().z);
+            nk_labelf(ctx, NK_TEXT_LEFT, "On ground: %s, flying %s",
+                mPlayer.onGround()?"True":"False", mPlayer.isFlying() ? "True" : "False");
             nk_labelf(ctx, NK_TEXT_LEFT, "GUI Widgets: %zu", mGUIWidgets.getSize());
             nk_labelf(ctx, NK_TEXT_LEFT, "Chunks Loaded: %zu", mCurrentWorld->getChunkCount());
             nk_labelf(ctx, NK_TEXT_LEFT, "Modules Loaded: %d", getModuleCount());
@@ -249,7 +267,8 @@ void GameScene::render() {
     static const double mouseSensitivity =
         getJsonValue<double>(getSettings()["gui"]["mouse_sensitivity"], 0.3);
     MouseState mouse = Window::getInstance().getMouseMotion();
-    mPlayer.accelerateRotation(Vec3d(-mouse.y * mouseSensitivity, -mouse.x * mouseSensitivity, 0.0));
+    if(mouse.relative) // only rotate the camera when the cursor is locked.
+        mPlayer.accelerateRotation(Vec3d(-mouse.y * mouseSensitivity, -mouse.x * mouseSensitivity, 0.0));
 
     glClearColor(0.6f, 0.9f, 1.0f, 1.0f);
     glClearDepth(1.0f);

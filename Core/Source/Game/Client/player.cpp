@@ -58,6 +58,8 @@ void Player::move(const World& world) {
 
     mPosition += mPositionDelta;
 
+    mOnGround = mPositionDelta.y == 0;
+
     mSpeed *= 0.8;
     //mSpeed += Vec3d(0.0, -0.05, 0.0);
 }

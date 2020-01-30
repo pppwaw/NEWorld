@@ -16,6 +16,7 @@ std::optional<Chunk::ChunkDataStorageType> WorldStorage::requestChunk(Vec3i chun
 }
 
 void WorldStorage::saveChunk(Vec3i chunkPos, const Chunk::ChunkDataStorageType& data) {
+    return;
     auto chunkSize = data.size() * sizeof(BlockData);
     auto allocateSize = chunkSize;
 

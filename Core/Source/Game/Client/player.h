@@ -32,21 +32,40 @@ public:
 
     void setSpeed(const Vec3d& speed) { mSpeed = speed; }
 
+    double getMovingSpeed() const noexcept { return mPlayerMovingSpeed * FlyingSpeedBooster; }
+
     Vec3d getPositionDelta() const { return mPositionDelta; }
 
     Vec3d getRotationDelta() const { return mRotationDelta; }
 
     void render() override;
 
+    bool isFlying() const noexcept { return mFlying; }
+    void setFlying(bool fly) noexcept { mFlying = fly; }
+    bool onGround() const noexcept { return mOnGround; }
+
+    void jump() noexcept {
+        if (!onGround()) return;
+        mJumpProcess = mJumpHeight;
+        mOnGround = false;
+    }
+
     friend class PlayerUpdateTask;
 private:
     Vec3d mSpeed, mRotationSpeed;
     Vec3d mPositionDelta, mRotationDelta;
+    static constexpr double mJumpHeight = 3;
+    double mJumpProcess = 0.0;
+    bool mOnGround = true;
+    bool mFlying = false;
+    double mPlayerMovingSpeed = 0.05;
+    static constexpr double FlyingSpeedBooster = 2;
 
     void update(const World& world) override {
         move(world);
         rotationMove();
-        accelerate(Vec3d(0.0, -0.1, 0.0)); // Gravity
+        if(!isFlying()) accelerate(Vec3d(0.0, -0.1, 0.0)); // Gravity
+        if (mJumpProcess > 0) { mJumpProcess--; accelerate(Vec3d(0.0, 0.3, 0.0)); }
     }
 
     void move(const World& world);
