@@ -62,10 +62,7 @@ struct NWCOREAPI RenderTask {
 };
 
 struct TaskDispatch {
-    static void NWCOREAPI boot(ChunkService& service);
-
-    static void NWCOREAPI shutdown() noexcept;
-
+    static void NWCOREAPI boot() noexcept;
     // Attempt to add a task to the current task queue if possible.
     // If not, the task will be scheduled to run in the next tick.
     static void NWCOREAPI addNow(std::unique_ptr<ReadOnlyTask> task) noexcept;

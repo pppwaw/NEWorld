@@ -33,13 +33,15 @@ public:
     static constexpr int UpdateFrequency = 30;
 
     GameScene(const std::string& name, const Window& window);
-    ~GameScene();
 
     void render();
 private:
+    NEWorld::ServiceHandle hDispatch { "org.newinfinideas.neworld.dispatch" };
+    NEWorld::ServiceHandle hChunkService { "org.newinfinideas.neworld.chunk_service" };
+
     size_t requestWorld();
 
-    void keyboardUpdateTask();
+    ChunkService* chunkService;
 
     // Local server
     std::unique_ptr<Server> mServer = nullptr;

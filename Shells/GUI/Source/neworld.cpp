@@ -21,7 +21,7 @@
 #include "gamescene.h"
 #include "Common/JsonHelper.h"
 
-NEWorld::NEWorld() {
+UIShell::UIShell() {
     // Initialize
     getSettings();
     infostream << "Initializing...";
@@ -32,7 +32,7 @@ NEWorld::NEWorld() {
     loadModules();
 }
 
-void NEWorld::run() {
+void UIShell::run() {
     // Run
     const auto fps = getJsonValue<size_t>(getSettings()["gui"]["fps"], 60);
     const auto shouldLimitFps = getJsonValue<bool>(getSettings()["gui"]["limit"], false);
@@ -50,7 +50,7 @@ void NEWorld::run() {
     }
 }
 
-NEWorld::~NEWorld() {
+UIShell::~UIShell() {
     // Terminate
     infostream << "Terminating...";
     Texture::free();
@@ -64,6 +64,6 @@ CmdOption multiPlayer { {
 } };
 
 int main(int argc, char** argv) {
-	NEWorld neworld;
+    UIShell neworld;
 	return gameMain(argc, argv);
 }

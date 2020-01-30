@@ -20,9 +20,9 @@
 #include "chunkservice.hpp"
 #include "Common/JsonHelper.h"
 
-// TODO: set this according to the mode.
-NWCOREAPI ChunkService chunkService(true);
+namespace {
+    NW_MAKE_SERVICE(ChunkService, "org.newinfinideas.neworld.chunk_service", 0.0, _)
+}
 
-ChunkService::ChunkService(bool isAuthority) noexcept
-    : mWorlds(Blocks::getInstance()),
-      mAuthority(isAuthority) {}
+ChunkService::ChunkService() noexcept
+    : mWorlds(Blocks::getInstance()), mAuthority(true) {}

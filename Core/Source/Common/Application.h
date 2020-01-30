@@ -21,21 +21,19 @@
 
 #include "Config.h"
 #include <argagg.hpp>
+#include "Cfx/Application.h"
 
-class NWCOREAPI Application {
+class NWCOREAPI Application: public NEWorld::Application {
 public:
     virtual void run();
     static argagg::parser_results& args();
 protected:
     Application();
-    virtual ~Application();
 };
 
 struct NWCOREAPI CmdOption {
-    CmdOption(argagg::definition def);
+    explicit CmdOption(argagg::definition def);
     argagg::definition def;
 };
-
-#define DECL_CMD_OPTION(x) namespace { CmdOption opt { std::move(x) }; }
 
 NWCOREAPI int gameMain(int argc, char** argv);

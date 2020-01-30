@@ -18,12 +18,14 @@
 //
 
 #include <vector>
+#include "Service.h"
+#include "chunkservice.hpp"
 #include "taskdispatcher.hpp"
 #include "Common/RateController.h"
-#include <Core/Threading/SpinLock.h>
-#include <Core/Threading/Micro/Timer.h>
-#include <Core/Threading/Micro/ThreadPool.h>
-#include <Core/Utilities/TempAlloc.h>
+#include <Cfx/Threading/SpinLock.h>
+#include <Cfx/Threading/Micro/Timer.h>
+#include <Cfx/Threading/Micro/ThreadPool.h>
+#include <Cfx/Utilities/TempAlloc.h>
 
 namespace {
     enum class DispatchMode : int {
@@ -168,18 +170,26 @@ namespace {
     private:
         std::unique_ptr<ReadOnlyTask> mTask;
     };
+
+    struct Service final: NEWorld::Object {
+        Service() noexcept {
+            gTimeUsed.resize(ThreadPool::CountThreads());
+            gService = std::addressof(hChunkService.Get<ChunkService>());
+            gEnter.store(false);
+        }
+        ~Service() noexcept override {
+            gMainTimer.Disable();
+        }
+        NEWorld::ServiceHandle Pool{"org.newinfinideas.nrt.cfx.thread_pool"};
+        NEWorld::ServiceHandle Timer{"org.newinfinideas.nrt.cfx.timer"};
+        NEWorld::ServiceHandle hChunkService {"org.newinfinideas.neworld.chunk_service" };
+    };
+
+    NW_MAKE_SERVICE(Service, "org.newinfinideas.neworld.dispatch", 0.0, _)
 }
 
-void TaskDispatch::boot(ChunkService& service) {
-    gTimeUsed.resize(ThreadPool::CountThreads());
-    gService = std::addressof(service);
-    gEnter.store(false);
+void TaskDispatch::boot() noexcept {
     gMainTimer.Enable();
-}
-
-void TaskDispatch::shutdown() noexcept {
-    gMainTimer.Disable();
-    ThreadPool::Stop();
 }
 
 void TaskDispatch::addNow(std::unique_ptr<ReadOnlyTask> task) noexcept {

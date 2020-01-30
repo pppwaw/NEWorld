@@ -23,10 +23,10 @@
 #include <Common/Application.h>
 #include "Common/Modules.h"
 
-class NEWorld : public Application {
+class UIShell : public Application {
 public:
-    NEWorld();
-    ~NEWorld();
+    UIShell();
+    ~UIShell();
     void run() override;
     argagg::parser_results args;
 };

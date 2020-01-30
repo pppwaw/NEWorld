@@ -18,6 +18,8 @@
 //
 
 #include <iostream>
+#include <NRT/Cfx/Include/Cfx/Application.h>
+
 #include "Application.h"
 #include "Logger.h"
 
@@ -35,8 +37,6 @@ Application::Application() {
         throw std::runtime_error("Double App Instance");
     }
 }
-
-Application::~Application() {}
 
 void Application::run() {
 	errorstream << "No application is specified.";

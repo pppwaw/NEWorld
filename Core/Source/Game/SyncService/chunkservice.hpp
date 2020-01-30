@@ -18,14 +18,16 @@
 // 
 
 #pragma once
+
 #include "Game/SyncService/world/world.h"
 #include "taskdispatcher.hpp"
+#include "Service.h"
 
 /**
  * \brief This class manages worlds and chunks in NEWorld, and it's responsible
  *        for synchronizing these with the server in multiplayer situation.
  */
-class NWCOREAPI ChunkService {
+class NWCOREAPI ChunkService: public NEWorld::Object {
 public:
     /**
      * \brief constructor
@@ -36,19 +38,16 @@ public:
      *                    and in the server-side of the multiplayer mode
      *                    are authoritative.
      */
-    ChunkService(bool isAuthority) noexcept;
+    ChunkService() noexcept;
 
     WorldManager& getWorlds() noexcept { return mWorlds; }
 
-    const WorldManager& getWorlds() const noexcept { return mWorlds; }
+    [[nodiscard]] const WorldManager& getWorlds() const noexcept { return mWorlds; }
 
-    bool isAuthority() const noexcept { return mAuthority; }
+    [[nodiscard]] bool isAuthority() const noexcept { return mAuthority; }
 
     void setAuthority(bool isAuthority) noexcept { mAuthority = isAuthority; }
 private:
     WorldManager mWorlds;
     bool mAuthority;
 };
-
-// TODO: Hide this and only expose Task Dispatcher.
-extern NWCOREAPI ChunkService chunkService;

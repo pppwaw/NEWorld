@@ -22,11 +22,15 @@
 #include <Common/Config.h>
 #include <cstdint>
 #include <cstddef>
+#include "Service.h"
 
 class NWCOREAPI Server {
 public:
-    Server(uint16_t port);
+    explicit Server(uint16_t port);
     void run(size_t threadNumber);
     void stop();
     ~Server();
+private:
+    NEWorld::ServiceHandle hChunkService {"org.newinfinideas.neworld.chunk_service" };
+    void registerRPCFunctions();
 };

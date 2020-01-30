@@ -270,7 +270,7 @@ public:
                                loadList, unloadList);
 
         for (auto& loadPos : loadList) {
-            if (chunkService.isAuthority()) {
+            if (cs.isAuthority()) {
                 TaskDispatch::addNow(
                         std::make_unique<BuildOrLoadChunkTask>(mWorld, loadPos.second)
                 );

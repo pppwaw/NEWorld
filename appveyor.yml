@@ -29,7 +29,7 @@ on_success:
   # Create an archive
   - 7z a c:\NEWorld.zip .\Docs
   - cd .\projectBuild
-  - 7z a c:\NEWorld.zip .\Product-%CONFIGURATION%
+  - 7z a c:\NEWorld.zip .\Product
   - 7z a c:\NEWorld.zip .\SDK
   - if %PLATFORM% equ x64 rename c:\NEWorld.zip NEWorld_x64.zip
   - if %PLATFORM% equ x64 (appveyor PushArtifact c:\NEWorld_x64.zip) else (appveyor PushArtifact c:\NEWorld.zip)
