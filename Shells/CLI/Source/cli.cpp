@@ -88,6 +88,7 @@ void ServerCommandLine::initBuiltinCommands() noexcept {
                               [this](Command cmd)-> CommandExecuteStat {
                                   std::string ret = "Chunks loaded: ";
                                   size_t sum = 0;
+                                  auto& chunkService = hChunkService.Get<ChunkService>();
                                   for (auto&& world : chunkService.getWorlds()) {
                                       ret += "\n" + std::to_string(world->getWorldID()) + " " + world->getWorldName() +
                                           ":\t" + std::to_string(world->getChunkCount());

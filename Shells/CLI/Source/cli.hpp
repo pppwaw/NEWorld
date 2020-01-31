@@ -19,6 +19,7 @@
 
 #pragma once
 #include "command.hpp"
+#include "Service.h"
 
 class ServerCommandLine {
 public:
@@ -28,4 +29,5 @@ public:
 private:
     void initBuiltinCommands() noexcept;
     CommandManager mCommands;
+    NEWorld::ServiceHandle hChunkService { "org.newinfinideas.neworld.chunk_service" };
 };

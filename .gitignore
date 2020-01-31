@@ -263,3 +263,4 @@ res/fonts/
 
 # CLion
 cmake-build-*
+/out/build
